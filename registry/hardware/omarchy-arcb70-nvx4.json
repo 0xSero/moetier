@@ -1,0 +1,6 @@
+{
+  "id": "omarchy-arcb70-nvx4",
+  "gpu": { "name": "Intel Arc Pro B70", "vram_gb": 32, "link": "PCIe 4.0 x16", "h2d_gbps": 26.7 },
+  "cpu": { "name": "AMD EPYC 7443P", "cores": 24, "isa": "avx2", "ddr": "DDR4 8-channel" },
+  "nvme": { "name": "4x Samsung 9100 PRO 1TB RAID0", "bw_gbps": 26.0, "bw_qd1_gbps": 7.7, "latency_ms": 0.12 }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "avx2-exl3-cpu",
+  "lanes": {
+    "cpu": { "reads": "ram", "per_layer_ms": 0.145, "per_expert_ms": 0.104, "per_extra_token_ms": 0.040 }
+  },
+  "source": "C004 (1 token/expert 0.104 ms on 22 threads), handoff 0.035 + A 0.11 (sim20 DEF)"
+}

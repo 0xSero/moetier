@@ -1,0 +1,8 @@
+{
+  "id": "glm-5.3-flash-exl3-3.05bpw",
+  "family": "GLM-5.3-Flash",
+  "artifact": "turboderp/GLM-5.3-Flash-exl3 @ 3.05bpw",
+  "moe": { "layers": 42, "experts": 288, "topk": 8, "shared": 1, "expert_bytes": 9474048 },
+  "store": { "format": "record", "record_bytes": 9474048, "key": "layer*288+expert",
+             "note": "one 4K-aligned record per expert; first 9 MiB = one VRAM cache slot image" }
+}

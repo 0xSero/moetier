@@ -1,0 +1,8 @@
+{
+  "id": "exllamav3-cuda",
+  "lanes": {
+    "gpu":      { "reads": "vram", "per_layer_ms": 0.17, "per_expert_ms": 0.023 },
+    "zerocopy": { "reads": "ram",  "per_expert_ms": 0.38, "note": "GPU kernel reads the host copy over PCIe" }
+  },
+  "source": "G067 decode calibration (research/20, sim20 DEF): g0, thit, tzc"
+}
