@@ -49,6 +49,8 @@ class Recipe:
     fixed_ms: dict
     prefill: dict = field(default_factory=dict)
     raw: dict = field(default_factory=dict)
+    ram_expert_bytes: int = 0      # per-tier record size (0 = expert_bytes); vram keeps expert_bytes
+    nvme_expert_bytes: int = 0
 
     @property
     def keys(self):
@@ -88,10 +90,15 @@ def resolve(reg, recipe_id, **overrides):
     b, mo = r["budget"], m["moe"]
     keys = mo["layers"] * mo["experts"]
     ram_for_experts = (b["ram_gb"] - b.get("runtime_gb", 0) - b.get("other_gb", 0)) * 1e9
-    ram_slots = max(0, min(keys, int(ram_for_experts // mo["expert_bytes"])))
+    # per-tier record size: recipe.tiers.{ram,nvme}_expert_bytes (e.g. a 2-bit cold copy); VRAM keeps the model's size
+    tiers = r.get("tiers", {})
+    ram_b = int(tiers.get("ram_expert_bytes", mo["expert_bytes"]))
+    nvme_b = int(tiers.get("nvme_expert_bytes", mo["expert_bytes"]))
+    ram_slots = max(0, min(keys, int(ram_for_experts // ram_b)))
     return Recipe(id=r["id"], layers=mo["layers"], experts=mo["experts"], topk=mo["topk"],
                   expert_bytes=mo["expert_bytes"], vram_slots=int(b["vram_expert_slots"]), ram_slots=ram_slots,
                   lanes=lanes, h2d_gbps=hw["gpu"]["h2d_gbps"], nvme_bw_gbps=hw["nvme"]["bw_gbps"],
                   nvme_bw_qd1_gbps=hw["nvme"].get("bw_qd1_gbps", hw["nvme"]["bw_gbps"]),
                   nvme_latency_ms=hw["nvme"].get("latency_ms", 0.1), policy=r["policy"],
-                  fixed_ms=r["calibration"]["fixed_ms"], prefill=r["calibration"].get("prefill", {}), raw=r)
+                  fixed_ms=r["calibration"]["fixed_ms"], prefill=r["calibration"].get("prefill", {}), raw=r,
+                  ram_expert_bytes=ram_b, nvme_expert_bytes=nvme_b)

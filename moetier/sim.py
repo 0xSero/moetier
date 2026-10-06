@@ -10,7 +10,9 @@ def load_trace(path, segments=None):
     return [tr[seg[i]:seg[i + 1]] for i in range(len(seg) - 1)]
 
 
-def run(R, streams, conc=1, warm=200, max_steps=0):
+def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_ms=0.0):
+    """window/accept/draft_ms: speculative decoding what-if. Each step verifies `window` consecutive trace tokens per
+    stream (their expert union, m tokens per expert), credits `accept` tokens per stream, and adds `draft_ms`."""
     L, E = R.layers, R.experts
     cat = np.concatenate(streams)
     freq = np.zeros(L * E)
@@ -18,7 +20,7 @@ def run(R, streams, conc=1, warm=200, max_steps=0):
         np.add.at(freq, l * E + cat[:, l, :R.topk].reshape(-1), 1)
     led = Ledger(R.vram_slots, R.ram_slots, L * E, exclusive=R.policy.get("ram", "exclusive") == "exclusive")
     led.seed([int(k) for k in np.argsort(-freq)])
-    nv = NvmeChannel(R.expert_bytes, R.nvme_bw_gbps, R.nvme_bw_qd1_gbps, R.nvme_latency_ms)
+    nv = NvmeChannel(R.nvme_expert_bytes, R.nvme_bw_gbps, R.nvme_bw_qd1_gbps, R.nvme_latency_ms)
     pf = R.policy.get("prefetch", {})
     recall = pf.get("recall", 0.0) if pf.get("depth", 0) else 0.0
     # lockstep: `conc` streams each decoding their own trace segment (cycled)
@@ -26,11 +28,11 @@ def run(R, streams, conc=1, warm=200, max_steps=0):
     st = dict(t=0.0, tok=0, steps=0, picks=0, vram=0, ram_cpu=0, zc=0, nvme=0, masked=0, gpu=0.0, cpu=0.0, fixed=0.0)
     inflight, step = {}, 0
     while True:
-        rows = [streams[s][i] for s, i in cur]                # [conc][L][topk]
+        rows = [streams[s][(i + w) % len(streams[s])] for s, i in cur for w in range(window)]   # [conc*window][L][topk]
         measure = step >= warm
         if measure:
             snap = (st["t"], nv.reads)
-        t = st["t"]
+        t = st["t"] + draft_ms
         F = R.fixed(len(rows))
         for l in range(L):
             picks = {}
@@ -57,15 +59,15 @@ def run(R, streams, conc=1, warm=200, max_steps=0):
                 st["fixed"] += F / L
         nv.free_at = max(nv.free_at, 0.0)
         if measure:
-            st["tok"] += len(rows)
+            st["tok"] += conc * accept
             st["steps"] += 1
             st["t_meas"] = st.get("t_meas", 0.0) + (t - st["t"])
         st["t"] = t
         step += 1
-        cur = [(s, (i + 1) % len(streams[s])) for s, i in cur]
+        cur = [(s, (i + window) % len(streams[s])) for s, i in cur]
         if max_steps and st["steps"] >= max_steps:
             break
-        if not max_steps and step >= warm + min(len(x) for x in streams):
+        if not max_steps and step >= warm + min(len(x) for x in streams) // window:
             break
     T, n, steps = st.get("t_meas", 1e-9), max(1, st["tok"]), max(1, st["steps"])
     return dict(tok_s=round(1000 * n / T, 2), ms_per_step=round(T / steps, 2), conc=conc,
@@ -81,9 +83,9 @@ def prefill(R, prompt):
     pf = R.prefill
     C, comp, first = pf["chunk"], pf["compute_ms_per_layer"], pf.get("first_request_ms", 0.0)
     nonvram = R.experts - min(R.experts, R.vram_slots // R.layers)
-    link = nonvram * R.expert_bytes / (R.h2d_gbps * 1e6)
     ram_share = min(1.0, R.ram_slots / max(1, R.layers * R.experts - R.vram_slots))
-    nvme = nonvram * (1 - ram_share) * R.expert_bytes / (R.nvme_bw_gbps * 1e6)
+    link = nonvram * (ram_share * R.ram_expert_bytes + (1 - ram_share) * R.nvme_expert_bytes) / (R.h2d_gbps * 1e6)
+    nvme = nonvram * (1 - ram_share) * R.nvme_expert_bytes / (R.nvme_bw_gbps * 1e6)
     per_layer = max(comp * min(C, prompt) / C, link, nvme)
     chunks = -(-prompt // C)
     ms = chunks * R.layers * per_layer + first

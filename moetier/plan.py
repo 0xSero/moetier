@@ -48,7 +48,7 @@ class LayerPlan:
 
 def plan_layer(R, ledger, picks, t0, nvme, inflight):
     """R: Recipe. picks: {key: tokens}. inflight: {key: arrival_ms} from earlier prefetches."""
-    lanes, pol, S = R.lanes, R.policy, R.expert_bytes
+    lanes, pol, S = R.lanes, R.policy, R.nvme_expert_bytes      # an NVMe miss pushed to VRAM is the NVMe record
     gpu, cpu, zc = lanes.get("gpu"), lanes.get("cpu"), lanes.get("zerocopy")
     p = LayerPlan()
     V, Rm, N = [], [], []

@@ -1,0 +1,24 @@
+{
+  "id": "glm53-rtx3090-55g-nvx4-cold2b",
+  "status": "what-if",
+  "note": "glm53-rtx3090-55g-nvx4 with a 2.0bpw EXL3 (K=2, all three projections) copy of every expert in the RAM and NVMe tiers; VRAM keeps 3.05bpw (K=3) experts. 25,165,824 weights x 2 bit + 36,864 B of suh/svh = 6,328,320 B. CPU lane cost left at the measured K=3 0.104 ms/expert because the AVX2 trellis kernel is decode-issue-bound (glm53/CPU_TIER.md, research/14), not DRAM-bound; zero-copy scaled by bytes (PCIe-bound). Quality: every non-VRAM pick is served at 2 bits. No full 2.0bpw quant exists locally (omarchy GLM-5.3-Flash-EXL3-2.0bpw lacks all 84 expert shards).",
+  "model": "glm-5.3-flash-exl3-3.05bpw",
+  "hardware": "omarchy-rtx3090-nvx4",
+  "engines": ["exllamav3-cuda", "avx2-exl3-cpu"],
+  "budget": { "ram_gb": 55, "runtime_gb": 4.0, "other_gb": 2.8, "vram_expert_slots": 1510 },
+  "tiers": { "ram_expert_bytes": 6328320, "nvme_expert_bytes": 6328320 },
+  "lane_overrides": { "zerocopy": { "per_expert_ms": 0.254 } },
+  "policy": {
+    "vram": "clock, admit GPU-routed misses",
+    "ram": "exclusive",
+    "seed": "frequency",
+    "exact": "stall",
+    "overlap": true,
+    "prefetch": { "depth": 1, "recall": 0.0 }
+  },
+  "calibration": {
+    "fixed_ms": { "1": 14.0, "2": 20.0, "4": 30.0 },
+    "prefill": { "chunk": 8192, "compute_ms_per_layer": 176.35, "first_request_ms": 4130 },
+    "source": "G067 all-RAM 28.15 / 31.57 / 33.98 decode, 710 / 951 prefill"
+  }
+}

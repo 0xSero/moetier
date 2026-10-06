@@ -13,9 +13,11 @@ Unlocks layer-ahead prefetch (+2-4 tok/s C1 in the lever study). Doc 20 section 
 
 ## G5 GLM non-MoE fixed time 14 -> 9 ms: fused decode kernels + CUDA graphs  [todo]
 
-## G6 GLM gated MTP k=1-2 (experts shared inside a verify window)  [todo; model it in moetier sim first]
+## G6 GLM MTP k=2 (verify windows share expert reads)  [todo, PRIORITY after G2: modeled C1 32.4 -> ~46 tok/s exact]
+First measure MTP acceptance on the 3.05bpw model + verify time at 3 tokens; MTP layer's 288 experts need a home (VRAM/RAM). Then rerun the spec rows in moetier.
 
-## G7 vLLM-Moet transfer: 2-bit cold tiers + precision delta for hot experts  [research running: agent N118]
+## G7 vLLM-Moet transfer  [researched: docs/vllm-moet-lessons.md]
+Verdict: CPU lane is trellis-instruction-bound (not DRAM), so 2-bit cold tiers barely help at EXL3 quality; reject RAM/NVMe 2-bit and delta-on-2bit. Keep: their router-lookahead predictor (recall 71.6% measured on GLM-5.2) for G3; optional 2-bit NVMe-tail copy behind a KLD gate (needs a fresh stock 2.0bpw quant; the local 2.0bpw is incomplete/TR3).
 
 ## Q1 Qwen B70: victim ring srv27 matrix, GDN SYCL test, MTP stage (a), decode kernels  [paused]
 

@@ -106,5 +106,6 @@ What the planner says:
 
 v0.1. The scheduler, ledger and simulator are complete and calibrated against one measured config. The adapters
 describe the existing implementations (exllamav3 on CUDA for GLM-5.3-Flash, exl3xpu on Intel Arc for
-Qwen3.8-Flash-Next); moving them onto `plan_layer` is the next step. Not modeled yet: speculative decoding (tokens
-per step > 1 from one stream) and prefill/decode interleaving.
+Qwen3.8-Flash-Next); moving them onto `plan_layer` is the next step. Speculative decoding is a what-if only
+(`sim.run(window, accept, draft_ms)`), and per-tier record sizes (`recipe.tiers`) model e.g. 2-bit cold tiers; see
+`docs/vllm-moet-lessons.md` and `examples/cold2bit.py`. Not modeled yet: prefill/decode interleaving.
