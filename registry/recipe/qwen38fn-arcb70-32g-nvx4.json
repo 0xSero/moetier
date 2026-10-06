@@ -1,0 +1,17 @@
+{
+  "id": "qwen38fn-arcb70-32g-nvx4",
+  "status": "candidate",
+  "model": "qwen3.8-flash-next-exl3-3.05bpw",
+  "hardware": "omarchy-arcb70-nvx4",
+  "engines": ["exl3xpu-arc"],
+  "budget": { "ram_gb": 32, "runtime_gb": 20.0, "other_gb": 5.0, "vram_expert_slots": 8000 },
+  "policy": { "vram": "device LRU, write-through on miss", "ram": "exclusive", "seed": "frequency",
+              "exact": "mask", "overlap": true, "prefetch": { "depth": 0, "recall": 0.0 } },
+  "calibration": {
+    "fixed_ms": { "1": 25.0, "2": 31.0, "4": 37.0 },
+    "prefill": { "chunk": 8192, "compute_ms_per_layer": 160.0, "first_request_ms": 0 },
+    "source": "srv23 (non-MoE decode ~25 ms/step at bs1, N106 code-path map); uncalibrated for sim, measured runs attached"
+  },
+  "serve": { "repo": "github.com/0xSero/qwen38-flash-next-b70-offload",
+             "env": "STAGE=1 NVASYNC=1 HCXPU=1 HOSTBUF=5 RAM_GB=7 MAXTOT=131072 CHUNK=8192 MAXRUN=4 MAMBA=32 SLOTS=8000 GRAPH_BS=1,2,4 QSAIMPL=sycl_row QSASELECT=sycl" }
+}

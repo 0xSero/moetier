@@ -1,0 +1,68 @@
+{
+ "id": "qwen38fn-b70-srv24b",
+ "recipe": "qwen38fn-arcb70-32g-nvx4",
+ "change": "+ fused GDN intel_xpu (REJECTED: runaway at C4)",
+ "measured": "2026-10-06",
+ "hardware_note": "Arc Pro B70 0000:84:00.0 (srv20+) / c3:00.0 (srv8-19)",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 24.73,
+   "decode_per_stream": [
+    24.73
+   ],
+   "prefill_tok_s": 1114.1,
+   "completion": [
+    725
+   ],
+   "ttft_s": [
+    7.34
+   ]
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 28.14,
+   "decode_per_stream": [
+    13.93,
+    14.21
+   ],
+   "prefill_tok_s": 1127.5,
+   "completion": [
+    721,
+    762
+   ],
+   "ttft_s": [
+    14.42,
+    14.51
+   ]
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 81.86,
+   "decode_per_stream": [
+    27.18,
+    21.17,
+    6.67,
+    26.84
+   ],
+   "prefill_tok_s": 1320.0,
+   "completion": [
+    57349,
+    57348,
+    738,
+    57354
+   ],
+   "ttft_s": [
+    18.6,
+    11.93,
+    24.71,
+    24.8
+   ]
+  }
+ ],
+ "source": "github.com/0xSero/qwen38-flash-next-b70-offload/results/srv24b",
+ "quality": "srv26: lossy (masking); srv24b: rejected (runaway generations); others: exact-routing path with smoke checks"
+}

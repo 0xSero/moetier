@@ -1,0 +1,9 @@
+{
+  "id": "exl3xpu-arc",
+  "lanes": {
+    "gpu":      { "reads": "vram", "per_layer_ms": 0.0, "per_expert_ms": 0.0063, "note": "moe_forward_cached, 3.0 ms per 48-layer step at bs1 with all picks resident (N106 moe-bench)" },
+    "zerocopy": { "reads": "ram",  "per_expert_ms": 0.052, "note": "RAM-tier read via xe SVM inside the cached kernel, 40-65 us (N109)" }
+  },
+  "costs": { "victim_writeback_ms": 0.9, "victim_ring_ms": 0.015, "note": "per VRAM victim; ring = N111" },
+  "source": "N106 moe-bench, N109 svm-vs-usm, N111 victim ring (Arc Pro B70, Xe2)"
+}

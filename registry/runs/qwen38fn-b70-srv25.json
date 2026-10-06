@@ -1,0 +1,101 @@
+{
+ "id": "qwen38fn-b70-srv25",
+ "recipe": "qwen38fn-arcb70-32g-nvx4",
+ "change": "srv23 with radix cache off (control)",
+ "measured": "2026-10-06",
+ "hardware_note": "Arc Pro B70 0000:84:00.0 (srv20+) / c3:00.0 (srv8-19)",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 23.78,
+   "decode_per_stream": [
+    23.78
+   ],
+   "prefill_tok_s": 1026.0,
+   "completion": [
+    774
+   ],
+   "ttft_s": [
+    7.97
+   ]
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 27.73,
+   "decode_per_stream": [
+    12.97,
+    14.76
+   ],
+   "prefill_tok_s": 1095.0,
+   "completion": [
+    578,
+    816
+   ],
+   "ttft_s": [
+    14.85,
+    14.94
+   ]
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 26.76,
+   "decode_per_stream": [
+    6.29,
+    6.76,
+    6.84,
+    6.87
+   ],
+   "prefill_tok_s": 1219.5,
+   "completion": [
+    825,
+    844,
+    776,
+    769
+   ],
+   "ttft_s": [
+    13.18,
+    20.38,
+    26.75,
+    26.85
+   ]
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 24.39,
+   "decode_per_stream": [
+    24.39
+   ],
+   "prefill_tok_s": 1126.8,
+   "completion": [
+    740
+   ],
+   "ttft_s": [
+    29.22
+   ]
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 24.55,
+   "decode_per_stream": [
+    10.36,
+    14.19
+   ],
+   "prefill_tok_s": 1272.1,
+   "completion": [
+    712,
+    793
+   ],
+   "ttft_s": [
+    34.95,
+    51.77
+   ]
+  }
+ ],
+ "source": "github.com/0xSero/qwen38-flash-next-b70-offload/results/srv25",
+ "quality": "srv26: lossy (masking); srv24b: rejected (runaway generations); others: exact-routing path with smoke checks"
+}

@@ -1,0 +1,31 @@
+{
+ "id": "glm53-g066a-exact",
+ "recipe": "glm53-rtx3090-111g-allram-exact (reference)",
+ "measured": "2026-10-01",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 12.57,
+   "prefill_tok_s": 697
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 12.62
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 12.64
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 11.86,
+   "prefill_tok_s": 945
+  }
+ ],
+ "quality": "bit-exact vs stock exllamav3 (panel top-1 1.0, KL 0)",
+ "source": "github.com/0xSero/glm53-flash-offload"
+}

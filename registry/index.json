@@ -1,0 +1,44 @@
+{
+ "model": [
+  "glm-5.3-flash-exl3-3.05bpw",
+  "qwen3.8-flash-next-exl3-3.05bpw"
+ ],
+ "hardware": [
+  "omarchy-arcb70-nvx4",
+  "omarchy-rtx3090-nvx4"
+ ],
+ "engine": [
+  "avx2-exl3-cpu",
+  "exl3xpu-arc",
+  "exllamav3-cuda"
+ ],
+ "recipe": [
+  "glm53-rtx3090-55g-nvx4",
+  "qwen38fn-arcb70-32g-nvx4"
+ ],
+ "runs": [
+  "glm53-g066a-exact",
+  "glm53-g067-allram",
+  "qwen38fn-b70-srv20",
+  "qwen38fn-b70-srv21",
+  "qwen38fn-b70-srv22",
+  "qwen38fn-b70-srv23",
+  "qwen38fn-b70-srv24b",
+  "qwen38fn-b70-srv25",
+  "qwen38fn-b70-srv26"
+ ],
+ "recipes": [
+  {
+   "id": "glm53-rtx3090-55g-nvx4",
+   "status": "candidate",
+   "model": "glm-5.3-flash-exl3-3.05bpw",
+   "hardware": "omarchy-rtx3090-nvx4"
+  },
+  {
+   "id": "qwen38fn-arcb70-32g-nvx4",
+   "status": "candidate",
+   "model": "qwen3.8-flash-next-exl3-3.05bpw",
+   "hardware": "omarchy-arcb70-nvx4"
+  }
+ ]
+}
