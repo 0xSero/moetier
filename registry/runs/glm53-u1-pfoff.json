@@ -1216,7 +1216,7 @@
   }
  },
  "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/u1_pfoff",
- "note": "C1 17.84 / C4 17.67 / 8k prefill 651 vs controls 13.18-14.07 / 15.46-16.23 / 573-580. NVMe demand misses 23 -> 43 per token but read latency 3.5 -> 2.3 ms; copy, NVMe stall, fixed GPU and overhead all drop. Slot B (N125 vLLM XPU) was busy during this arm.",
+ "note": "C1 17.84 / C4 17.67 / 8k prefill 651 vs controls 13.18-14.07 / 15.46-16.23 / 573-580. NVMe demand misses 23 -> 43 per token but read latency 3.5 -> 2.3 ms; copy, NVMe stall, fixed GPU and overhead all drop. Slot B (N125 vLLM XPU) was busy during this arm. CORRECTION (2026-10-08): the same-session A/B (glm53-c1lat-pfon vs -pfoff) shows prefetch ON 13% faster at C1; this arm's gain over the afternoon controls was session drift, not prefetch-off.",
  "contended": [
   "B"
  ]

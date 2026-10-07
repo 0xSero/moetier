@@ -3201,6 +3201,6 @@
   }
  },
  "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/f58_pfoff (+ kl58b_pfoff)",
- "note": "Slot B idle. Same-session 55 GB control glm53-c55-pfoff-control: C1 14.71 / 8k prefill 579 -> 58 GB C1 +0.3% (sim predicted +2%). C1 NVMe misses 34.9 -> 31.2 per token (-11%; sim -14%) but NVMe stall per token unchanged (read latency 2.35 -> 2.70 ms). Paired decode KL (natural completions, 1825 positions): CPU lane on 0.0043 mean / p99 0.068 / top-1 0.983, control 0 -> same class as S3b (0.0047).",
+ "note": "Slot B idle. Same-session 55 GB control glm53-c55-pfoff-control: C1 14.71 / 8k prefill 579 -> 58 GB C1 +0.3% (sim predicted +2%). C1 NVMe misses 34.9 -> 31.2 per token (-11%; sim -14%) but NVMe stall per token unchanged (read latency 2.35 -> 2.70 ms). Paired decode KL (natural completions, 1825 positions): CPU lane on 0.0043 mean / p99 0.068 / top-1 0.983, control 0 -> same class as S3b (0.0047). Prefetch was off here; same-session evidence (glm53-c1lat-pfon) puts prefetch on ~13% faster at C1, so this table understates the 58 GB cap.",
  "contended": []
 }

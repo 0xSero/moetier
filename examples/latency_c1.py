@@ -242,3 +242,60 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# per-layer-call what-if (more faithful than a model of means: E[max] > max(E))
+REC_GB = 9437184 / 1e9
+FLOOR = {"pcie": 25.0, "cpu_lane": 98.0, "vram": 936.0}
+NONEXP_GB = 5.99            # per-token non-routed weight reads (attention, shared experts, dense, lm_head, routers)
+
+
+def whatif_rows(steps, C, vram_hits_per_token):
+    """token ms under scenarios, evaluated per layer call: T = plan + book + max(GPU lane, CPU lane end) + residual + gap"""
+    sc = {k: [] for k in ("measured", "plan+book=0", "bubbles=0", "cpu starts with the GPU lane", "nvme waits=0",
+                          "copy at 25 GB/s", "cpu experts at 98 GB/s", "gpu MoE at roofline", "non-MoE GPU at roofline",
+                          "all scheduling", "all floors")}
+    for s in steps:
+        tok = {k: 0.0 for k in sc}
+        nonmoe = sum(max(0.0, float(r[C["t_next_pub"]] - r[C["t_comb1"]])) for r in s) / 1e6
+        roof_scale = (NONEXP_GB / FLOOR["vram"] * 1e3) / max(nonmoe, 1e-6)
+        for r in s:
+            g = lambda k: float(r[C[k]]) / 1e6
+            pub, seen, c0, c1, g0, g1, nxt = (g(k) for k in ("t_pub", "t_seen", "t_copy0", "t_copy1", "t_comb0", "t_comb1", "t_next_pub"))
+            if not (g0 >= c1 and g1 >= g0 and g1 <= nxt):
+                g0 = g1 = c1
+            cp = c1 - c0
+            cpnv = min(cp, g("copy_nvme_wait_ns") + max(0.0, g("fix_ns") - 0.01))
+            moe = g0 - c1
+            has = r[C["ncpu"]] > 0
+            cs, ce, cl = (g("t_cpu0") - c0, g("t_cpu1") - c0, g("cpu_land_ns")) if has else (0.0, 0.0, 0.0)
+            resid = max(0.0, g1 - max(g0, (c0 + ce) if has else g0))          # flag visibility / clock residue
+            gap = nxt - g1
+            lh = g("t_next_launch")
+            bub = max(0.0, min(gap, lh - g1)) if lh > 0 else 0.0
+            nadm, ncpu = float(r[C["admit_jobs"]]), float(r[C["ncpu"]])
+
+            def T(plan=seen - pub, book=c0 - seen, cpnn=cp - cpnv, nv=cpnv, gm=moe, cstart=cs, clane=(ce - cs), cland=cl, res=resid,
+                  fixed=gap - bub, b=bub):
+                gl = cpnn + nv + gm
+                cend = (cstart + clane) if has else 0.0
+                return plan + book + max(gl, cend) + res + fixed + b
+            tok["measured"] += T()
+            tok["plan+book=0"] += T(plan=0, book=0)
+            tok["bubbles=0"] += T(b=0)
+            tok["cpu starts with the GPU lane"] += T(cstart=0)
+            tok["nvme waits=0"] += T(nv=0, clane=max(0.0, (ce - cs) - cl))
+            tok["copy at 25 GB/s"] += T(cpnn=min(cp - cpnv, nadm * REC_GB / FLOOR["pcie"] * 1e3))
+            tok["cpu experts at 98 GB/s"] += T(clane=min((ce - cs), ncpu * REC_GB / FLOOR["cpu_lane"] * 1e3 + cl))
+            tok["gpu MoE at roofline"] += T(gm=min(moe, vram_hits_per_token / 42 * REC_GB / FLOOR["vram"] * 1e3))
+            tok["non-MoE GPU at roofline"] += T(fixed=(gap - bub) * min(1.0, roof_scale))
+            tok["all scheduling"] += T(plan=0, book=0, b=0, cstart=0, nv=0, clane=max(0.0, (ce - cs) - cl), res=0)
+            tok["all floors"] += T(plan=0, book=0, b=0, cstart=0, nv=0, res=0, cland=0,
+                                   cpnn=nadm * REC_GB / FLOOR["pcie"] * 1e3, clane=ncpu * REC_GB / FLOOR["cpu_lane"] * 1e3,
+                                   gm=vram_hits_per_token / 42 * REC_GB / FLOOR["vram"] * 1e3, fixed=(gap - bub) * min(1.0, roof_scale))
+        for k in sc:
+            sc[k].append(tok[k])
+    base = float(np.mean(sc["measured"]))
+    return {k: {"ms_per_token": round(float(np.mean(v)), 1), "tok_s": round(1000 / float(np.mean(v)), 1), "saves_ms": round(base - float(np.mean(v)), 1)}
+            for k, v in sc.items()}

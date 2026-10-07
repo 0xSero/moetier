@@ -1,0 +1,116 @@
+{
+ "L1_pfon": {
+  "measured": {
+   "ms_per_token": 63.7,
+   "tok_s": 15.7,
+   "saves_ms": 0.0
+  },
+  "plan+book=0": {
+   "ms_per_token": 61.1,
+   "tok_s": 16.4,
+   "saves_ms": 2.6
+  },
+  "bubbles=0": {
+   "ms_per_token": 61.5,
+   "tok_s": 16.3,
+   "saves_ms": 2.2
+  },
+  "cpu starts with the GPU lane": {
+   "ms_per_token": 62.5,
+   "tok_s": 16.0,
+   "saves_ms": 1.2
+  },
+  "nvme waits=0": {
+   "ms_per_token": 55.3,
+   "tok_s": 18.1,
+   "saves_ms": 8.3
+  },
+  "copy at 25 GB/s": {
+   "ms_per_token": 62.0,
+   "tok_s": 16.1,
+   "saves_ms": 1.7
+  },
+  "cpu experts at 98 GB/s": {
+   "ms_per_token": 53.7,
+   "tok_s": 18.6,
+   "saves_ms": 10.0
+  },
+  "gpu MoE at roofline": {
+   "ms_per_token": 60.7,
+   "tok_s": 16.5,
+   "saves_ms": 3.0
+  },
+  "non-MoE GPU at roofline": {
+   "ms_per_token": 57.8,
+   "tok_s": 17.3,
+   "saves_ms": 5.9
+  },
+  "all scheduling": {
+   "ms_per_token": 49.1,
+   "tok_s": 20.4,
+   "saves_ms": 14.6
+  },
+  "all floors": {
+   "ms_per_token": 23.5,
+   "tok_s": 42.6,
+   "saves_ms": 40.2
+  }
+ },
+ "L1_pfoff": {
+  "measured": {
+   "ms_per_token": 71.9,
+   "tok_s": 13.9,
+   "saves_ms": 0.0
+  },
+  "plan+book=0": {
+   "ms_per_token": 69.1,
+   "tok_s": 14.5,
+   "saves_ms": 2.7
+  },
+  "bubbles=0": {
+   "ms_per_token": 69.5,
+   "tok_s": 14.4,
+   "saves_ms": 2.3
+  },
+  "cpu starts with the GPU lane": {
+   "ms_per_token": 70.6,
+   "tok_s": 14.2,
+   "saves_ms": 1.3
+  },
+  "nvme waits=0": {
+   "ms_per_token": 60.8,
+   "tok_s": 16.5,
+   "saves_ms": 11.1
+  },
+  "copy at 25 GB/s": {
+   "ms_per_token": 68.7,
+   "tok_s": 14.6,
+   "saves_ms": 3.2
+  },
+  "cpu experts at 98 GB/s": {
+   "ms_per_token": 60.6,
+   "tok_s": 16.5,
+   "saves_ms": 11.3
+  },
+  "gpu MoE at roofline": {
+   "ms_per_token": 67.8,
+   "tok_s": 14.7,
+   "saves_ms": 4.1
+  },
+  "non-MoE GPU at roofline": {
+   "ms_per_token": 64.8,
+   "tok_s": 15.4,
+   "saves_ms": 7.0
+  },
+  "all scheduling": {
+   "ms_per_token": 52.4,
+   "tok_s": 19.1,
+   "saves_ms": 19.5
+  },
+  "all floors": {
+   "ms_per_token": 23.2,
+   "tok_s": 43.1,
+   "saves_ms": 48.7
+  }
+ }
+}

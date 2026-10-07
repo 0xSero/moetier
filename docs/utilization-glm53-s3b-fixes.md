@@ -94,3 +94,13 @@ C4:
   S3b's 0.0047, and that still has to be measured.
 - CPU-job phase breakdown (u5 diagnostics).
 - Copy-engine admission and the prefill tail. Neither was started.
+
+## Correction, 2026-10-08
+
+Arms later in the evening (`glm53-u6a/u6b/u6-lfu-pfoff/u7-rd32`, C1 14.5-14.9) were all slower than the afternoon by
+about 17%. A same-session A/B was then run (`glm53-c1lat-pfon` vs `-pfoff`, 9,300 steady C1 tokens each, three
+natural-EOS requests). It reverses the prefetch result: **prefetch on is 13% faster** (16.04 vs 14.21 tok/s from the
+device timeline; client 14.7-17.7 vs 13.2-15.2). NVMe misses drop 40.2 → 21.9 per token.
+
+The "prefetch off +27-35%" above was session drift between arms run hours apart. LFU and the 32-reader pool are
+neutral in same-session repeats. Keep prefetch on. Full latency breakdown: `docs/latency-glm53-c1.md`.
