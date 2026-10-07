@@ -1,0 +1,93 @@
+{
+ "id": "glm53-image-v4-nvme",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "P003 image smoke of the published v4-nvme image (S3b2 defaults baked in as GLM53_MODE=nvme): clean anonymous pull by digest, verify-store, README NVMe command (--memory 55g --memory-swap 55g --cpuset-cpus 2-39, host network, store /nvx ro, GLM53_EC_MAX_SLOTS=1376)",
+ "measured": "2026-10-07",
+ "image": {
+  "ref": "ghcr.io/0xsero/glm53-flash-offload@sha256:82eef823f95b89fcb14b8379d45315d3a632aaa054fb04e3418b62a3ec2ff1ff",
+  "tag": "v4-nvme",
+  "repo_commit": "92698604575f789ecc7a2340480413567e6d05c6",
+  "built_by": "https://github.com/0xSero/local-ai-images/actions/runs/37592054786",
+  "provenance": "SLSA v1, refs/heads/main 8f60eecfaa823abe1c285eab4fe322f395b81b9f (gh attestation verify ok)"
+ },
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 13.7,
+   "prefill_tok_s": 545.3
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 14.38,
+   "per_stream": 7.59
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 15.24,
+   "per_stream": 4.3
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 12.4,
+   "prefill_tok_s": 767.4
+  }
+ ],
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "panel_positions": 2154,
+  "gates": {
+   "chat": true,
+   "chat_nothink": true,
+   "tool_call": true,
+   "stream_rate": "PASS (half-share 0.51/0.53, tail 0.6%)"
+  },
+  "slot_bytecheck": "nv_verify after panel 64+64 bad 0; after sweep 128+128 bad 0",
+  "store_verify": "12384 records, 117.33 GB O_DIRECT sha256 in 11 s (10.93 GB/s), bad 0",
+  "decode_kl_paired": "not re-run on the image; campaign s3_kl2 (same CPU-lane code): KL 0.0047, top-1 0.986"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 51.12,
+  "end_gib": 50.52,
+  "swap_max": 0,
+  "vram_expert_slots": 1280
+ },
+ "ready_s": 76,
+ "per_token": {
+  "vram_share": 0.393,
+  "ram_share": 0.539,
+  "nvme_share": 0.068,
+  "cpu_lane_share": 0.414,
+  "nvme_read_tb": 22.06,
+  "read_err": 0,
+  "timeouts": 0
+ },
+ "contended": [
+  "B (N124 B70 microbench from 12:05 CEST, during the last 32k round)",
+  "Sunshine desktop stream encoding on the 3090 (218 MiB more VRAM, 1280 vs 1312 cache slots)"
+ ],
+ "ab_same_conditions": {
+  "note": "back to back, same host state (Sunshine active, slot B busy), sweep --prefill 8192 --conc 1",
+  "A_image": {
+   "prefill_8k": 529.0,
+   "decode_C1": 13.11,
+   "decode_C1_32k": 12.44
+  },
+  "B_campaign_s3b2_mount": {
+   "prefill_8k": 529.8,
+   "decode_C1": 12.16,
+   "decode_C1_32k": 11.62
+  },
+  "verdict": "image >= campaign build under the same conditions; the 5-8 % gap to S3b2 (glm53-s3b-cpu-nvme-batched-55g) is host conditions. Re-measure with Sunshine and other slots idle before the image numbers replace S3b2's."
+ },
+ "guard": "kcheck CLEAN before / mid / after smoke and after A/B",
+ "source": "omarchy:~/freetoken-exl3/runs/P003-glm53-nvme-image-smoke (out/, ab/); github.com/0xSero/glm53-flash-offload results/P003-nvme-image-smoke",
+ "readme": "https://github.com/0xSero/glm53-flash-offload#55-gb-nvme-mode"
+}

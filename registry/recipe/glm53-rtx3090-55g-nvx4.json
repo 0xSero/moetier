@@ -17,5 +17,77 @@
     "fixed_ms": { "1": 14.0, "2": 20.0, "4": 30.0 },
     "prefill": { "chunk": 8192, "compute_ms_per_layer": 176.35, "first_request_ms": 4130 },
     "source": "G067 all-RAM 28.15 / 31.57 / 33.98 decode, 710 / 951 prefill"
+  },
+  "serve": {
+    "image": "ghcr.io/0xsero/glm53-flash-offload@sha256:82eef823f95b89fcb14b8379d45315d3a632aaa054fb04e3418b62a3ec2ff1ff",
+    "tag": "v4-nvme",
+    "repo": "https://github.com/0xSero/glm53-flash-offload",
+    "repo_commit": "92698604575f789ecc7a2340480413567e6d05c6",
+    "docker_flags": [
+      "--gpus",
+      "\"device=0\"",
+      "--memory",
+      "55g",
+      "--memory-swap",
+      "55g",
+      "--shm-size",
+      "1g",
+      "--ulimit",
+      "memlock=-1",
+      "--cpuset-cpus",
+      "2-39",
+      "--network",
+      "host"
+    ],
+    "mounts": {
+      "/models": "<GLM-5.3-Flash-exl3 3.05bpw checkpoint, ro>",
+      "/nvx": "/mnt/nvx/glm53 (packed expert store, ro)"
+    },
+    "store": {
+      "build": "docker run --rm -v <model>:/models:ro -v /mnt/nvx/glm53:/nvx IMAGE pack-store",
+      "verify": "IMAGE verify-store",
+      "file": "glm53_flash_exl3_3.05bpw_experts.bin + .json",
+      "bytes": 117326610432
+    },
+    "modes": {
+      "nvme": {
+        "env": {
+          "GLM53_MODE": "nvme",
+          "PORT": "30000",
+          "GLM53_EC_MAX_SLOTS": "1376"
+        },
+        "implied_defaults": {
+          "GLM53_NV": "2",
+          "GLM53_NV_CPU": "1",
+          "GLM53_EC_RESERVE_GB": "1.5",
+          "GLM53_MAX_RQ_TOKENS": "4096",
+          "GLM53_NV_PREFETCH": "1",
+          "GLM53_NV_VRING": "24",
+          "GLM53_K_OVL": "0",
+          "GLM53_K_FTSPLIT": "0",
+          "GLM53_MAIN_CPUS": "24",
+          "GLM53_EC_STAGE_MIN": "512",
+          "args": "-ambs 4"
+        },
+        "measured_run": "glm53-s3b-cpu-nvme-batched-55g",
+        "image_smoke_run": "glm53-image-v4-nvme"
+      },
+      "nvme-exact": {
+        "env": {
+          "GLM53_MODE": "nvme-exact",
+          "PORT": "30000",
+          "GLM53_EC_MAX_SLOTS": "1376"
+        },
+        "implied_defaults": {
+          "GLM53_NV": "2",
+          "GLM53_NV_CPU": "0",
+          "GLM53_EC_RESERVE_GB": "1.0",
+          "GLM53_K_HCFUSE": "1",
+          "GLM53_MAIN_CPUS": "24"
+        },
+        "measured_run": "glm53-s2-exact-nvme-55g"
+      }
+    },
+    "readme": "https://github.com/0xSero/glm53-flash-offload#55-gb-nvme-mode"
   }
 }
