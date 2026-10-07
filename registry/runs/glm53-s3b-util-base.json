@@ -1,0 +1,48 @@
+{
+ "id": "glm53-s3b-util-base",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 S3b uninstrumented same-day A/B (screen)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S3b code (s3b2_55g snapshot, no HOM-272 instrumentation) in the same arm harness; screening sweep: 8k prefill, C1, C4 (no C2 / 32k)",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 14.09,
+   "prefill_tok_s": 569.5
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 15.92,
+   "per_stream": 4.71
+  }
+ ],
+ "per_token": {
+  "vram_hits": 121.913,
+  "ram_hits": 175.125,
+  "nvme": 23.115,
+  "cpu_experts": 151.378,
+  "zc_admits": 43.457,
+  "nvme_gpu": 11.248,
+  "nvme_cpu": 12.379,
+  "reply_wait_ms": 1.772,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 36.919
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 49.54,
+  "end_gib": 49.54,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/u0_base",
+ "note": "Instrumentation overhead check for glm53-s3b-util: run-to-run spread ~\u00b15%. Probe ran (no engine live file, so no chokepoint attribution). Slot B idle."
+}

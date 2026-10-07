@@ -223,7 +223,7 @@ def load_samples(path):
     return head, rows
 
 
-def intervals(rows, slot_bytes, cpu_tier_idx):
+def intervals(rows, slot_bytes, cpu_tier_idx, server_idx=None):
     """Per sample interval: kind (decode | prefill | mixed | idle) + resource values."""
     out = []
     for p, r in zip(rows, rows[1:]):
@@ -238,25 +238,30 @@ def intervals(rows, slot_bytes, cpu_tier_idx):
         rx = g.get("pcie_rx_kbs", 0) * 1024 / 1e9                        # GB/s host -> device
         tx = g.get("pcie_tx_kbs", 0) * 1024 / 1e9
         md = sum(v[0] for k, v in r.get("disk", {}).items() if k.startswith("md")) / dt / 1e9
-        cpu = r.get("cpu", [])
-        tier = [cpu[i] for i in cpu_tier_idx if i < len(cpu)]
+        cpu_all = r.get("cpu", [])
+        cpu = [cpu_all[i] for i in server_idx if i < len(cpu_all)] if server_idx else cpu_all
+        other = [cpu_all[i] for i in range(len(cpu_all)) if server_idx and i not in set(server_idx)]
+        tier = [cpu_all[i] for i in cpu_tier_idx if i < len(cpu_all)]
         cpu_lane_gbps = d("cpu_experts") * slot_bytes / dt / 1e9 if lp else None
         v = {"gpu_util_pct": g.get("util"), "vram_busy_pct": g.get("mem_busy"), "pcie_h2d_gbps": rx, "pcie_d2h_gbps": tx,
              "nvme_read_gbps": md, "cpu_cores_busy_pct": 100 * statistics.fmean(cpu) if cpu else None,
              "cpu_tier_cores_busy_pct": 100 * statistics.fmean(tier) if tier else None,
+             "host_other_cpus_busy_pct": 100 * statistics.fmean(other) if other else None,
              "cpu_lane_duty_pct": 100 * d("cpu_busy_ns") / 1e9 / dt if lp else None,
              "cpu_lane_weight_gbps": cpu_lane_gbps,
              "ddr_derived_gbps": (cpu_lane_gbps or 0) + rx + tx + md,
              "ram_gib": r["mem"] / 2 ** 30 if "mem" in r else None, "gpu_power_w": g.get("power_mw", 0) / 1000 or None}
-        out.append({"t0": p["t"], "t1": r["t"], "dt": dt, "kind": kind, "v": v, "lp": lp, "lr": lr, "cpu": cpu})
+        out.append({"t0": p["t"], "t1": r["t"], "dt": dt, "kind": kind, "v": v, "lp": lp, "lr": lr, "cpu": cpu_all})
     return out
 
 
 def ceilings_of(hw):
     c = hw.get("ceilings", {})
-    return {"gpu_util_pct": 100.0, "vram_busy_pct": 100.0, "pcie_h2d_gbps": c.get("pcie_h2d_gbps"),
-            "pcie_d2h_gbps": c.get("pcie_d2h_gbps"), "nvme_read_gbps": c.get("nvme_read_gbps"),
+    nv = c.get("pcie_nvml_sat_gbps")          # NVML PCIe counters include protocol bytes: saturate above copy GB/s
+    return {"gpu_util_pct": 100.0, "vram_busy_pct": 100.0, "pcie_h2d_gbps": nv or c.get("pcie_h2d_gbps"),
+            "pcie_d2h_gbps": nv or c.get("pcie_d2h_gbps"), "nvme_read_gbps": c.get("nvme_read_gbps"),
             "cpu_cores_busy_pct": 100.0, "cpu_tier_cores_busy_pct": 100.0, "cpu_lane_duty_pct": 100.0,
+            "host_other_cpus_busy_pct": 100.0,
             "cpu_lane_weight_gbps": c.get("ddr_practical_gbps"), "ddr_derived_gbps": c.get("ddr_practical_gbps"),
             "ram_gib": None, "gpu_power_w": c.get("gpu_power_w")}
 
@@ -282,6 +287,8 @@ def attribution(lp, lr):
             "wall_ms_per_token": wall, "tok_s_from_wall": round(1000 / wall, 2) if wall else None,
             "per_token_ms": b, "share": {k: round(v / wall, 3) for k, v in b.items()} if wall else None,
             "binding": max(b, key=b.get),
+            "binding_lane": max(last, key=last.get),
+            "moe_stage_ms_per_token": round(b["copy"] + b["nvme_stall"] + b["gpu_moe"] + b["cpu_moe"], 3),
             "detail_ms_per_token": {"plan_wait": ms(d["a_plan"]), "dev_bookkeeping": ms(d["a_book"]),
                                     "bubble_ub": ms(d["a_bubble"] + d["a_sbubble"]), "fixed_in_step": ms(d["a_fixed"]),
                                     "fixed_step_boundary": ms(d["a_sfixed"]), "copy_nvme": ms(d["a_copy_nv"]),
@@ -294,7 +301,11 @@ def attribution(lp, lr):
                              "copy": round((d["a_copy"] + d["a_copy_nv"]) / 1e6 / n, 4), "nvme_wait": round((d["a_copy_nv"] + d["a_ccrit_nv"]) / 1e6 / n, 4)},
             "per_step": {"cpu_experts": round(d["a_cpux"] / steps, 1), "nvme_picks": round(d["a_nvpicks"] / steps, 1)},
             "quality": {"lost": d["a_lost"], "bad_order": d["a_bad"], "no_combine": d["a_nocomb"], "idle_gaps": d["a_idle_n"],
-                        "launch_bound_frac": round(d["a_lbound"] / n, 3), "launch_ring_miss": d["a_lmiss"]}}
+                        "launch_bound_frac": round(d["a_lbound"] / n, 3), "launch_ring_miss": d["a_lmiss"],
+                        "cpu_start_after_reply_ms": round(d.get("a_cstart", 0) / 1e6 / max(1, d["a_cpu_jobs"]), 4),
+                        "cpu_end_to_seen_ms": round(d.get("a_hlag", 0) / 1e6 / max(1, d.get("a_hlagn", 0)), 4),
+                        "cpu_end_to_seen_wb_busy_ms": round(d.get("a_hlagwb", 0) / 1e6 / max(1, d.get("a_hlagwbn", 0)), 4),
+                        "wb_busy_frac_of_waits": round(d.get("a_hlagwbn", 0) / max(1, d.get("a_hlagn", 0)), 3)}}
 
 
 def prefill_attr(lp, lr, wall_s):
@@ -328,7 +339,9 @@ def report(a):
     allc = cpuset(head["cpus"]) if head and head.get("cpus") else []
     tier = set(cpuset(a.cpu_tier_cpus)) if a.cpu_tier_cpus else set()
     tier_idx = [i for i, c in enumerate(allc) if c in tier]
-    iv = intervals(rows, slot, tier_idx)
+    srv = set(cpuset(a.server_cpus)) if a.server_cpus else None
+    server_idx = [i for i, c in enumerate(allc) if c in srv] if srv else None
+    iv = intervals(rows, slot, tier_idx, server_idx)
     if not marks:
         marks = [{"phase": "all", "t0": iv[0]["t0"], "t1": iv[-1]["t1"]}] if iv else []
     starts = [x["t0"] for x in iv]
@@ -368,13 +381,53 @@ def binding(c, ph, ceil):
         at = c.get(kind)
         res = (ph.get(kind) or {}).get("resources") or {}
         near = sorted(((v["pct_of_ceiling"]["mean"], k) for k, v in res.items()
-                       if v and "pct_of_ceiling" in v and k not in ("gpu_util_pct", "cpu_cores_busy_pct", "cpu_tier_cores_busy_pct", "gpu_power_w")),
+                       if v and "pct_of_ceiling" in v and k not in ("gpu_util_pct", "cpu_cores_busy_pct", "cpu_tier_cores_busy_pct", "gpu_power_w", "host_other_cpus_busy_pct")),
                       reverse=True)
         if at or near:
             out[kind] = {"critical_path": at["binding"] if at else None,
+                         "lane_last": at.get("binding_lane") if at else None,
                          "critical_share": (at["share"] or {}).get(at["binding"]) if at and at.get("share") else None,
                          "resource_nearest_ceiling": {"resource": near[0][1], "pct_mean": near[0][0]} if near else None}
     return out
+
+
+MD_RES = [("gpu_util_pct", "GPU util %"), ("vram_busy_pct", "VRAM busy %"), ("pcie_h2d_gbps", "PCIe H2D GB/s"),
+          ("pcie_d2h_gbps", "PCIe D2H GB/s"), ("nvme_read_gbps", "NVMe GB/s"), ("cpu_lane_duty_pct", "CPU-lane duty %"),
+          ("cpu_tier_cores_busy_pct", "CPU-tier cores busy %"), ("cpu_lane_weight_gbps", "CPU-lane weights GB/s"),
+          ("ddr_derived_gbps", "DDR derived GB/s"), ("ram_gib", "RAM GiB")]
+
+
+def markdown(res):
+    """Compact tables: utilization (mean / p90 / % of ceiling) per phase and kind, decode attribution per phase."""
+    U, C = res["utilization"]["phases"], res["chokepoints"]["phases"]
+    out = []
+    for kind in ("decode", "prefill"):
+        phs = [p for p in U if kind in U[p] and U[p][kind]["active_s"] >= 5]
+        if not phs:
+            continue
+        out.append(f"\n{kind} (active windows): mean / p90 (% of ceiling, mean)\n")
+        out.append("| resource | " + " | ".join(phs) + " |")
+        out.append("|---|" + "---|" * len(phs))
+        for k, lab in MD_RES:
+            cells = []
+            for p in phs:
+                v = U[p][kind]["resources"].get(k)
+                if not v:
+                    cells.append("-"); continue
+                pc = f" ({v['pct_of_ceiling']['mean']:.0f}%)" if "pct_of_ceiling" in v and k not in ("gpu_util_pct", "vram_busy_pct", "cpu_lane_duty_pct", "cpu_tier_cores_busy_pct") else ""
+                cells.append(f"{v['mean']:.1f} / {v['p90']:.1f}{pc}")
+            out.append(f"| {lab} | " + " | ".join(cells) + " |")
+    phs = [p for p in C if C[p].get("decode") and C[p]["decode"]["tokens"] >= 200]
+    if phs:
+        out.append("\ndecode critical path, ms per token (share)\n")
+        out.append("| bucket | " + " | ".join(phs) + " |")
+        out.append("|---|" + "---|" * len(phs))
+        for b in DECODE_BUCKETS:
+            out.append(f"| {b} | " + " | ".join(f"{C[p]['decode']['per_token_ms'][b]:.1f} ({100 * (C[p]['decode']['share'] or {}).get(b, 0):.0f}%)" for p in phs) + " |")
+        out.append("| **wall** | " + " | ".join(f"**{C[p]['decode']['wall_ms_per_token']:.1f}** ({C[p]['decode']['tok_s_from_wall']} tok/s)" for p in phs) + " |")
+        out.append("| lane last gpu/cpu/nvme | " + " | ".join("/".join(f"{C[p]['decode']['lane_last'][k]:.2f}" for k in ("gpu", "cpu", "nvme")) for p in phs) + " |")
+        out.append("| binding | " + " | ".join(f"{C[p]['decode']['binding']} (lane {C[p]['decode'].get('binding_lane')})" for p in phs) + " |")
+    return "\n".join(out)
 
 
 def method_text(head, a):
@@ -416,8 +469,16 @@ def main(argv=None):
     p.add_argument("--live-json", help="the engine's <live>.json sidecar (slot bytes)")
     p.add_argument("--slot-bytes", type=int, default=9437184)
     p.add_argument("--cpu-tier-cpus", help="cpuset of the CPU-lane workers, e.g. 2-23")
+    p.add_argument("--server-cpus", help="server cpuset when the samples cover more CPUs (others -> host_other_cpus_busy_pct)")
     p.add_argument("--out")
+    p.add_argument("--md", action="store_true", help="also print markdown tables")
+    m = sub.add_parser("md", help="markdown tables from a report JSON or a run record")
+    m.add_argument("report")
     a = ap.parse_args(argv)
+    if a.cmd == "md":
+        r = json.load(open(a.report))
+        print(markdown(r))
+        return
     if a.cmd == "record":
         record(a)
         return
@@ -427,6 +488,8 @@ def main(argv=None):
         open(a.out, "w").write(s + "\n")
     else:
         print(s)
+    if a.md:
+        print(markdown(res))
 
 
 if __name__ == "__main__":

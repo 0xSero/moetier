@@ -1,0 +1,9 @@
+{"policy": "lfu:1024:0", "conc": 1, "tok_s": 22.79, "nvme_per_tok": 22.4, "cpu_experts_per_tok": 139.0, "vram_hit": 0.488, "ms_cpu_moe": 29.47, "ms_gpu_moe": 14.91, "s": 7.8}
+{"policy": "lfu:2048:2000", "conc": 1, "tok_s": 22.9, "nvme_per_tok": 21.5, "cpu_experts_per_tok": 139.5, "vram_hit": 0.488, "ms_cpu_moe": 29.24, "ms_gpu_moe": 15.03, "s": 22.5}
+{"policy": "lfu:2048:500", "conc": 1, "tok_s": 22.92, "nvme_per_tok": 21.5, "cpu_experts_per_tok": 139.2, "vram_hit": 0.489, "ms_cpu_moe": 29.22, "ms_gpu_moe": 14.99, "s": 25.5}
+{"policy": "lfu:3000:3000", "conc": 1, "tok_s": 22.91, "nvme_per_tok": 21.5, "cpu_experts_per_tok": 139.6, "vram_hit": 0.487, "ms_cpu_moe": 29.25, "ms_gpu_moe": 15.03, "s": 132.1}
+{"policy": "lru", "conc": 1, "tok_s": 22.39, "nvme_per_tok": 25.2, "cpu_experts_per_tok": 136.7, "vram_hit": 0.488, "ms_cpu_moe": 30.26, "ms_gpu_moe": 14.68, "s": 0.9}
+{"policy": "lfu:1024:0", "conc": 4, "tok_s": 31.69, "nvme_per_tok": 47.5, "cpu_experts_per_tok": 147.3, "vram_hit": 0.293, "ms_cpu_moe": 96.03, "ms_gpu_moe": 67.65, "s": 58.8}
+{"policy": "lfu:2048:2000", "conc": 4, "tok_s": 32.44, "nvme_per_tok": 45.0, "cpu_experts_per_tok": 149.5, "vram_hit": 0.292, "ms_cpu_moe": 93.06, "ms_gpu_moe": 68.51, "s": 187.8}
+{"policy": "lfu:2048:500", "conc": 4, "tok_s": 32.47, "nvme_per_tok": 44.9, "cpu_experts_per_tok": 149.6, "vram_hit": 0.292, "ms_cpu_moe": 92.95, "ms_gpu_moe": 68.53, "s": 493.7}
+{"policy": "lru", "conc": 4, "tok_s": 30.74, "nvme_per_tok": 52.6, "cpu_experts_per_tok": 142.3, "vram_hit": 0.297, "ms_cpu_moe": 99.99, "ms_gpu_moe": 65.75, "s": 2.9}

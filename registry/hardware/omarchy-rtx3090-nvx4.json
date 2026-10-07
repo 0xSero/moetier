@@ -37,6 +37,8 @@
     "threads": 48,
     "smt_sibling_offset": 24,
     "numa_nodes": 1,
-    "gpu_power_w": 350
+    "gpu_power_w": 350,
+    "pcie_nvml_sat_gbps": 28.0,
+    "pcie_nvml_note": "NVML PCIe throughput counts link bytes (TLP overhead included): staged prefill pins it at 27.6-28.0 GB/s rx = saturation; % of ceiling for NVML PCIe uses this value"
   }
 }

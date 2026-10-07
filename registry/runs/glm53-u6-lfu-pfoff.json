@@ -1,0 +1,13 @@
+{
+ "id": "glm53-u6-lfu-pfoff",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 prefetch off + sampled-LFU RAM eviction (incomplete)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "glm53lfu + GLM53_NV_PREFETCH=0 + GLM53_NV_RAM_EVICT=lfu:2048:500",
+ "measured": "2026-10-07",
+ "table": [],
+ "status": "incomplete",
+ "note": "INCOMPLETE: started 16:52 CEST, stopped during server start at 16:54 because the user took the RTX 3090 for the Local AI plugin (coordinator HOLD). No measurements. Next priority arm when the 3090 is released.",
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/u6_lfu_pfoff"
+}

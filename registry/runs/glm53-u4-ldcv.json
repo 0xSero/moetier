@@ -1,0 +1,13 @@
+{
+ "id": "glm53-u4-ldcv",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 ld.global.cv flag polls (failed)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "glm53c: device polls of host-written mapped flags (reply seq, landed flags, CPU done, ring ack) with ld.global.cv instead of volatile loads",
+ "measured": "2026-10-07",
+ "table": [],
+ "status": "failed",
+ "note": "FAILED twice: the first decode step's nv_step never saw the host reply (reply timeout, HC_ERR 1) with __ldcv and with asm volatile ld.global.cv. Reverted. Not needed anyway: u3_vis showed ~0 visibility lag for volatile polls.",
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/u4_ldcv_fail_hoisted, u4_ldcv"
+}

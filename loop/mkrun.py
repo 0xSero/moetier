@@ -11,7 +11,8 @@ import argparse, glob, json, os, sys, time
 
 
 def med(d):
-    return d["median"] if isinstance(d, dict) and "median" in d else d
+    v = d["median"] if isinstance(d, dict) and "median" in d else d
+    return round(v, 2) if isinstance(v, float) else v
 
 
 def table(sw):
@@ -43,7 +44,11 @@ def main():
     ap.add_argument("--contended", nargs="*", default=[], help="other OWNERS.md slots busy during the run, e.g. B")
     ap.add_argument("--out", help="default: registry/runs/<id>.json")
     a = ap.parse_args()
-    j = lambda p: json.load(open(p)) if os.path.exists(p) else None
+    def j(p):
+        try:
+            return json.load(open(p)) if os.path.exists(p) else None
+        except ValueError:                     # empty / partial file (arm stopped mid-step)
+            return None
     sw = j(os.path.join(a.arm, "sweep.json")) or {}
     pr = j(os.path.join(a.arm, "probe_report.json")) or {}
     st = j(os.path.join(a.arm, "stats_end.json")) or {}
