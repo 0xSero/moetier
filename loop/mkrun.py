@@ -26,6 +26,8 @@ def table(sw):
             t.append({"prefill": 8192, "conc": c, "decode": med(row(c)["aggregate"]), "per_stream": med(row(c)["per_stream_mean"])})
     if dc.get("C1@32k"):
         t.append({"prefill": 32768, "conc": 1, "decode": med(dc["C1@32k"]["aggregate"]), "prefill_tok_s": med(pf.get("32768", {}))})
+    if dc.get("C2@32k"):
+        t.append({"prefill": 32768, "conc": 2, "decode": med(dc["C2@32k"]["aggregate"]), "per_stream": med(dc["C2@32k"].get("per_stream_mean"))})
     return t
 
 
@@ -41,6 +43,7 @@ def main():
     ap.add_argument("--title", required=True, help="perf-table title, e.g. 'GLM-5.3-Flash · 1x RTX 3090 · 55 GB RAM + NVMe · ...'")
     ap.add_argument("--kv-cache", default="131k (~1.5 GiB est.)")
     ap.add_argument("--gpu-count", type=int, default=1)
+    ap.add_argument("--cap-gb", type=int, default=55)
     ap.add_argument("--contended", nargs="*", default=[], help="other OWNERS.md slots busy during the run, e.g. B")
     ap.add_argument("--out", help="default: registry/runs/<id>.json")
     a = ap.parse_args()
@@ -69,7 +72,7 @@ def main():
     mem = {}
     try:
         cur, peak = [int(x) for x in open(os.path.join(a.arm, "memcg_end.txt")).read().split()[:2]]
-        mem = {"cgroup_max_gb": 55, "peak_gib": round(peak / 2 ** 30, 2), "end_gib": round(cur / 2 ** 30, 2)}
+        mem = {"cgroup_max_gb": a.cap_gb, "peak_gib": round(peak / 2 ** 30, 2), "end_gib": round(cur / 2 ** 30, 2)}
     except (OSError, ValueError):
         pass
     if nv2:
