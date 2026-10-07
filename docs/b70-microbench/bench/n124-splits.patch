@@ -1,0 +1,20 @@
+--- exl3_moe.a9.sycl	2026-10-07 12:11:18.889746530 +0200
++++ exl3_moe.n124.sycl	2026-10-07 12:11:18.902897379 +0200
+@@ -711,6 +711,8 @@
+ #define GU(MRV, PV) if (MR == MRV && g_gu_p == PV) return launch_gateup<K, MRV, PV, TIn>(q, x, xs, ptrs, rt, abuf, H, I, gm, max_act);
+     GU(1, 10) GU(2, 10) GU(4, 10) GU(8, 5)
+     GU(1, 5) GU(2, 5) GU(4, 5) GU(1, 20) GU(2, 20)
++    /* N124: power-of-two k-splits for H/16 not divisible by 5 (GLM-5.3-Flash H=4096) */
++    GU(1, 4) GU(2, 4) GU(1, 8) GU(2, 8) GU(4, 8) GU(1, 16) GU(2, 16)
+ #undef GU
+     TORCH_CHECK(false, "moe gateup: unsupported MR/P ", MR, "/", g_gu_p);
+ }
+@@ -721,6 +723,8 @@
+ #define DN(MRV, PV) if (MR == MRV && g_dn_p == PV) return launch_down<K, MRV, PV>(q, abuf, ptrs, rt, y, H, I, gm, max_act);
+     DN(1, 5) DN(2, 5) DN(4, 5) DN(8, 5)
+     DN(1, 10) DN(2, 10) DN(4, 10) DN(1, 20) DN(2, 20) DN(1, 40)
++    /* N124: I/16 = 128 (GLM-5.3-Flash I=2048) */
++    DN(1, 4) DN(2, 4) DN(4, 4) DN(1, 16) DN(2, 16) DN(4, 16)
+ #undef DN
+     TORCH_CHECK(false, "moe down: unsupported MR/P ", MR, "/", g_dn_p);
+ }

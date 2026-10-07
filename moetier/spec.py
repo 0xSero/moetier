@@ -84,6 +84,12 @@ def resolve(reg, recipe_id, **overrides):
         for name, l in reg["engine"][eid]["lanes"].items():
             lanes[name] = Lane(name, l["reads"], l.get("per_layer_ms", 0.0), l.get("per_expert_ms", 0.0),
                                l.get("per_extra_token_ms", 0.0))
+        # engine.model_lanes.<model id>.<lane>: costs measured for that model's expert shape (e.g. GLM on exl3xpu)
+        for name, o in reg["engine"][eid].get("model_lanes", {}).get(r["model"], {}).items():
+            if name in lanes and isinstance(o, dict):
+                for k in ("per_layer_ms", "per_expert_ms", "per_extra_token_ms"):
+                    if k in o:
+                        setattr(lanes[name], k, o[k])
     for name, o in r.get("lane_overrides", {}).items():      # what-if: a faster kernel or handoff on one lane
         for k, v in o.items():
             setattr(lanes[name], k, v)

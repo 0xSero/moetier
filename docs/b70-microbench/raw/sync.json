@@ -1,0 +1,87 @@
+{
+ "meta": {
+  "device": "Intel(R) Arc(TM) Pro B70 Graphics",
+  "torch": "2.13.0+xpu"
+ },
+ "cases": [
+  {
+   "case": "empty_submit_host",
+   "n": 2000,
+   "us_median": 6.84,
+   "us_p10": 6.61,
+   "us_p90": 10.92,
+   "us_p99": 17.57
+  },
+  {
+   "case": "empty_b2b",
+   "n": 2000,
+   "us_per_kernel": 7.57
+  },
+  {
+   "case": "empty_submit_sync",
+   "n": 2000,
+   "us_median": 47.68,
+   "us_p10": 46.1,
+   "us_p90": 50.77,
+   "us_p99": 58.11
+  },
+  {
+   "case": "sync_idle",
+   "n": 2000,
+   "us_median": 28.29,
+   "us_p10": 27.15,
+   "us_p90": 32.28,
+   "us_p99": 43.49
+  },
+  {
+   "case": "empty_event_poll",
+   "n": 2000,
+   "us_median": 28.96,
+   "us_p10": 25.03,
+   "us_p90": 33.05,
+   "us_p99": 43.62
+  },
+  {
+   "case": "copy4_h2d_sync",
+   "n": 2000,
+   "us_median": 39.97,
+   "us_p10": 37.56,
+   "us_p90": 41.98,
+   "us_p99": 52.46
+  },
+  {
+   "case": "copy4_d2h_sync",
+   "n": 2000,
+   "us_median": 39.78,
+   "us_p10": 37.49,
+   "us_p90": 41.51,
+   "us_p99": 48.4
+  },
+  {
+   "case": "flag_rtt_h2d_d2h_poll",
+   "n": 2000,
+   "us_median": 11.21,
+   "us_p10": 10.74,
+   "us_p90": 14.97,
+   "us_p99": 20.43,
+   "spins_median": 44
+  },
+  {
+   "case": "flag_d2h_poll_after_fill",
+   "n": 2000,
+   "us_median": 10.74,
+   "us_p10": 9.68,
+   "us_p90": 13.26,
+   "us_p99": 18.71
+  },
+  {
+   "case": "flag_after_gemm_wall_minus_kernel",
+   "n": 200,
+   "us_median": 81.32,
+   "us_p10": 78.59,
+   "us_p90": 90.97,
+   "us_p99": 136.25,
+   "gemm_ms_median": 0.977
+  }
+ ]
+}

@@ -1,9 +1,33 @@
 {
   "id": "exl3xpu-arc",
   "lanes": {
-    "gpu":      { "reads": "vram", "per_layer_ms": 0.0, "per_expert_ms": 0.0063, "note": "moe_forward_cached, 3.0 ms per 48-layer step at bs1 with all picks resident (N106 moe-bench)" },
-    "zerocopy": { "reads": "ram",  "per_expert_ms": 0.052, "note": "RAM-tier read via xe SVM inside the cached kernel, 40-65 us (N109)" }
+    "gpu": {
+      "reads": "vram",
+      "per_layer_ms": 0.031,
+      "per_expert_ms": 0.0043,
+      "per_extra_token_ms": 0.0042,
+      "note": "Qwen3.8-Flash-Next 3.05bpw shapes (H 2560, I 640, 1.86 MB blob), _moe_a9.so moe_forward_cached, all picks VRAM-resident, back-to-back calls (graph-like, queue kept full). Linear fit over 10/19.8/38.9/74.9 unique experts per layer call: M=1 0.0746, M=2 0.1265, M=4 0.2065, M=8 0.3547 ms. per_extra_token: pair mode (M<=4, the default) reads an expert once per (token, expert) pair, so an extra token on the same expert costs ~ a new expert (+0.0046 M2, +0.0038 M4 ms); M=8 runs grouped MR=2 (+0.0023). Grouped read-once dispatch (pair_max_m 0, MR = M) cuts it to ~0.0012 for shared experts but is slower for spread routing (M8 random 0.452 vs 0.352 ms). Plain moe_forward is 0.013 ms/layer cheaper (M1 0.0616). Previous value 0.0063/expert with 0 per_layer (N106). Run b70-microbench-2026-10-07, contended (slot A busy)."
+    },
+    "zerocopy": {
+      "reads": "ram",
+      "per_expert_ms": 0.080,
+      "per_extra_token_ms": 0.075,
+      "note": "Qwen shapes, kernel reads the host copy over PCIe (pinned USM and memfd THP via xe SVM measure the same, +-5%). Link-bound: 1.86 MB at ~23.3 GB/s; mixed calls (j of 10 picks host-resident) add 0.073-0.083 ms per host expert on top of its VRAM cost; cached path all-miss with max_fill 0: 0.085 ms/expert; with write-through to a VRAM slot: 0.073 ms/expert over the all-hit call (write-through is ~free). Pair mode re-streams the blob for every token on it (shared M2 +0.069, M4 +0.079 ms per extra token-expert; M8 MR=2 +0.027); grouped read-once (MR = M) makes extra tokens ~free (shared M8 0.842 ms = M1 0.828 ms). Previous 0.052 (N109) is below the 0.070 ms PCIe floor at 26.7 GB/s, so it was L2-assisted; this run rotates 1,024 experts so no call hits L2. Run b70-microbench-2026-10-07, contended (slot A busy): re-measure idle before shipping a number."
+    }
+  },
+  "model_lanes": {
+    "glm-5.3-flash-exl3-3.05bpw": {
+      "gpu": { "per_layer_ms": 0.010, "per_expert_ms": 0.0215, "per_extra_token_ms": 0.020 },
+      "zerocopy": { "per_expert_ms": 0.41, "per_extra_token_ms": 0.40 },
+      "note": "GLM-5.3-Flash 3.05bpw expert shape (H 4096, I 2048, K 3, 9,474,048 B blob, top-8 of 288) on the same kernels. Stock _moe_a8/_a9 cannot run it: gate|up needs (H/16)/P % 8 == 0 and down (I/16) % P == 0 with P in {5,10,20,40}; N124 build _moe_n124.so adds power-of-two splits (GU P 4/8/16, DN P 4/16); these lanes were measured at gu 8 / dn 16, and 4/4 scans 3-6% faster. Checked against exl3xpu_C.linear per projection on real layer-3 experts: rel L2 err 0.0012 for every split. VRAM: cached b2b M=1 0.181, M=2 0.3435, M=4 0.683, M=8 1.309 ms (8/15.9/30.8/58.1 unique); weights stream at ~445 GB/s (73% of 608 peak). Zero-copy: 0.41 ms/expert (link-bound, 9.47 MB at ~23 GB/s); a B70 zero-copy lane costs about the same per expert as the 3090's (0.38). Missing for real GLM serving: the swiglu_limit 10 clamp on gate/up inside the kernel, and routed_scaling_factor 2.5 (foldable into topk_w; the sglang plugin rejects it today). Run b70-microbench-2026-10-07, contended."
+    }
   },
   "costs": { "victim_writeback_ms": 0.9, "victim_ring_ms": 0.015, "note": "per VRAM victim; ring = N111" },
-  "source": "N106 moe-bench, N109 svm-vs-usm, N111 victim ring (Arc Pro B70, Xe2)"
+  "overheads": {
+    "launch_submit_us": 6.8, "submit_sync_us": 47.7, "sync_idle_us": 28.3, "event_poll_us": 29.0,
+    "landed_flag_rtt_us": 11.2, "landed_flag_d2h_us": 10.7, "flag_after_kernel_lag_us": 81,
+    "note": "torch 2.13+xpu on the B70: 1-element add_ submit (host) / submit+synchronize / idle synchronize / event record+query spin; landed flag = host writes seq into pinned USM, enqueues 4 B H2D + 4 B D2H, spins on the host word (no synchronize); flag_after_kernel = wall from enqueue to flag seen minus kernel device time on an idle queue. Run b70-microbench-2026-10-07."
+  },
+  "calibration_runs": ["b70-microbench-2026-10-07"],
+  "source": "b70-microbench-2026-10-07 (N124: experts_qwen, experts_glm, sync); earlier N106 moe-bench, N109 svm-vs-usm, N111 victim ring (Arc Pro B70, Xe2)"
 }

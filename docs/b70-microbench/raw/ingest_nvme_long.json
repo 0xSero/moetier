@@ -1,0 +1,88 @@
+{
+ "meta": {
+  "device": "Intel(R) Arc(TM) Pro B70 Graphics",
+  "torch": "2.13.0+xpu",
+  "svm_keys": {
+   "NEOReadDebugKeys": "1",
+   "EnableSharedSystemUsmSupport": "1"
+  },
+  "usm_kind": {
+   "usm": 1,
+   "anon_thp": 0,
+   "memfd_thp": 0
+  },
+  "roundtrip_exact": true,
+  "total_s": 29.6
+ },
+ "h2d": [],
+ "d2h": [],
+ "nvme": [
+  {
+   "rec": 1863680,
+   "n": 16097,
+   "threads": 32,
+   "ring": 64,
+   "copy": false,
+   "bounce": false,
+   "ring_mem": "memfd_thp",
+   "GB": 30.0,
+   "s": 7.512,
+   "GBps": 3.99,
+   "read_ms_median": 5.791,
+   "read_ms_p90": 9.289,
+   "store": "qwen",
+   "t": 8.1
+  },
+  {
+   "rec": 1863680,
+   "n": 16097,
+   "threads": 32,
+   "ring": 64,
+   "copy": true,
+   "bounce": false,
+   "ring_mem": "memfd_thp",
+   "GB": 30.0,
+   "s": 11.364,
+   "GBps": 2.64,
+   "read_ms_median": 6.069,
+   "read_ms_p90": 14.108,
+   "store": "qwen",
+   "t": 19.6
+  },
+  {
+   "rec": 9474048,
+   "n": 3166,
+   "threads": 32,
+   "ring": 64,
+   "copy": false,
+   "bounce": false,
+   "ring_mem": "memfd_thp",
+   "GB": 29.99,
+   "s": 4.623,
+   "GBps": 6.49,
+   "read_ms_median": 30.73,
+   "read_ms_p90": 91.309,
+   "store": "glm",
+   "t": 24.3
+  },
+  {
+   "rec": 9474048,
+   "n": 3166,
+   "threads": 32,
+   "ring": 64,
+   "copy": true,
+   "bounce": false,
+   "ring_mem": "memfd_thp",
+   "GB": 29.99,
+   "s": 5.195,
+   "GBps": 5.77,
+   "read_ms_median": 30.135,
+   "read_ms_p90": 87.041,
+   "store": "glm",
+   "t": 29.6
+  }
+ ],
+ "notes": [
+  "O_DIRECT into L0 USM host memory fails: OSError(14, 'Bad address')"
+ ]
+}

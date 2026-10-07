@@ -1,6 +1,46 @@
 {
   "id": "omarchy-arcb70-nvx4",
-  "gpu": { "name": "Intel Arc Pro B70", "vram_gb": 32, "link": "PCIe 4.0 x16", "h2d_gbps": 26.7 },
+  "gpu": {
+    "name": "Intel Arc Pro B70",
+    "vram_gb": 32,
+    "link": "PCIe 4.0 x16 (card is Gen5; EPYC 7443P host is Gen4)",
+    "h2d_gbps": 26.7,
+    "vram_bw_gbps": 608,
+    "note": "h2d_gbps = idle-host copy-engine ceiling (N106 h2d_test, anon THP -> VRAM, exact); 23.9 GB/s with slot A busy (b70-microbench-2026-10-07)"
+  },
   "cpu": { "name": "AMD EPYC 7443P", "cores": 24, "isa": "avx2", "ddr": "DDR4 8-channel" },
-  "nvme": { "name": "4x Samsung 9100 PRO 1TB RAID0", "bw_gbps": 26.0, "bw_qd1_gbps": 7.7, "latency_ms": 0.12 }
+  "nvme": {
+    "name": "4x Samsung 9100 PRO 1TB RAID0 (md127, 512K chunk, XFS)",
+    "bw_gbps": 26.0,
+    "bw_qd1_gbps": 7.7,
+    "latency_ms": 0.12,
+    "note": "box-level array numbers; the B70 slot B container is capped at 6 GiB/s (docker --device-read-bps /dev/md127:6gb -> cgroup io.max 9:127 rbps=6442450944, verified to apply to the md device)"
+  },
+  "ceilings": {
+    "vram_bw_gbps": 608,
+    "vram_kernel_gbps_measured": 461,
+    "vram_note": "256-bit GDDR6 19 Gbps peak; measured = weight bytes / time of the exl3xpu decode MoE kernel on GLM-5.3-Flash blobs (8-64 unique 9.47 MB experts per call, 413-461 GB/s); Qwen 1.86 MB blobs stream at 300-397 GB/s (smaller work-groups)",
+    "pcie_h2d_gbps": 26.7,
+    "pcie_h2d_contended_gbps": 23.9,
+    "pcie_d2h_gbps": 8.5,
+    "pcie_raw_gbps": 31.5,
+    "pcie_note": "X.memcpy_async on the compute queue, slot A busy. H2D from pinned USM: 22.0-24.3 GB/s batched at every size; single copy 0.127 ms (1.86 MB Qwen expert), 0.447 ms (9.47 MB GLM expert). From anon / memfd THP system pointers (SVM keys on): 14 GB/s batched at 1.86 MB, 19 at 9.47 MB, 22-24 at 64-256 MiB; single 0.21-0.23 / 0.69-0.72 ms. D2H is the weak direction: 7.0-8.6 GB/s to USM or THP at >= 9.47 MB, 3.6-4.5 GB/s at 1.86 MB to THP. Idle-host H2D 26.7 (N106).",
+    "zerocopy_read_gbps": 23.3,
+    "zerocopy_note": "device kernel (exl3xpu MoE decode) reading expert blobs in host RAM over PCIe: 21.5-25.6 GB/s, pinned USM = memfd THP via xe SVM within noise; link-bound, so a RAM-resident expert costs bytes / ~23 GB/s",
+    "nvme_read_gbps": 26.0,
+    "nvme_slot_cap_gbps": 6.44,
+    "nvme_capped_measured_gbps": 6.49,
+    "nvme_note": "slot B, 30 GB O_DIRECT reads of 9.47 MB GLM records, 32 threads: 6.49 GB/s read-only, 5.77 GB/s with the H2D copy pipelined (memfd THP ring -> VRAM); 1.86 MB Qwen records: 3.99 / 2.64 GB/s (Python thread pool on 4 cores is the limit, not the device). Bursts under ~1 s exceed the cap (blk-throttle slice credit: 7.2 GB/s for 8 GB). O_DIRECT into Level Zero USM host memory fails with EFAULT: records must land in anon/memfd pages (then SVM read or sysptr H2D)",
+    "launch_us": { "submit": 6.8, "submit_sync": 47.7, "sync_idle": 28.3, "event_poll": 29.0, "copy4_sync": 40.0,
+                   "landed_flag_rtt": 11.2, "landed_flag_d2h": 10.7, "flag_after_kernel_lag": 81 },
+    "ddr_theoretical_gbps": 204.8,
+    "ddr_practical_gbps": 138,
+    "ddr_note": "same host as omarchy-rtx3090-nvx4 (8ch DDR4-3200); slot B owns cpuset 44-47 and 32 GB",
+    "cores": 24,
+    "threads": 48,
+    "smt_sibling_offset": 24,
+    "numa_nodes": 1,
+    "gpu_power_w": 230,
+    "measured_by": "b70-microbench-2026-10-07 (contended: slot A busy)"
+  }
 }

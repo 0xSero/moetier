@@ -1,0 +1,2863 @@
+{
+ "id": "b70-microbench-2026-10-07",
+ "title": "Arc Pro B70 \u00b7 kernel microbench \u00b7 ingest, exl3xpu expert kernels (Qwen3.8-Flash-Next + GLM-5.3-Flash shapes), launch/sync",
+ "kind": "microbench",
+ "measured": "2026-10-07",
+ "hardware": "omarchy-arcb70-nvx4",
+ "engine": "exl3xpu-arc",
+ "models": [
+  "qwen3.8-flash-next-exl3-3.05bpw",
+  "glm-5.3-flash-exl3-3.05bpw"
+ ],
+ "gpu_count": 1,
+ "hardware_note": "Arc Pro B70 0000:84:00.0 only (slot B: renderD130 via /dev/dri/by-path, ZE_AFFINITY_MASK=0, 1 xpu device visible), --cpuset-cpus 44-47 --memory 32g --memory-swap 32g --device-read-bps /dev/md127:6gb (io.max 9:127 rbps=6442450944), SVM keys on (NEOReadDebugKeys, EnableSharedSystemUsmSupport, EnableRecoverablePageFaults); xpu lock xpu-0000_84_00_0 via freetoken-exl3 bench/xpu_run.sh",
+ "contended": [
+  "A"
+ ],
+ "contended_note": "slot A (RTX 3090 81:00.0) ran the P003 glm53 v4-nvme smoke container for the whole run; H2D was 23.9 GB/s vs 26.7 idle (N106), so link-bound numbers are ~10% low",
+ "image": "ghcr.io/0xsero/sglang-exl3-xpu-flashnext (image id 24c872759256), torch 2.13.0+xpu",
+ "libs": {
+  "_moe_a9.so": "a9281d934a21a0859570ae29750da180143d974327c834aa50c5cdf2ab4ad471 (Qwen runs, production lib)",
+  "_moe_n124.so": "58387d62af1e5e4cf2d46f14c824080147ae1f881e334e9b48f93cd78cd34efb (a9 + power-of-two GU/DN k-splits; GLM runs; docs/b70-microbench/bench/n124-splits.patch)"
+ },
+ "method": "docs/b70-microbench.md; scripts in docs/b70-microbench/bench (ingest.py, experts.py, sync.py, run.sh, guard.sh); raw JSON in docs/b70-microbench/raw. Kernel timings are XPU events around back-to-back calls that rotate through 2 layers of experts (1,024 Qwen / 576 GLM), so no call finds its weights in the 24 MB L2.",
+ "microbench": {
+  "launch_sync_us": [
+   {
+    "case": "empty_submit_host",
+    "n": 2000,
+    "us_median": 6.84,
+    "us_p10": 6.61,
+    "us_p90": 10.92,
+    "us_p99": 17.57
+   },
+   {
+    "case": "empty_b2b",
+    "n": 2000,
+    "us_per_kernel": 7.57
+   },
+   {
+    "case": "empty_submit_sync",
+    "n": 2000,
+    "us_median": 47.68,
+    "us_p10": 46.1,
+    "us_p90": 50.77,
+    "us_p99": 58.11
+   },
+   {
+    "case": "sync_idle",
+    "n": 2000,
+    "us_median": 28.29,
+    "us_p10": 27.15,
+    "us_p90": 32.28,
+    "us_p99": 43.49
+   },
+   {
+    "case": "empty_event_poll",
+    "n": 2000,
+    "us_median": 28.96,
+    "us_p10": 25.03,
+    "us_p90": 33.05,
+    "us_p99": 43.62
+   },
+   {
+    "case": "copy4_h2d_sync",
+    "n": 2000,
+    "us_median": 39.97,
+    "us_p10": 37.56,
+    "us_p90": 41.98,
+    "us_p99": 52.46
+   },
+   {
+    "case": "copy4_d2h_sync",
+    "n": 2000,
+    "us_median": 39.78,
+    "us_p10": 37.49,
+    "us_p90": 41.51,
+    "us_p99": 48.4
+   },
+   {
+    "case": "flag_rtt_h2d_d2h_poll",
+    "n": 2000,
+    "us_median": 11.21,
+    "us_p10": 10.74,
+    "us_p90": 14.97,
+    "us_p99": 20.43,
+    "spins_median": 44
+   },
+   {
+    "case": "flag_d2h_poll_after_fill",
+    "n": 2000,
+    "us_median": 10.74,
+    "us_p10": 9.68,
+    "us_p90": 13.26,
+    "us_p99": 18.71
+   },
+   {
+    "case": "flag_after_gemm_wall_minus_kernel",
+    "n": 200,
+    "us_median": 81.32,
+    "us_p10": 78.59,
+    "us_p90": 90.97,
+    "us_p99": 136.25,
+    "gemm_ms_median": 0.977
+   }
+  ],
+  "copy": [
+   {
+    "dir": "h2d",
+    "host": "usm",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.127,
+    "single_ms_p90": 0.1507,
+    "batch_GBps": 22.11
+   },
+   {
+    "dir": "h2d",
+    "host": "usm",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 0.447,
+    "single_ms_p90": 0.5721,
+    "batch_GBps": 23.77
+   },
+   {
+    "dir": "h2d",
+    "host": "usm",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 2.8814,
+    "single_ms_p90": 3.3441,
+    "batch_GBps": 23.88
+   },
+   {
+    "dir": "h2d",
+    "host": "usm",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 11.3456,
+    "single_ms_p90": 11.8299,
+    "batch_GBps": 23.86
+   },
+   {
+    "dir": "h2d",
+    "host": "anon_thp",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.2258,
+    "single_ms_p90": 0.3461,
+    "batch_GBps": 14.09
+   },
+   {
+    "dir": "h2d",
+    "host": "anon_thp",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 0.6904,
+    "single_ms_p90": 0.9619,
+    "batch_GBps": 19.29
+   },
+   {
+    "dir": "h2d",
+    "host": "anon_thp",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 3.2287,
+    "single_ms_p90": 3.5066,
+    "batch_GBps": 22.5
+   },
+   {
+    "dir": "h2d",
+    "host": "anon_thp",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 12.7045,
+    "single_ms_p90": 12.9816,
+    "batch_GBps": 22.61
+   },
+   {
+    "dir": "h2d",
+    "host": "memfd_thp",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.2128,
+    "single_ms_p90": 0.3593,
+    "batch_GBps": 13.97
+   },
+   {
+    "dir": "h2d",
+    "host": "memfd_thp",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 0.7151,
+    "single_ms_p90": 0.8831,
+    "batch_GBps": 19.15
+   },
+   {
+    "dir": "h2d",
+    "host": "memfd_thp",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 3.2425,
+    "single_ms_p90": 3.4384,
+    "batch_GBps": 22.97
+   },
+   {
+    "dir": "h2d",
+    "host": "memfd_thp",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 12.2172,
+    "single_ms_p90": 12.6231,
+    "batch_GBps": 23.6
+   },
+   {
+    "dir": "d2h",
+    "host": "usm",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.2418,
+    "single_ms_p90": 0.3789,
+    "batch_GBps": 7.33
+   },
+   {
+    "dir": "d2h",
+    "host": "usm",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 1.2854,
+    "single_ms_p90": 1.52,
+    "batch_GBps": 7.7
+   },
+   {
+    "dir": "d2h",
+    "host": "usm",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 9.0897,
+    "single_ms_p90": 9.3276,
+    "batch_GBps": 8.5
+   },
+   {
+    "dir": "d2h",
+    "host": "usm",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 32.0438,
+    "single_ms_p90": 33.2574,
+    "batch_GBps": 7.22
+   },
+   {
+    "dir": "d2h",
+    "host": "anon_thp",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.5239,
+    "single_ms_p90": 0.7646,
+    "batch_GBps": 4.21
+   },
+   {
+    "dir": "d2h",
+    "host": "anon_thp",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 1.7855,
+    "single_ms_p90": 1.9691,
+    "batch_GBps": 7.16
+   },
+   {
+    "dir": "d2h",
+    "host": "anon_thp",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 8.8527,
+    "single_ms_p90": 9.0735,
+    "batch_GBps": 7.78
+   },
+   {
+    "dir": "d2h",
+    "host": "anon_thp",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 36.3774,
+    "single_ms_p90": 37.4607,
+    "batch_GBps": 7.67
+   },
+   {
+    "dir": "d2h",
+    "host": "memfd_thp",
+    "size": "qwen_expert",
+    "bytes": 1862400,
+    "single_ms": 0.4614,
+    "single_ms_p90": 0.629,
+    "batch_GBps": 4.5
+   },
+   {
+    "dir": "d2h",
+    "host": "memfd_thp",
+    "size": "glm_expert",
+    "bytes": 9474048,
+    "single_ms": 1.5325,
+    "single_ms_p90": 1.7622,
+    "batch_GBps": 7.26
+   },
+   {
+    "dir": "d2h",
+    "host": "memfd_thp",
+    "size": "64MiB",
+    "bytes": 67108864,
+    "single_ms": 9.3852,
+    "single_ms_p90": 9.7431,
+    "batch_GBps": 7.67
+   },
+   {
+    "dir": "d2h",
+    "host": "memfd_thp",
+    "size": "256MiB",
+    "bytes": 268435456,
+    "single_ms": 31.273,
+    "single_ms_p90": 33.1288,
+    "batch_GBps": 8.19
+   }
+  ],
+  "nvme_pipeline": [
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 1.5,
+    "threads": 1,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 3.32,
+    "read_ms_median": 0.524,
+    "read_ms_p90": 0.657,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 6.83,
+    "read_ms_median": 3.21,
+    "read_ms_p90": 4.048,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 5.05,
+    "read_ms_median": 2.708,
+    "read_ms_p90": 4.019,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 8.0,
+    "threads": 32,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 6.7,
+    "read_ms_median": 3.523,
+    "read_ms_p90": 8.345,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": true,
+    "usm_bounce": true,
+    "GBps": 3.89,
+    "read_ms_median": 3.328,
+    "read_ms_p90": 5.699,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 1.5,
+    "threads": 1,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 4.38,
+    "read_ms_median": 1.677,
+    "read_ms_p90": 1.794,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 7.17,
+    "read_ms_median": 6.881,
+    "read_ms_p90": 80.403,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 6.64,
+    "read_ms_median": 5.173,
+    "read_ms_p90": 53.437,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 8.0,
+    "threads": 32,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 6.54,
+    "read_ms_median": 19.859,
+    "read_ms_p90": 94.71,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 8.0,
+    "threads": 16,
+    "h2d": true,
+    "usm_bounce": true,
+    "GBps": 4.97,
+    "read_ms_median": 4.633,
+    "read_ms_p90": 49.347,
+    "window": "8 GB (burst)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 30.0,
+    "threads": 32,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 3.99,
+    "read_ms_median": 5.791,
+    "read_ms_p90": 9.289,
+    "window": "30 GB (steady)"
+   },
+   {
+    "store": "qwen",
+    "rec_bytes": 1863680,
+    "GB": 30.0,
+    "threads": 32,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 2.64,
+    "read_ms_median": 6.069,
+    "read_ms_p90": 14.108,
+    "window": "30 GB (steady)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 29.99,
+    "threads": 32,
+    "h2d": false,
+    "usm_bounce": false,
+    "GBps": 6.49,
+    "read_ms_median": 30.73,
+    "read_ms_p90": 91.309,
+    "window": "30 GB (steady)"
+   },
+   {
+    "store": "glm",
+    "rec_bytes": 9474048,
+    "GB": 29.99,
+    "threads": 32,
+    "h2d": true,
+    "usm_bounce": false,
+    "GBps": 5.77,
+    "read_ms_median": 30.135,
+    "read_ms_p90": 87.041,
+    "window": "30 GB (steady)"
+   }
+  ],
+  "nvme_notes": [
+   "O_DIRECT into L0 USM host memory fails: OSError(14, 'Bad address')",
+   "O_DIRECT into L0 USM host (sycl::malloc_host) fails with EFAULT; ring lives in memfd THP"
+  ],
+  "experts_qwen": {
+   "meta": {
+    "H": 2560,
+    "I": 640,
+    "E": 512,
+    "topk": 10,
+    "blob": 1862400,
+    "lib": "/n/exl3xpu/_moe_a9.so",
+    "blobs": "real, store layers [6, 30]",
+    "splits_used": "default (gu 5, dn 10 at M=1 else 5)",
+    "exact_usm_vs_vram": true,
+    "exact_svm_vs_vram": true,
+    "out_finite": true,
+    "svm_first_touch_s": 1.9
+   },
+   "rows": [
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "vram",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.135,
+     "GBps_weights": 13.79
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "usm",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.0989,
+     "GBps_weights": 18.84
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "svm",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.0981,
+     "GBps_weights": 18.98
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "vram",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.0377,
+     "GBps_weights": 98.69
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "usm",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.178,
+     "GBps_weights": 20.93
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "svm",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.1728,
+     "GBps_weights": 21.55
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "vram",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 0.0754,
+     "GBps_weights": 98.74
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "usm",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 0.3255,
+     "GBps_weights": 22.89
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "svm",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 0.3236,
+     "GBps_weights": 23.02
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "vram",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 0.0473,
+     "GBps_weights": 236.21
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "usm",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 0.5126,
+     "GBps_weights": 21.8
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "svm",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 0.4823,
+     "GBps_weights": 23.17
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.0566,
+     "GBps_weights": 263.01
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.659,
+     "GBps_weights": 22.61
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.6584,
+     "GBps_weights": 22.63
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.0615,
+     "GBps_weights": 302.92
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.7939,
+     "GBps_weights": 23.46
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.8337,
+     "GBps_weights": 22.34
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.0616,
+     "GBps_weights": 302.56
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.8282,
+     "GBps_weights": 22.49
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.8344,
+     "GBps_weights": 22.32
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 10,
+     "tier": "vram",
+     "unique": 20.0,
+     "pairs": 20,
+     "ms": 0.1238,
+     "GBps_weights": 300.89
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "unique": 20.0,
+     "pairs": 20,
+     "ms": 1.6708,
+     "GBps_weights": 22.29
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 10,
+     "tier": "svm",
+     "unique": 20.0,
+     "pairs": 20,
+     "ms": 1.6592,
+     "GBps_weights": 22.45
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 10,
+     "tier": "vram",
+     "unique": 40.0,
+     "pairs": 40,
+     "ms": 0.2028,
+     "GBps_weights": 367.38
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "unique": 40.0,
+     "pairs": 40,
+     "ms": 3.309,
+     "GBps_weights": 22.51
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "unique": 40.0,
+     "pairs": 40,
+     "ms": 3.2608,
+     "GBps_weights": 22.85
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 10,
+     "tier": "vram",
+     "unique": 80.0,
+     "pairs": 80,
+     "ms": 0.3929,
+     "GBps_weights": 379.23
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "unique": 80.0,
+     "pairs": 80,
+     "ms": 6.1656,
+     "GBps_weights": 24.16
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 10,
+     "tier": "svm",
+     "unique": 80.0,
+     "pairs": 80,
+     "ms": 6.5796,
+     "GBps_weights": 22.64
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 20,
+     "ms": 0.1073,
+     "GBps_weights": 173.61
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 20,
+     "ms": 1.515,
+     "GBps_weights": 12.29
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 20,
+     "ms": 1.5251,
+     "GBps_weights": 12.21
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 40,
+     "ms": 0.1769,
+     "GBps_weights": 105.27
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 40,
+     "ms": 3.197,
+     "GBps_weights": 5.83
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 40,
+     "ms": 3.2492,
+     "GBps_weights": 5.73
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 80,
+     "ms": 0.2211,
+     "GBps_weights": 84.23
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 80,
+     "ms": 2.7716,
+     "GBps_weights": 6.72
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 80,
+     "ms": 2.6362,
+     "GBps_weights": 7.06
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 10,
+     "tier": "vram",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.0616,
+     "GBps_weights": 302.15
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.7533,
+     "GBps_weights": 24.72
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "unique": 10.0,
+     "pairs": 10,
+     "ms": 0.8259,
+     "GBps_weights": 22.55
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 10,
+     "tier": "vram",
+     "unique": 19.75,
+     "pairs": 20,
+     "ms": 0.1223,
+     "GBps_weights": 300.75
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "unique": 19.75,
+     "pairs": 20,
+     "ms": 1.6046,
+     "GBps_weights": 22.92
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 10,
+     "tier": "svm",
+     "unique": 19.75,
+     "pairs": 20,
+     "ms": 1.6581,
+     "GBps_weights": 22.18
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 10,
+     "tier": "vram",
+     "unique": 38.85,
+     "pairs": 40,
+     "ms": 0.2024,
+     "GBps_weights": 357.45
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "unique": 38.85,
+     "pairs": 40,
+     "ms": 3.1661,
+     "GBps_weights": 22.85
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "unique": 38.85,
+     "pairs": 40,
+     "ms": 3.3339,
+     "GBps_weights": 21.71
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 10,
+     "tier": "vram",
+     "unique": 74.88,
+     "pairs": 80,
+     "ms": 0.3517,
+     "GBps_weights": 396.44
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "unique": 74.88,
+     "pairs": 80,
+     "ms": 6.2183,
+     "GBps_weights": 22.43
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 10,
+     "tier": "svm",
+     "unique": 74.88,
+     "pairs": 80,
+     "ms": 6.128,
+     "GBps_weights": 22.76
+    },
+    {
+     "case": "shared_grouped",
+     "M": 2,
+     "k": 10,
+     "tier": "vram",
+     "mr": 2,
+     "unique": 10.0,
+     "pairs": 20,
+     "ms": 0.0734
+    },
+    {
+     "case": "shared_grouped",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "mr": 2,
+     "unique": 10.0,
+     "pairs": 20,
+     "ms": 0.8329
+    },
+    {
+     "case": "shared_grouped",
+     "M": 4,
+     "k": 10,
+     "tier": "vram",
+     "mr": 4,
+     "unique": 10.0,
+     "pairs": 40,
+     "ms": 0.0971
+    },
+    {
+     "case": "shared_grouped",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "mr": 4,
+     "unique": 10.0,
+     "pairs": 40,
+     "ms": 0.8194
+    },
+    {
+     "case": "shared_grouped",
+     "M": 8,
+     "k": 10,
+     "tier": "vram",
+     "mr": 8,
+     "unique": 10.0,
+     "pairs": 80,
+     "ms": 0.1229
+    },
+    {
+     "case": "shared_grouped",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "mr": 8,
+     "unique": 10.0,
+     "pairs": 80,
+     "ms": 0.842
+    },
+    {
+     "case": "random_grouped",
+     "M": 2,
+     "k": 10,
+     "tier": "vram",
+     "mr": 2,
+     "unique": 19.81,
+     "pairs": 20,
+     "ms": 0.129
+    },
+    {
+     "case": "random_grouped",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "mr": 2,
+     "unique": 19.81,
+     "pairs": 20,
+     "ms": 1.6169
+    },
+    {
+     "case": "random_grouped",
+     "M": 4,
+     "k": 10,
+     "tier": "vram",
+     "mr": 4,
+     "unique": 38.9,
+     "pairs": 40,
+     "ms": 0.2228
+    },
+    {
+     "case": "random_grouped",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "mr": 4,
+     "unique": 38.9,
+     "pairs": 40,
+     "ms": 3.1978
+    },
+    {
+     "case": "random_grouped",
+     "M": 8,
+     "k": 10,
+     "tier": "vram",
+     "mr": 8,
+     "unique": 74.38,
+     "pairs": 80,
+     "ms": 0.4524
+    },
+    {
+     "case": "random_grouped",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "mr": 8,
+     "unique": 74.38,
+     "pairs": 80,
+     "ms": 6.027
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.0617
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.2,
+     "host_experts": 2.0,
+     "ms": 0.1861
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.5,
+     "host_experts": 5.0,
+     "ms": 0.4394
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 1.0,
+     "host_experts": 10.0,
+     "ms": 0.8588
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.0618
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.2,
+     "host_experts": 2.0,
+     "ms": 0.1812
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.5,
+     "host_experts": 5.0,
+     "ms": 0.4234
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 1.0,
+     "host_experts": 10.0,
+     "ms": 0.8278
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.1989
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.2,
+     "host_experts": 7.83,
+     "ms": 0.6966
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 0.5,
+     "host_experts": 19.44,
+     "ms": 1.6739
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "host_frac": 1.0,
+     "host_experts": 38.77,
+     "ms": 3.0011
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.2021
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.2,
+     "host_experts": 7.83,
+     "ms": 0.6059
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 0.5,
+     "host_experts": 19.44,
+     "ms": 1.5377
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "host_frac": 1.0,
+     "host_experts": 38.77,
+     "ms": 3.3625
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 512,
+     "ms": 0.0746,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 0.848,
+     "host_only_after": 160
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 0.8374,
+     "host_only_after": 160
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 512,
+     "ms": 0.1265,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 1.6463,
+     "host_only_after": 319
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 1.6648,
+     "host_only_after": 319
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 512,
+     "ms": 0.2065,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 3.1875,
+     "host_only_after": 626
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 2.9934,
+     "host_only_after": 626
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 512,
+     "ms": 0.3547,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 5.4533,
+     "host_only_after": 1194
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 5.5202,
+     "host_only_after": 1194
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.1714,
+     "ms_median": 0.1632,
+     "ms_p90": 0.1908,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 10.0,
+     "ms": 0.9047,
+     "ms_median": 0.8844,
+     "ms_p90": 1.0552,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 10.0,
+     "ms": 0.9236,
+     "ms_median": 0.9307,
+     "ms_p90": 1.0871,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 5.0,
+     "ms": 0.5111,
+     "ms_median": 0.4955,
+     "ms_p90": 0.6301,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.204,
+     "ms_median": 0.1899,
+     "ms_p90": 0.263,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 19.81,
+     "ms": 1.7145,
+     "ms_median": 1.7356,
+     "ms_p90": 1.9341,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 19.81,
+     "ms": 1.744,
+     "ms_median": 1.7689,
+     "ms_p90": 1.925,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 10.0,
+     "ms": 0.9649,
+     "ms_median": 0.9516,
+     "ms_p90": 1.1229,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.2679,
+     "ms_median": 0.2653,
+     "ms_p90": 0.2805,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 38.5,
+     "ms": 3.3407,
+     "ms_median": 3.35,
+     "ms_p90": 3.6711,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 38.5,
+     "ms": 3.3956,
+     "ms_median": 3.4293,
+     "ms_p90": 3.7494,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 19.31,
+     "ms": 1.7693,
+     "ms_median": 1.7921,
+     "ms_p90": 1.962,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.3763,
+     "ms_median": 0.3672,
+     "ms_p90": 0.4418,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 74.69,
+     "ms": 6.0852,
+     "ms_median": 6.1843,
+     "ms_p90": 6.7001,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 10,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 74.69,
+     "ms": 6.3258,
+     "ms_median": 6.3339,
+     "ms_p90": 6.8277,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 10,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 37.25,
+     "ms": 3.1575,
+     "ms_median": 3.1374,
+     "ms_p90": 3.4876,
+     "fills_landed": false
+    }
+   ]
+  },
+  "experts_glm": {
+   "meta": {
+    "H": 4096,
+    "I": 2048,
+    "E": 288,
+    "topk": 8,
+    "blob": 9474048,
+    "lib": "/lib124/_moe.so",
+    "blobs": "real GLM layer 3 experts 0..15, cycled over 576 slots (key k holds expert k % 16)",
+    "splits_used": [
+     8,
+     16
+    ],
+    "exact_usm_vs_vram": true,
+    "exact_svm_vs_vram": true,
+    "out_finite": true,
+    "svm_first_touch_s": 3.84,
+    "splits_note": "the split scan picked gu 4 / dn 4, but the reference check that follows it resets to 8/16, so every GLM case row ran at gu 8 / dn 16 (raw meta says [4, 4]); 4/4 is 3-6% faster in the scan (M1 0.1696 vs 0.1753, M4 0.6698 vs 0.7092, M8 1.3323 vs 1.3906 ms) but has no MR=4 gate|up instance (grouped M4 fails with 'unsupported MR/P 4/4')"
+   },
+   "splits": [
+    {
+     "gu_p": 8,
+     "dn_p": 16,
+     "ms_m1": 0.1753,
+     "ms_m4": 0.7092,
+     "ms_m8": 1.3906,
+     "rel_maxdiff_vs_first": 0.0,
+     "finite": true
+    },
+    {
+     "gu_p": 4,
+     "dn_p": 4,
+     "ms_m1": 0.1696,
+     "ms_m4": 0.6698,
+     "ms_m8": 1.3323,
+     "rel_maxdiff_vs_first": 0.0043668122962117195,
+     "finite": true
+    },
+    {
+     "gu_p": 8,
+     "dn_p": 4,
+     "ms_m1": 0.1812,
+     "ms_m4": 0.7036,
+     "ms_m8": 1.3786,
+     "rel_maxdiff_vs_first": 2.665290708137036e-07,
+     "finite": true
+    },
+    {
+     "gu_p": 16,
+     "dn_p": 16,
+     "ms_m1": 0.1832,
+     "ms_m4": 0.7323,
+     "ms_m8": 1.4764,
+     "rel_maxdiff_vs_first": 0.0021834061481058598,
+     "finite": true
+    },
+    {
+     "gu_p": 4,
+     "dn_p": 16,
+     "ms_m1": 0.18,
+     "ms_m4": 0.663,
+     "ms_m8": 1.4662,
+     "rel_maxdiff_vs_first": 0.0043668122962117195,
+     "finite": true
+    },
+    {
+     "gu_p": 16,
+     "dn_p": 4,
+     "ms_m1": 0.1898,
+     "ms_m4": 0.7268,
+     "ms_m8": 1.4865,
+     "rel_maxdiff_vs_first": 0.0021834061481058598,
+     "finite": true
+    }
+   ],
+   "ref_check": [
+    {
+     "expert": 0,
+     "ref_norm": 26.348,
+     "rel_l2_err": {
+      "8/16": 0.00125,
+      "4/4": 0.00125,
+      "16/16": 0.00125
+     },
+     "gate_absmax": 2.48,
+     "up_absmax": 2.17
+    },
+    {
+     "expert": 1,
+     "ref_norm": 27.764,
+     "rel_l2_err": {
+      "8/16": 0.0012,
+      "4/4": 0.0012,
+      "16/16": 0.0012
+     },
+     "gate_absmax": 2.48,
+     "up_absmax": 2.47
+    },
+    {
+     "expert": 2,
+     "ref_norm": 26.367,
+     "rel_l2_err": {
+      "8/16": 0.00123,
+      "4/4": 0.00123,
+      "16/16": 0.00123
+     },
+     "gate_absmax": 2.45,
+     "up_absmax": 3.05
+    },
+    {
+     "expert": 3,
+     "ref_norm": 24.491,
+     "rel_l2_err": {
+      "8/16": 0.00126,
+      "4/4": 0.00126,
+      "16/16": 0.00126
+     },
+     "gate_absmax": 2.49,
+     "up_absmax": 2.37
+    }
+   ],
+   "rows": [
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "vram",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.0686,
+     "GBps_weights": 138.13
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "usm",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.4395,
+     "GBps_weights": 21.56
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 1,
+     "tier": "svm",
+     "unique": 1.0,
+     "pairs": 1,
+     "ms": 0.4323,
+     "GBps_weights": 21.92
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "vram",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.0514,
+     "GBps_weights": 368.58
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "usm",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.8655,
+     "GBps_weights": 21.89
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 2,
+     "tier": "svm",
+     "unique": 2.0,
+     "pairs": 2,
+     "ms": 0.8017,
+     "GBps_weights": 23.63
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "vram",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 0.0863,
+     "GBps_weights": 438.88
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "usm",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 1.6649,
+     "GBps_weights": 22.76
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 4,
+     "tier": "svm",
+     "unique": 4.0,
+     "pairs": 4,
+     "ms": 1.6372,
+     "GBps_weights": 23.15
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "vram",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 0.1511,
+     "GBps_weights": 376.12
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "usm",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 2.5408,
+     "GBps_weights": 22.37
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 6,
+     "tier": "svm",
+     "unique": 6.0,
+     "pairs": 6,
+     "ms": 2.4827,
+     "GBps_weights": 22.9
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.1698,
+     "GBps_weights": 446.36
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 3.4247,
+     "GBps_weights": 22.13
+    },
+    {
+     "case": "fit",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 3.3744,
+     "GBps_weights": 22.46
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.1717,
+     "GBps_weights": 441.44
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 3.4817,
+     "GBps_weights": 21.77
+    },
+    {
+     "case": "distinct",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 3.2408,
+     "GBps_weights": 23.39
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 8,
+     "tier": "vram",
+     "unique": 16.0,
+     "pairs": 16,
+     "ms": 0.3404,
+     "GBps_weights": 445.3
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "unique": 16.0,
+     "pairs": 16,
+     "ms": 6.5418,
+     "GBps_weights": 23.17
+    },
+    {
+     "case": "distinct",
+     "M": 2,
+     "k": 8,
+     "tier": "svm",
+     "unique": 16.0,
+     "pairs": 16,
+     "ms": 6.386,
+     "GBps_weights": 23.74
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 8,
+     "tier": "vram",
+     "unique": 32.0,
+     "pairs": 32,
+     "ms": 0.6818,
+     "GBps_weights": 444.65
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "unique": 32.0,
+     "pairs": 32,
+     "ms": 12.9353,
+     "GBps_weights": 23.44
+    },
+    {
+     "case": "distinct",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "unique": 32.0,
+     "pairs": 32,
+     "ms": 13.1074,
+     "GBps_weights": 23.13
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 8,
+     "tier": "vram",
+     "unique": 64.0,
+     "pairs": 64,
+     "ms": 1.4386,
+     "GBps_weights": 421.48
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "unique": 64.0,
+     "pairs": 64,
+     "ms": 26.2278,
+     "GBps_weights": 23.12
+    },
+    {
+     "case": "distinct",
+     "M": 8,
+     "k": 8,
+     "tier": "svm",
+     "unique": 64.0,
+     "pairs": 64,
+     "ms": 26.8269,
+     "GBps_weights": 22.6
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 16,
+     "ms": 0.3317,
+     "GBps_weights": 228.53
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 16,
+     "ms": 6.3733,
+     "GBps_weights": 11.89
+    },
+    {
+     "case": "shared",
+     "M": 2,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 16,
+     "ms": 6.6621,
+     "GBps_weights": 11.38
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 32,
+     "ms": 0.6551,
+     "GBps_weights": 115.69
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 32,
+     "ms": 13.6681,
+     "GBps_weights": 5.55
+    },
+    {
+     "case": "shared",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 32,
+     "ms": 13.3818,
+     "GBps_weights": 5.66
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 64,
+     "ms": 0.6783,
+     "GBps_weights": 111.73
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 64,
+     "ms": 10.4946,
+     "GBps_weights": 7.22
+    },
+    {
+     "case": "shared",
+     "M": 8,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 64,
+     "ms": 10.4885,
+     "GBps_weights": 7.23
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 8,
+     "tier": "vram",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 0.1681,
+     "GBps_weights": 451.01
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 3.2398,
+     "GBps_weights": 23.39
+    },
+    {
+     "case": "random",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "unique": 8.0,
+     "pairs": 8,
+     "ms": 2.9642,
+     "GBps_weights": 25.57
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 8,
+     "tier": "vram",
+     "unique": 15.85,
+     "pairs": 16,
+     "ms": 0.3451,
+     "GBps_weights": 435.24
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "unique": 15.85,
+     "pairs": 16,
+     "ms": 5.9817,
+     "GBps_weights": 25.11
+    },
+    {
+     "case": "random",
+     "M": 2,
+     "k": 8,
+     "tier": "svm",
+     "unique": 15.85,
+     "pairs": 16,
+     "ms": 5.9603,
+     "GBps_weights": 25.2
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 8,
+     "tier": "vram",
+     "unique": 30.75,
+     "pairs": 32,
+     "ms": 0.6886,
+     "GBps_weights": 423.07
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "unique": 30.75,
+     "pairs": 32,
+     "ms": 13.6416,
+     "GBps_weights": 21.36
+    },
+    {
+     "case": "random",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "unique": 30.75,
+     "pairs": 32,
+     "ms": 12.882,
+     "GBps_weights": 22.62
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 8,
+     "tier": "vram",
+     "unique": 58.15,
+     "pairs": 64,
+     "ms": 1.3326,
+     "GBps_weights": 413.38
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "unique": 58.15,
+     "pairs": 64,
+     "ms": 23.5155,
+     "GBps_weights": 23.43
+    },
+    {
+     "case": "random",
+     "M": 8,
+     "k": 8,
+     "tier": "svm",
+     "unique": 58.15,
+     "pairs": 64,
+     "ms": 24.1091,
+     "GBps_weights": 22.85
+    },
+    {
+     "case": "shared_grouped",
+     "M": 2,
+     "k": 8,
+     "tier": "vram",
+     "mr": 2,
+     "unique": 8.0,
+     "pairs": 16,
+     "ms": 0.1899
+    },
+    {
+     "case": "shared_grouped",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "mr": 2,
+     "unique": 8.0,
+     "pairs": 16,
+     "ms": 3.3978
+    },
+    {
+     "case": "shared_grouped",
+     "M": 4,
+     "k": 8,
+     "tier": "vram",
+     "mr": 4,
+     "unique": 8.0,
+     "pairs": 32,
+     "ms": 0.2365
+    },
+    {
+     "case": "shared_grouped",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "mr": 4,
+     "unique": 8.0,
+     "pairs": 32,
+     "ms": 3.2252
+    },
+    {
+     "case": "random_grouped",
+     "M": 2,
+     "k": 8,
+     "tier": "vram",
+     "mr": 2,
+     "unique": 15.85,
+     "pairs": 16,
+     "ms": 0.3499
+    },
+    {
+     "case": "random_grouped",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "mr": 2,
+     "unique": 15.85,
+     "pairs": 16,
+     "ms": 6.433
+    },
+    {
+     "case": "random_grouped",
+     "M": 4,
+     "k": 8,
+     "tier": "vram",
+     "mr": 4,
+     "unique": 30.56,
+     "pairs": 32,
+     "ms": 0.7248
+    },
+    {
+     "case": "random_grouped",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "mr": 4,
+     "unique": 30.56,
+     "pairs": 32,
+     "ms": 12.171
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.1732
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.2,
+     "host_experts": 2.0,
+     "ms": 0.8812
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.5,
+     "host_experts": 4.0,
+     "ms": 1.7177
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 1.0,
+     "host_experts": 8.0,
+     "ms": 3.3317
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.1698
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.2,
+     "host_experts": 2.0,
+     "ms": 0.8489
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.5,
+     "host_experts": 4.0,
+     "ms": 1.5864
+    },
+    {
+     "case": "mixed",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 1.0,
+     "host_experts": 8.0,
+     "ms": 3.1502
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.689
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.2,
+     "host_experts": 5.98,
+     "ms": 2.5798
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 0.5,
+     "host_experts": 15.44,
+     "ms": 6.1699
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "host_frac": 1.0,
+     "host_experts": 30.56,
+     "ms": 12.1644
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.0,
+     "host_experts": 0.0,
+     "ms": 0.6889
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.2,
+     "host_experts": 5.98,
+     "ms": 2.6387
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 0.5,
+     "host_experts": 15.44,
+     "ms": 6.7406
+    },
+    {
+     "case": "mixed",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "host_frac": 1.0,
+     "host_experts": 30.56,
+     "ms": 12.1566
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 288,
+     "ms": 0.181,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 3.3152,
+     "host_only_after": 128
+    },
+    {
+     "case": "cached_b2b",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 3.2039,
+     "host_only_after": 128
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 288,
+     "ms": 0.3435,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 6.4227,
+     "host_only_after": 252
+    },
+    {
+     "case": "cached_b2b",
+     "M": 2,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 6.737,
+     "host_only_after": 252
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 288,
+     "ms": 0.6833,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 12.5527,
+     "host_only_after": 493
+    },
+    {
+     "case": "cached_b2b",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 12.8582,
+     "host_only_after": 493
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "max_fill": 288,
+     "ms": 1.3085,
+     "host_only_after": 0
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 22.6494,
+     "host_only_after": 931
+    },
+    {
+     "case": "cached_b2b",
+     "M": 8,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "max_fill": 0,
+     "ms": 23.9128,
+     "host_only_after": 931
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.2474,
+     "ms_median": 0.2295,
+     "ms_p90": 0.2967,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 8.0,
+     "ms": 3.4298,
+     "ms_median": 3.4265,
+     "ms_p90": 3.756,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 8.0,
+     "ms": 3.1197,
+     "ms_median": 2.9835,
+     "ms_p90": 3.5861,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 1,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 4.0,
+     "ms": 1.6205,
+     "ms_median": 1.5834,
+     "ms_p90": 1.7163,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.3372,
+     "ms_median": 0.3332,
+     "ms_p90": 0.3385,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 15.75,
+     "ms": 5.9052,
+     "ms_median": 5.8483,
+     "ms_p90": 6.0749,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 15.75,
+     "ms": 6.2394,
+     "ms_median": 5.9343,
+     "ms_p90": 7.2014,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 2,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 8.0,
+     "ms": 3.4534,
+     "ms_median": 3.4602,
+     "ms_p90": 3.8605,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 0.6493,
+     "ms_median": 0.6377,
+     "ms_p90": 0.6794,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 30.44,
+     "ms": 12.8351,
+     "ms_median": 12.9496,
+     "ms_p90": 13.7958,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 30.44,
+     "ms": 13.4177,
+     "ms_median": 13.5735,
+     "ms_p90": 14.1172,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 4,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 15.25,
+     "ms": 7.0637,
+     "ms_median": 7.1313,
+     "ms_p90": 7.6332,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.0,
+     "misses": 0.0,
+     "ms": 1.2234,
+     "ms_median": 1.2193,
+     "ms_p90": 1.2866,
+     "fills_landed": true
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 1.0,
+     "misses": 57.94,
+     "ms": 24.4404,
+     "ms_median": 24.7271,
+     "ms_p90": 25.9068,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 8,
+     "tier": "svm",
+     "miss_frac": 1.0,
+     "misses": 57.94,
+     "ms": 21.9584,
+     "ms_median": 21.9523,
+     "ms_p90": 23.0328,
+     "fills_landed": false
+    },
+    {
+     "case": "cached",
+     "M": 8,
+     "k": 8,
+     "tier": "usm",
+     "miss_frac": 0.5,
+     "misses": 29.06,
+     "ms": 12.0443,
+     "ms_median": 12.0788,
+     "ms_p90": 12.6759,
+     "fills_landed": false
+    }
+   ]
+  },
+  "experts_glm_random_blobs": {
+   "note": "same cases on random trellis blobs at gu 4 / dn 4 (outputs NaN); per-case ms ratio random/real: median 0.99, range 0.84-1.5 (contention noise); grouped M4 rows fail (no GU(4,4) instance)",
+   "splits": [
+    {
+     "gu_p": 8,
+     "dn_p": 16,
+     "ms_m1": 0.1723,
+     "ms_m4": 0.7142,
+     "ms_m8": 1.4199,
+     "finite": false
+    },
+    {
+     "gu_p": 4,
+     "dn_p": 4,
+     "ms_m1": 0.1698,
+     "ms_m4": 0.6734,
+     "ms_m8": 1.3526,
+     "finite": false
+    },
+    {
+     "gu_p": 8,
+     "dn_p": 4,
+     "ms_m1": 0.1818,
+     "ms_m4": 0.7031,
+     "ms_m8": 1.4484,
+     "finite": false
+    },
+    {
+     "gu_p": 16,
+     "dn_p": 16,
+     "ms_m1": 0.1809,
+     "ms_m4": 0.7362,
+     "ms_m8": 1.4674,
+     "finite": false
+    },
+    {
+     "gu_p": 4,
+     "dn_p": 16,
+     "ms_m1": 0.1803,
+     "ms_m4": 0.7101,
+     "ms_m8": 1.4564,
+     "finite": false
+    },
+    {
+     "gu_p": 16,
+     "dn_p": 4,
+     "ms_m1": 0.1896,
+     "ms_m4": 0.7239,
+     "ms_m8": 1.4812,
+     "finite": false
+    }
+   ]
+  },
+  "fits": {
+   "method": "least squares over the 'distinct' / cached_b2b series (unique experts per layer call vs ms); per_extra_token = (shared(M) - distinct(1)) / (topk * (M - 1)); zero-copy per_expert = mixed-call slope per host expert + VRAM per_expert",
+   "qwen": {
+    "moe_forward_vram": {
+     "per_layer_ms": 0.021,
+     "per_expert_ms": 0.0046
+    },
+    "cached_b2b_vram": {
+     "per_layer_ms": 0.031,
+     "per_expert_ms": 0.0043
+    },
+    "per_extra_token_ms": {
+     "pair_M2": 0.0046,
+     "pair_M4": 0.0038,
+     "MR2_M8": 0.0023,
+     "grouped_M2": 0.0012,
+     "grouped_M4": 0.0012,
+     "grouped_M8": 0.0009
+    },
+    "zerocopy_per_expert_ms": {
+     "usm_distinct": 0.0759,
+     "svm_distinct": 0.082,
+     "mixed_slope_usm_M1": 0.0808,
+     "mixed_slope_svm_M1": 0.0777,
+     "cached_nofill_M1": 0.0773
+    },
+    "zerocopy_per_extra_token_ms": {
+     "pair_M2": 0.069,
+     "pair_M4": 0.079,
+     "MR2_M8": 0.027,
+     "grouped_M2_M4_M8": 0.0
+    }
+   },
+   "glm": {
+    "moe_forward_vram": {
+     "per_layer_ms": 0.0,
+     "per_expert_ms": 0.0227
+    },
+    "cached_b2b_vram": {
+     "per_layer_ms": 0.001,
+     "per_expert_ms": 0.0225
+    },
+    "per_extra_token_ms": {
+     "pair_M2": 0.02,
+     "pair_M4": 0.0201,
+     "MR2_M8": 0.009,
+     "grouped_M2": 0.0023,
+     "grouped_M4": 0.0027
+    },
+    "zerocopy_per_expert_ms": {
+     "usm_distinct": 0.407,
+     "svm_distinct": 0.423,
+     "mixed_slope_usm_M1": 0.398,
+     "mixed_slope_svm_M1": 0.374
+    },
+    "zerocopy_per_extra_token_ms": {
+     "pair_M2": 0.36,
+     "pair_M4": 0.42,
+     "MR2_M8": 0.13,
+     "grouped_M2_M4": 0.0
+    }
+   },
+   "adopted": "engine exl3xpu-arc lanes (Qwen) and model_lanes.glm-5.3-flash-exl3-3.05bpw"
+  }
+ },
+ "guard": "journalctl -k (since 12:05) before/after every job: no Completion-Wait timeout, Link Down, Card not present, reboot-needed, pciehp, non-corrected AER, or xe 84:00.0 reset/wedge lines; no D-state khugepaged/kcompactd. Background corrected AER (root ports c0:03.x, NVMe c5-c8, 81/82/83) ran ~100-130/min before and during the run, unchanged by it.",
+ "quality": "n/a (microbench). GLM-shape MoE kernel vs exl3xpu_C.linear per projection on real layer-3 experts: rel L2 err 0.0012 for splits 8/16, 4/4, 16/16; tier outputs (VRAM / USM / SVM) bit-identical for both models",
+ "source": "omarchy ~/n124/out (N124)"
+}

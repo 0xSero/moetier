@@ -1,0 +1,382 @@
+{
+ "meta": {
+  "device": "Intel(R) Arc(TM) Pro B70 Graphics",
+  "torch": "2.13.0+xpu",
+  "svm_keys": {
+   "NEOReadDebugKeys": "1",
+   "EnableSharedSystemUsmSupport": "1"
+  },
+  "usm_kind": {
+   "usm": 1,
+   "anon_thp": 0,
+   "memfd_thp": 0
+  },
+  "roundtrip_exact": true
+ },
+ "h2d": [
+  {
+   "host": "usm",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.127,
+   "single_ms_p90": 0.1507,
+   "single_GBps": 14.66,
+   "batch_n": 256,
+   "batch_GBps": [
+    22.44,
+    22.11,
+    22.04
+   ],
+   "t": 0.7
+  },
+  {
+   "host": "usm",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 0.447,
+   "single_ms_p90": 0.5721,
+   "single_GBps": 21.19,
+   "batch_n": 211,
+   "batch_GBps": [
+    23.09,
+    23.77,
+    23.78
+   ],
+   "t": 1.0
+  },
+  {
+   "host": "usm",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 2.8814,
+   "single_ms_p90": 3.3441,
+   "single_GBps": 23.29,
+   "batch_n": 29,
+   "batch_GBps": [
+    23.89,
+    23.56,
+    23.88
+   ],
+   "t": 1.2
+  },
+  {
+   "host": "usm",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 11.3456,
+   "single_ms_p90": 11.8299,
+   "single_GBps": 23.66,
+   "batch_n": 8,
+   "batch_GBps": [
+    23.86,
+    24.27,
+    23.4
+   ],
+   "t": 1.6
+  },
+  {
+   "host": "anon_thp",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.2258,
+   "single_ms_p90": 0.3461,
+   "single_GBps": 8.25,
+   "batch_n": 256,
+   "batch_GBps": [
+    14.09,
+    14.4,
+    14.06
+   ],
+   "t": 1.7
+  },
+  {
+   "host": "anon_thp",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 0.6904,
+   "single_ms_p90": 0.9619,
+   "single_GBps": 13.72,
+   "batch_n": 211,
+   "batch_GBps": [
+    19.29,
+    19.08,
+    19.92
+   ],
+   "t": 2.1
+  },
+  {
+   "host": "anon_thp",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 3.2287,
+   "single_ms_p90": 3.5066,
+   "single_GBps": 20.79,
+   "batch_n": 29,
+   "batch_GBps": [
+    23.93,
+    21.21,
+    22.5
+   ],
+   "t": 2.4
+  },
+  {
+   "host": "anon_thp",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 12.7045,
+   "single_ms_p90": 12.9816,
+   "single_GBps": 21.13,
+   "batch_n": 8,
+   "batch_GBps": [
+    22.31,
+    22.61,
+    23.17
+   ],
+   "t": 2.7
+  },
+  {
+   "host": "memfd_thp",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.2128,
+   "single_ms_p90": 0.3593,
+   "single_GBps": 8.75,
+   "batch_n": 256,
+   "batch_GBps": [
+    13.99,
+    13.63,
+    13.97
+   ],
+   "t": 2.9
+  },
+  {
+   "host": "memfd_thp",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 0.7151,
+   "single_ms_p90": 0.8831,
+   "single_GBps": 13.25,
+   "batch_n": 211,
+   "batch_GBps": [
+    19.15,
+    19.19,
+    14.56
+   ],
+   "t": 3.2
+  },
+  {
+   "host": "memfd_thp",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 3.2425,
+   "single_ms_p90": 3.4384,
+   "single_GBps": 20.7,
+   "batch_n": 29,
+   "batch_GBps": [
+    23.44,
+    22.66,
+    22.97
+   ],
+   "t": 3.5
+  },
+  {
+   "host": "memfd_thp",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 12.2172,
+   "single_ms_p90": 12.6231,
+   "single_GBps": 21.97,
+   "batch_n": 8,
+   "batch_GBps": [
+    23.6,
+    23.73,
+    23.25
+   ],
+   "t": 3.9
+  }
+ ],
+ "d2h": [
+  {
+   "host": "usm",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.2418,
+   "single_ms_p90": 0.3789,
+   "single_GBps": 7.7,
+   "batch_n": 256,
+   "batch_GBps": [
+    7.4,
+    7.26,
+    7.33
+   ],
+   "t": 4.1
+  },
+  {
+   "host": "usm",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 1.2854,
+   "single_ms_p90": 1.52,
+   "single_GBps": 7.37,
+   "batch_n": 211,
+   "batch_GBps": [
+    7.82,
+    7.58,
+    7.7
+   ],
+   "t": 4.9
+  },
+  {
+   "host": "usm",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 9.0897,
+   "single_ms_p90": 9.3276,
+   "single_GBps": 7.38,
+   "batch_n": 29,
+   "batch_GBps": [
+    7.51,
+    8.5,
+    8.52
+   ],
+   "t": 5.7
+  },
+  {
+   "host": "usm",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 32.0438,
+   "single_ms_p90": 33.2574,
+   "single_GBps": 8.38,
+   "batch_n": 8,
+   "batch_GBps": [
+    8.34,
+    7.22,
+    7.04
+   ],
+   "t": 6.9
+  },
+  {
+   "host": "anon_thp",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.5239,
+   "single_ms_p90": 0.7646,
+   "single_GBps": 3.56,
+   "batch_n": 256,
+   "batch_GBps": [
+    4.21,
+    4.31,
+    2.96
+   ],
+   "t": 7.3
+  },
+  {
+   "host": "anon_thp",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 1.7855,
+   "single_ms_p90": 1.9691,
+   "single_GBps": 5.31,
+   "batch_n": 211,
+   "batch_GBps": [
+    6.78,
+    7.16,
+    7.2
+   ],
+   "t": 8.2
+  },
+  {
+   "host": "anon_thp",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 8.8527,
+   "single_ms_p90": 9.0735,
+   "single_GBps": 7.58,
+   "batch_n": 29,
+   "batch_GBps": [
+    7.9,
+    7.5,
+    7.78
+   ],
+   "t": 9.0
+  },
+  {
+   "host": "anon_thp",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 36.3774,
+   "single_ms_p90": 37.4607,
+   "single_GBps": 7.38,
+   "batch_n": 8,
+   "batch_GBps": [
+    7.67,
+    7.64,
+    7.92
+   ],
+   "t": 10.2
+  },
+  {
+   "host": "memfd_thp",
+   "size": "qwen_expert",
+   "bytes": 1862400,
+   "single_ms_median": 0.4614,
+   "single_ms_p90": 0.629,
+   "single_GBps": 4.04,
+   "batch_n": 256,
+   "batch_GBps": [
+    4.49,
+    4.52,
+    4.5
+   ],
+   "t": 10.5
+  },
+  {
+   "host": "memfd_thp",
+   "size": "glm_expert",
+   "bytes": 9474048,
+   "single_ms_median": 1.5325,
+   "single_ms_p90": 1.7622,
+   "single_GBps": 6.18,
+   "batch_n": 211,
+   "batch_GBps": [
+    7.28,
+    7.26,
+    7.18
+   ],
+   "t": 11.4
+  },
+  {
+   "host": "memfd_thp",
+   "size": "64MiB",
+   "bytes": 67108864,
+   "single_ms_median": 9.3852,
+   "single_ms_p90": 9.7431,
+   "single_GBps": 7.15,
+   "batch_n": 29,
+   "batch_GBps": [
+    7.67,
+    7.49,
+    7.97
+   ],
+   "t": 12.2
+  },
+  {
+   "host": "memfd_thp",
+   "size": "256MiB",
+   "bytes": 268435456,
+   "single_ms_median": 31.273,
+   "single_ms_p90": 33.1288,
+   "single_GBps": 8.58,
+   "batch_n": 8,
+   "batch_GBps": [
+    8.33,
+    7.92,
+    8.19
+   ],
+   "t": 13.3
+  }
+ ],
+ "nvme": [],
+ "notes": []
+}
