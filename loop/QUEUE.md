@@ -13,7 +13,7 @@ Unlocks layer-ahead prefetch (+2-4 tok/s C1 in the lever study). Doc 20 section 
 
 ## G5 GLM non-MoE fixed time 14 -> 9 ms: fused decode kernels + CUDA graphs  [todo]
 
-## G6 GLM MTP k=2 (verify windows share expert reads)  [prep running offline: agent N120 (exllamav3 -mtp path, arm scripts in runs/N120-glm53-mtp/); GPU run after G2 releases the 3090; modeled C1 32.4 -> ~46 tok/s]
+## G6 GLM MTP (verify windows)  [READY: omarchy runs/N120-glm53-mtp/queue_mtp.sh (WAIT=1 waits for idle GPU0; ~3.7 h). Measured acceptance k1 1.79 / k2 2.27 tok/round -> expect +15-30% C1 (S3 15.3 -> ~18-20; levers design 32.4 -> ~35-38 with k=1). Launch when OWNERS says 3090 free.]
 First measure MTP acceptance on the 3.05bpw model + verify time at 3 tokens; MTP layer's 288 experts need a home (VRAM/RAM). Then rerun the spec rows in moetier.
 
 ## G7 vLLM-Moet transfer  [researched: docs/vllm-moet-lessons.md]
