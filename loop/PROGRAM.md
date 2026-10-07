@@ -20,7 +20,7 @@ RAID0, 50 tok/s decode. Secondary: Qwen3.8-Flash-Next on Arc B70 (paused while t
    - deploy the image (bake the mounted code into an image, push to ghcr via the local-ai-images flow, pin digest);
    - update the local-ai-registry recipe as `candidate` with the evidence (registry-publish skill; promotion to
      `validated` only with acceptance runs on the pinned digest).
-6. Append one line to LEDGER.jsonl and `track log HOM-266 "..."`. Reply with one line: item, step, result.
+6. Append one line to LEDGER.jsonl and `track log HOM-272 "..."`. Reply with one line: item, step, result.
 
 ## Rules
 - Never set max_tokens / output caps. Natural completions only.

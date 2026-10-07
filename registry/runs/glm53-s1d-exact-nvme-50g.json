@@ -1,0 +1,39 @@
+{
+ "id": "glm53-s1d-exact-nvme-50g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S1 rerun under --memory 50g (exact NVMe tier, GPU-only, host sync per layer)",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 7.05,
+   "prefill_tok_s": 441.7
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 6.88,
+   "decode_per_stream": 6.88
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 6.98,
+   "decode_per_stream": 6.98
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 6.61,
+   "prefill_tok_s": 687.4
+  }
+ ],
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "greedy_equal_vs_exact": true
+ },
+ "note": "no concurrency scaling: C2/C4 totals equal one stream -> requests serialized in nvme mode (scheduler/batching to fix in G2)",
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1d_50g"
+}

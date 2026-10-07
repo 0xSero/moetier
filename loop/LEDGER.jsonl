@@ -1,0 +1,6 @@
+{"ts": "2026-10-06T19:56:27-04:00", "item": "G1", "step": "record S1", "result": "exact NVMe tier under 50g: panel top1 1.0 KL 0, greedy equal; decode C1 7.29 C2 7.34, C4 failed (conn reset); prefill 463/672; peak 47.6 GB; not a new best (G067 28.15)", "run": "glm53-s1b-exact-nvme-50g"}
+{"ts": "2026-10-06T20:26:01-04:00", "item": "G1", "step": "check s1d_50g (agent owns 3090)", "result": "sweep in progress; partial: prefill 32k 696, decode C1 7.05 C2 6.88 C4 6.98 (C4 now completes); guard clean"}
+{"ts": "2026-10-06T20:56:14-04:00", "item": "G1", "step": "record s1d_50g", "result": "exact; decode C1 7.05 C2 6.88 C4 6.98 (no concurrency scaling) 32k C1 6.61; prefill 442/687; s1c_55g now running (agent owns 3090)", "run": "glm53-s1d-exact-nvme-50g"}
+{"ts": "2026-10-06T21:26:02-04:00", "item": "G1", "step": "check s1c_55g (agent owns 3090)", "result": "sweep in progress: prefill 8k 501 / 32k ~762, decode C1 7.25 C2 7.21 agg; guard clean"}
+{"ts": "2026-10-06T21:56:02-04:00", "item": "G1", "step": "check s1c_55g", "result": "decode C1 7.25 C2 7.21 C4 7.25 agg; prefill 8k 501-528 / 32k ~762; 32k C1 decode pending; guard clean"}
+{"ts": "2026-10-06T22:08:55-04:00", "item": "G1", "step": "S1 done", "result": "exact; 55g: C1 7.26 C2 7.21 C4 7.26 32k 6.83, prefill 515/762; next G2 S2", "run": "glm53-s1c-exact-nvme-55g"}

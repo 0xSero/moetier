@@ -1,9 +1,9 @@
 # Queue (top = next)
 
-## G1 GLM S1: exact NVMe tier (GLM53_MODE=nvme)  [running: builder agent N116 owns the 3090]
+## G1 GLM S1: exact NVMe tier (GLM53_MODE=nvme)  [DONE: runs glm53-s1d/s1c; exact; 55g C1 7.26, prefill 515/762]
 Panel + greedy equality, then the standard table under --memory 50g/55g. Record run glm53-s1-*.
 
-## G2 GLM S3: CPU tier on the exclusive RAM tier, overlapped inside each layer with GPU + copy engine + NVMe  [todo]
+## G2 GLM S2+S3: device-side stall (libaio worker + per-expert landed flags, no per-layer host sync), exclusive RAM via victim ring, prefill read-ahead 2-3 layers, short prompts via staging, CPU tier on RAM-resident experts overlapped per layer  [running: builder agent N119]
 moetier lever study: 55 GB base 23.4 C1 -> 27 with persistent CPU workers. Move the runtime onto moetier plan_layer.
 
 ## G3 GLM route capture with router weights + layer inputs -> next-layer predictor recall  [todo]

@@ -1,0 +1,50 @@
+{
+ "id": "glm53-s1c-exact-nvme-55g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S1c: exact NVMe tier at --memory 55g + staging outside the GIL + prefill fills at LRU front",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 7.26,
+   "prefill_tok_s": 515.2
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 7.21
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 7.26
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 6.83,
+   "prefill_tok_s": 761.7
+  }
+ ],
+ "per_token": {
+  "vram_hit": 0.545,
+  "ram_hits": 103.1,
+  "nvme_reads": 49.7,
+  "ram_hit_rate_of_vram_misses": 0.675,
+  "stall_ms": 42,
+  "host_sync_wait_ms": 83
+ },
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "greedy_equal_vs_exact": "5/5",
+  "slot_bytecheck": "128 VRAM + 128 RAM OK"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 51.9
+ },
+ "note": "exact mode runs C2/C4 streams serially (like G066a); next: S2 device-side stall + exclusive RAM via ring + prefill read-ahead + CPU tier",
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1c_55g; routes with router weights saved in nv_trace.npz"
+}

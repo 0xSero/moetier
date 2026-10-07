@@ -1,0 +1,43 @@
+{
+ "id": "glm53-s1b-exact-nvme-50g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S1: exact NVMe tier (GLM53_MODE=nvme), GPU-only, host sync per layer, LRU RAM tier 4,948 slots (43.5 GiB), 1,376 VRAM slots, --memory 50g",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 7.29,
+   "prefill_tok_s": 462.7
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 7.34
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": null,
+   "error": "server connection reset during C4 (under investigation)"
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": null,
+   "prefill_tok_s": 671.6
+  }
+ ],
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "positions": 2154,
+  "greedy_equal_vs_exact": true,
+  "note": "exact (s1b and s1d_50g)"
+ },
+ "memory": {
+  "cgroup_max_gb": 50,
+  "peak_gb": 47.64
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1b_sweep (sweep.json, score.json)"
+}
