@@ -119,5 +119,8 @@
   "prefill_ring_slots": 192
  },
  "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/s3a_55g",
- "note": "C2/C4 still ran one stream at a time: serve.py gives every job max_new_tokens = remaining context and exllamav3 reserves pages for it (no max_rq_tokens), so a second job never starts until the first ends (measured 1.0 tokens per decode step during C4); S3b sets a page-allocation round (max_rq_tokens 4096, not an output cap). Greedy outputs differ from exact (0/5 equal: CPU arithmetic), panel exact (prefill path has no CPU lane)."
+ "note": "C2/C4 still ran one stream at a time: serve.py gives every job max_new_tokens = remaining context and exllamav3 reserves pages for it (no max_rq_tokens), so a second job never starts until the first ends (measured 1.0 tokens per decode step during C4); S3b sets a page-allocation round (max_rq_tokens 4096, not an output cap). Greedy outputs differ from exact (0/5 equal: CPU arithmetic), panel exact (prefill path has no CPU lane).",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 S3a CPU tier",
+ "gpu_count": 1
 }

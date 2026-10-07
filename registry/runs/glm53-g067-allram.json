@@ -1,12 +1,33 @@
 {
-  "id": "glm53-g067-allram",
-  "recipe": "glm53-rtx3090-218g-allram (reference)",
-  "measured": "2026-10-01",
-  "table": [
-    { "prefill": 8192, "conc": 1, "decode": 28.15, "prefill_tok_s": 710 },
-    { "prefill": 8192, "conc": 2, "decode": 31.57 },
-    { "prefill": 8192, "conc": 4, "decode": 33.98 },
-    { "prefill": 32768, "conc": 1, "decode": 26.89, "prefill_tok_s": 951 }
-  ],
-  "source": "github.com/0xSero/glm53-flash-offload results/"
+ "id": "glm53-g067-allram",
+ "recipe": "glm53-rtx3090-218g-allram (reference)",
+ "measured": "2026-10-01",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 28.15,
+   "prefill_tok_s": 710
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 31.57
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 33.98
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 26.89,
+   "prefill_tok_s": 951
+  }
+ ],
+ "source": "github.com/0xSero/glm53-flash-offload results/",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 218 GB RAM, all experts in RAM \u00b7 G067 (reference)",
+ "gpu_count": 1
 }

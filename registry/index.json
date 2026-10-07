@@ -24,6 +24,7 @@
   "glm53-s1d-exact-nvme-50g",
   "glm53-s2-exact-nvme-55g",
   "glm53-s3a-cpu-nvme-55g",
+  "glm53-s3b-cpu-nvme-batched-55g",
   "qwen38fn-b70-srv20",
   "qwen38fn-b70-srv21",
   "qwen38fn-b70-srv22",

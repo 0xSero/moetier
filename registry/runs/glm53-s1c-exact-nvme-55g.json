@@ -46,5 +46,8 @@
   "peak_gib": 51.9
  },
  "note": "exact mode runs C2/C4 streams serially (like G066a); next: S2 device-side stall + exclusive RAM via ring + prefill read-ahead + CPU tier",
- "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1c_55g; routes with router weights saved in nv_trace.npz"
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1c_55g; routes with router weights saved in nv_trace.npz",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 S1c exact",
+ "gpu_count": 1
 }

@@ -1,7 +1,42 @@
 {
   "id": "omarchy-rtx3090-nvx4",
-  "gpu": { "name": "RTX 3090", "vram_gb": 24, "link": "PCIe 4.0 x16", "h2d_gbps": 23.5 },
-  "cpu": { "name": "AMD EPYC 7443P", "cores": 24, "isa": "avx2", "ddr": "DDR4 8-channel" },
-  "nvme": { "name": "4x Samsung 9100 PRO 1TB RAID0 (md, 512K chunk, XFS)", "bw_gbps": 24.0, "bw_qd1_gbps": 12.6,
-            "latency_ms": 0.12, "note": "measured: 9.47 MB record 0.75 ms single, 23.9 GB/s at qd16; libaio (no io_uring)" }
+  "gpu": {
+    "name": "RTX 3090",
+    "vram_gb": 24,
+    "link": "PCIe 4.0 x16",
+    "h2d_gbps": 23.5,
+    "vram_bw_gbps": 936
+  },
+  "cpu": {
+    "name": "AMD EPYC 7443P",
+    "cores": 24,
+    "isa": "avx2",
+    "ddr": "DDR4 8-channel"
+  },
+  "nvme": {
+    "name": "4x Samsung 9100 PRO 1TB RAID0 (md, 512K chunk, XFS)",
+    "bw_gbps": 24.0,
+    "bw_qd1_gbps": 12.6,
+    "latency_ms": 0.12,
+    "note": "measured: 9.47 MB record 0.75 ms single, 23.9 GB/s at qd16; libaio (no io_uring)"
+  },
+  "ceilings": {
+    "vram_bw_gbps": 936,
+    "vram_note": "RTX 3090 GDDR6X 19.5 Gbps x 384-bit; NVML exposes only a time-based busy %",
+    "pcie_h2d_gbps": 25.5,
+    "pcie_d2h_gbps": 26.3,
+    "pcie_raw_gbps": 31.5,
+    "pcie_note": "measured pinned 16 MB-1 GB copies on an idle host (omarchy runs/2026-10-01-D006-host-pcie); under CPU-lane DRAM load copies run ~15 GB/s (S3b)",
+    "nvme_read_gbps": 26.0,
+    "nvme_measured_gbps": 23.9,
+    "nvme_note": "4x 9100 PRO RAID0 on PCIe 4.0; 23.9 GB/s measured at qd16 (9.47 MB records)",
+    "ddr_theoretical_gbps": 204.8,
+    "ddr_practical_gbps": 138,
+    "ddr_note": "8ch DDR4-3200; practical = AVX2 read sum over an 8 GB buffer, 22-24 threads, 136-140 GB/s (glm53/CPU_TIER.md C001); the native-layout CPU lane is capped at ~98 GB/s by its strided access",
+    "cores": 24,
+    "threads": 48,
+    "smt_sibling_offset": 24,
+    "numa_nodes": 1,
+    "gpu_power_w": 350
+  }
 }

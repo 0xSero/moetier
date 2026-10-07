@@ -27,5 +27,8 @@
   }
  ],
  "quality": "bit-exact vs stock exllamav3 (panel top-1 1.0, KL 0)",
- "source": "github.com/0xSero/glm53-flash-offload"
+ "source": "github.com/0xSero/glm53-flash-offload",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 111 GB RAM \u00b7 G066a exact (reference)",
+ "gpu_count": 1
 }

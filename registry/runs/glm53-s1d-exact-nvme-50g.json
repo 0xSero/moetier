@@ -35,5 +35,8 @@
   "greedy_equal_vs_exact": true
  },
  "note": "no concurrency scaling: C2/C4 totals equal one stream -> requests serialized in nvme mode (scheduler/batching to fix in G2)",
- "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1d_50g"
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s1/s1d_50g",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 50 GB RAM + NVMe \u00b7 S1d exact",
+ "gpu_count": 1
 }

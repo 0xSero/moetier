@@ -95,5 +95,8 @@
   "prefill_ring_slots": 192
  },
  "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/s2a_55g",
- "note": "exact mode runs C2/C4 streams serially (no -ambs), like G066a/S1c; per layer: copy 2.2 ms for 3.9 admissions at 21 GB/s (SM loads; PCIe-bound), gap 0.69 ms, reply wait p50 4 us; next: S3 CPU tier + batched decode"
+ "note": "exact mode runs C2/C4 streams serially (no -ambs), like G066a/S1c; per layer: copy 2.2 ms for 3.9 admissions at 21 GB/s (SM loads; PCIe-bound), gap 0.69 ms, reply wait p50 4 us; next: S3 CPU tier + batched decode",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 S2 exact",
+ "gpu_count": 1
 }

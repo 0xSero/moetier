@@ -97,5 +97,8 @@
   }
  ],
  "source": "github.com/0xSero/qwen38-flash-next-b70-offload/results/srv25",
- "quality": "srv26: lossy (masking); srv24b: rejected (runaway generations); others: exact-routing path with smoke checks"
+ "quality": "srv26: lossy (masking); srv24b: rejected (runaway generations); others: exact-routing path with smoke checks",
+ "kv_cache": "131k fp8 (1.5 GiB)",
+ "title": "Qwen3.8-Flash-Next \u00b7 1\u00d7 Arc Pro B70 \u00b7 32 GB RAM + NVMe \u00b7 srv25",
+ "gpu_count": 1
 }

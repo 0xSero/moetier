@@ -1,0 +1,126 @@
+{
+ "id": "glm53-s3b-cpu-nvme-batched-55g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S3b: S3a + batched decode actually enabled (serve.py max_rq_tokens 4096 = page-allocation round, not an output cap, so concurrent jobs start; -ambs 4 -> up to 4 rows per step), VRAM reserve 1.5 GB (1312 cache slots; bsz-4 graph capture OOMed at 1.0)",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 14.85,
+   "prefill_tok_s": 583.2
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 15.62,
+   "per_stream": 7.87
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 16.27,
+   "per_stream": 4.63
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 13.46,
+   "prefill_tok_s": 812.3
+  }
+ ],
+ "per_token": {
+  "decode_tokens": 30874,
+  "decode_steps": 16656,
+  "vram_hit": 0.391,
+  "unique_picks_per_step": 599.0,
+  "vram_hits": 126.2,
+  "ram_hits": 174.7,
+  "nvme_reads": 22.3,
+  "ram_hit_rate_of_vram_misses": 0.887,
+  "cpu_experts": 150.0,
+  "gpu_admits_from_ram": 42.7,
+  "nvme_to_gpu": 10.9,
+  "nvme_to_cpu": 12.0,
+  "prefetch_reads": 45.0,
+  "reply_wait_ms": 1.88,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 35.91,
+  "victim_writebacks": 41.5,
+  "wb_no_ring_slot": 0.0,
+  "exclusive_frees": 41.7,
+  "timeouts": 0,
+  "bad_rows": 0,
+  "per_step_note": "per token = per decode step / tokens per step (C2/C4 steps carry 2-4 tokens)",
+  "layer_us": {
+   "us_pub_to_seen": {
+    "p50": 10.2,
+    "p90": 32.8,
+    "p99": 108.5,
+    "mean": 63.4
+   },
+   "us_copy": {
+    "p50": 577.5,
+    "p90": 1136.1,
+    "p99": 3522.1,
+    "mean": 632.5
+   },
+   "us_gap_copy_to_next_pub": {
+    "p50": 711.7,
+    "p90": 2707.7,
+    "p99": 5613.7,
+    "mean": 1102.3
+   },
+   "us_layer_total": {
+    "p50": 1234.9,
+    "p90": 3510.5,
+    "p99": 7339.7,
+    "mean": 1816.0
+   }
+  },
+  "copy_gbps_p50": 15.16
+ },
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "greedy_equal_vs_exact": "0/5",
+  "slot_bytecheck": "128 VRAM + 128 RAM, bad 0+0, tables 0; 128 VRAM + 128 RAM, bad 0+0, tables 0",
+  "decode_kl_paired": {
+   "control_off": {
+    "positions": 1088,
+    "kl_mean": 0.0,
+    "kl_p99": 0.0,
+    "top1_agree": 1.0,
+    "cpu_experts_per_layer_call": 0.0
+   },
+   "cpu_default": {
+    "positions": 1088,
+    "kl_mean": 0.00468,
+    "kl_p99": 0.08179,
+    "top1_agree": 0.98621,
+    "cpu_experts_per_layer_call": 3.55053
+   },
+   "cpu_noclamp": {
+    "positions": 1088,
+    "kl_mean": 0.00635,
+    "kl_p99": 0.11589,
+    "top1_agree": 0.98346,
+    "cpu_experts_per_layer_call": 3.56388
+   }
+  },
+  "decode_kl_method": "same process, CPU lane off (exact GPU path) greedy reference vs forced decode of the same tokens with the CPU lane on (C052i method)"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 51.33,
+  "end_gib": 50.46,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831,
+  "prefill_ring_slots": 192
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/s3b2_55g",
+ "note": "batching shares almost no experts across streams (29.6 unique of 32 picks per layer at C4), so C2/C4 gain only the shared non-MoE time; throughput is bound by CPU (0.25 ms/expert effective, native layout) + PCIe admissions (~15 GB/s under CPU DRAM load). Decode KL from the paired run s3_kl2 (same CPU-lane code, C1).",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe \u00b7 S3b CPU tier + batching",
+ "gpu_count": 1
+}
