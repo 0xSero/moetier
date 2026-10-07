@@ -1,8 +1,5 @@
 # moetier
 
-
-# ATTRIBUTION: THIS IS ALL BASED OFF OF https://github.com/kacper-daftcode/vllm-Moet THIS WORK IS MY SLOP INTERPRETATION OF THAT REPO. IF YOU HAVE RTX PRO 6000S/5090S I WOULD RECOMMEND VLLM-MOET OVER THIS
-
 A minimal standard for running big MoE models on small machines: **where every expert lives, who computes it, and
 when its bytes move.** The scheduling layer is the same for every model; the model, hardware and engines are data.
 
