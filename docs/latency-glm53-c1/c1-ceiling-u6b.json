@@ -1,0 +1,133 @@
+{
+ "run": "glm53-u6b-pfoff",
+ "inputs_per_layer_ms": {
+  "plan": 0.05857142857142857,
+  "book": 0.01788095238095238,
+  "gpu_copy": 0.40373809523809523,
+  "gpu_nvme": 0.09416666666666666,
+  "gpu_moe": 0.2532857142857143,
+  "cpu_start": 0.0817,
+  "cpu_lane": 0.9541666666666667,
+  "cpu_nvme": 0.1452857142857143,
+  "gap": 0.2814285714285714,
+  "boundary": 0.787,
+  "bubble": 2.346,
+  "flag": 0.1708238095238095
+ },
+ "volumes_per_token": {
+  "cpu_experts": 160.431,
+  "vram_hits": 142.178,
+  "admits": 29.883,
+  "nvme": 35.432,
+  "nvme_gpu": 5.264,
+  "nvme_cpu": 31.213
+ },
+ "scenarios": [
+  {
+   "scenario": "model of the measured run",
+   "kind": "-",
+   "ms_per_token": 68.8,
+   "tok_s": 14.5,
+   "saves_ms": 0.0
+  },
+  {
+   "scenario": "host plan + device bookkeeping = 0",
+   "kind": "scheduling",
+   "ms_per_token": 65.6,
+   "tok_s": 15.2,
+   "saves_ms": 3.2
+  },
+  {
+   "scenario": "launch bubbles = 0",
+   "kind": "scheduling",
+   "ms_per_token": 66.5,
+   "tok_s": 15.0,
+   "saves_ms": 2.3
+  },
+  {
+   "scenario": "CPU-done flag latency = 0",
+   "kind": "scheduling",
+   "ms_per_token": 61.7,
+   "tok_s": 16.2,
+   "saves_ms": 7.2
+  },
+  {
+   "scenario": "CPU job starts at publish (no reply wait)",
+   "kind": "scheduling",
+   "ms_per_token": 65.4,
+   "tok_s": 15.3,
+   "saves_ms": 3.4
+  },
+  {
+   "scenario": "NVMe waits = 0 (all misses landed in time)",
+   "kind": "scheduling/prefetch",
+   "ms_per_token": 62.7,
+   "tok_s": 15.9,
+   "saves_ms": 6.1
+  },
+  {
+   "scenario": "admission copy at 25 GB/s (copy engine)",
+   "kind": "faster transfer",
+   "ms_per_token": 68.8,
+   "tok_s": 14.5,
+   "saves_ms": 0.0
+  },
+  {
+   "scenario": "CPU experts at the DDR floor (98 GB/s native layout)",
+   "kind": "faster kernel",
+   "ms_per_token": 50.3,
+   "tok_s": 19.9,
+   "saves_ms": 18.5
+  },
+  {
+   "scenario": "GPU routed MoE at VRAM roofline",
+   "kind": "faster kernel",
+   "ms_per_token": 68.8,
+   "tok_s": 14.5,
+   "saves_ms": 0.0
+  },
+  {
+   "scenario": "non-MoE GPU at VRAM roofline (6.0 GB/token -> 6.4 ms)",
+   "kind": "faster kernels / graphs",
+   "ms_per_token": 62.6,
+   "tok_s": 16.0,
+   "saves_ms": 6.2
+  },
+  {
+   "scenario": "ALL scheduling removable (plan, bubbles, flag, start, NVMe waits)",
+   "kind": "scheduling",
+   "ms_per_token": 46.6,
+   "tok_s": 21.5,
+   "saves_ms": 22.3
+  },
+  {
+   "scenario": "everything at its hardware floor, per-layer serialization kept (honest C1 ceiling, same bytes)",
+   "kind": "ceiling",
+   "ms_per_token": 21.8,
+   "tok_s": 45.8,
+   "saves_ms": 47.0
+  }
+ ],
+ "bounds": {
+  "NVMe bytes / 23.9 GB/s": {
+   "ms": 14.0,
+   "tok_s_bound": 71.5
+  },
+  "PCIe H2D bytes (admits + zero-copy NVMe) / 25 GB/s": {
+   "ms": 13.3,
+   "tok_s_bound": 75.4
+  },
+  "CPU-lane bytes / 98 GB/s": {
+   "ms": 15.4,
+   "tok_s_bound": 64.7
+  },
+  "DDR bytes (CPU reads + H2D reads + NVMe writes + D2H write-backs + RAM->RAM) / 138 GB/s": {
+   "ms": 20.3,
+   "tok_s_bound": 49.3
+  },
+  "GPU: non-MoE + VRAM experts at roofline": {
+   "ms": 7.8,
+   "tok_s_bound": 127.7
+  }
+ }
+}
