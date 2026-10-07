@@ -89,6 +89,17 @@ def read_stat():
     return cur
 
 
+def read_freq(cpus):
+    """current frequency (MHz) per cpu from cpufreq (no root)"""
+    out = []
+    for c in cpus:
+        try:
+            out.append(int(open(f"/sys/devices/system/cpu/cpu{c}/cpufreq/scaling_cur_freq").read()) // 1000)
+        except (OSError, ValueError):
+            out.append(0)
+    return out
+
+
 def read_disks(devs):
     out = {}
     with open("/proc/diskstats") as f:
@@ -162,6 +173,8 @@ def record(a):
         st = read_stat()
         busy = {c: (st[c][0] - prev_s[c][0]) / max(1, st[c][1] - prev_s[c][1]) for c in st if c in prev_s}
         rec["cpu"] = [round(busy.get(c, 0.0), 3) for c in (cpus or sorted(busy))]
+        if a.freq:
+            rec["mhz"] = read_freq(cpus or sorted(busy))
         prev_s = st
         dk = read_disks(devs)
         rec["disk"] = {k: [dk[k][0] - prev_d[k][0], dk[k][1] - prev_d[k][1]] for k in dk if k in prev_d}
@@ -250,7 +263,9 @@ def intervals(rows, slot_bytes, cpu_tier_idx, server_idx=None):
              "cpu_lane_duty_pct": 100 * d("cpu_busy_ns") / 1e9 / dt if lp else None,
              "cpu_lane_weight_gbps": cpu_lane_gbps,
              "ddr_derived_gbps": (cpu_lane_gbps or 0) + rx + tx + md,
-             "ram_gib": r["mem"] / 2 ** 30 if "mem" in r else None, "gpu_power_w": g.get("power_mw", 0) / 1000 or None}
+             "ram_gib": r["mem"] / 2 ** 30 if "mem" in r else None, "gpu_power_w": g.get("power_mw", 0) / 1000 or None,
+             "cpu_tier_mhz": statistics.fmean([r["mhz"][i] for i in cpu_tier_idx if i < len(r["mhz"])]) if r.get("mhz") and cpu_tier_idx else None,
+             "gpu_sm_mhz": g.get("sm_mhz")}
         out.append({"t0": p["t"], "t1": r["t"], "dt": dt, "kind": kind, "v": v, "lp": lp, "lr": lr, "cpu": cpu_all})
     return out
 
@@ -462,6 +477,7 @@ def main(argv=None):
     r.add_argument("--container", help="docker container name (cgroup memory.current)")
     r.add_argument("--cgroup", help="cgroup dir (instead of --container)")
     r.add_argument("--live", help="engine live counters file")
+    r.add_argument("--freq", action="store_true", help="also sample per-cpu cpufreq MHz")
     p = sub.add_parser("report", help="samples + marks + hardware ceilings -> utilization / chokepoints JSON")
     p.add_argument("--samples", required=True)
     p.add_argument("--hardware", required=True, help="registry/hardware/<id>.json")
