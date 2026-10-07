@@ -51,6 +51,8 @@ def plan_layer(R, ledger, picks, t0, nvme, inflight):
     lanes, pol, S = R.lanes, R.policy, R.nvme_expert_bytes      # an NVMe miss pushed to VRAM is the NVMe record
     gpu, cpu, zc = lanes.get("gpu"), lanes.get("cpu"), lanes.get("zerocopy")
     p = LayerPlan()
+    if getattr(ledger, "policy", "lru") != "lru":
+        ledger.observe(picks, getattr(ledger, "step", 0))
     V, Rm, N = [], [], []
     for k, m in picks.items():
         t = ledger.tier(k)

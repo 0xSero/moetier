@@ -1,6 +1,6 @@
-"""moetier show | sim | table   — read records, run the scheduler, print the standard table."""
+"""moetier show | sim | table | probe   — read records, run the scheduler, print the standard table, measure a bench."""
 import argparse, json, os, sys
-from . import spec, sim
+from . import spec
 
 ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "registry")
 
@@ -18,6 +18,10 @@ def _ovr(items):
 
 
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv and argv[0] == "probe":          # moetier probe record | report (see moetier/probe.py)
+        from . import probe
+        return probe.main(argv[1:])
     ap = argparse.ArgumentParser(prog="moetier")
     ap.add_argument("cmd", choices=["show", "sim", "table"])
     ap.add_argument("recipe")
@@ -27,6 +31,7 @@ def main(argv=None):
     ap.add_argument("--set", nargs="*", help="override, e.g. budget.ram_gb=55 policy.prefetch.recall=0.7")
     ap.add_argument("--root", default=ROOT)
     a = ap.parse_args(argv)
+    from . import sim                       # numpy (the probe path above does not need it)
     reg = spec.load(a.root)
     R = spec.resolve(reg, a.recipe, **_ovr(a.set))
     if a.cmd == "show":

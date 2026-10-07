@@ -44,9 +44,51 @@ class Clock:
 
 
 class Ledger:
-    def __init__(self, vram_slots, ram_slots, keys, exclusive=True):
+    def __init__(self, vram_slots, ram_slots, keys, exclusive=True, ram_policy="lru", prior=None):
+        """ram_policy: 'lru' (evict the least recently used), or 'lfu:<window>:<halflife>' = sampled LFU with recency:
+        among the <window> least recently used RAM entries evict the one with the lowest decayed pick frequency
+        (half-life in decode steps; 0 = no decay). Frequency counts every pick of the key in any tier (the host sees all
+        of them), optionally starting from a prior (e.g. the warm-start scores)."""
         self.vram, self.ram, self.ram_slots, self.keys, self.exclusive = Clock(vram_slots), OrderedDict(), ram_slots, keys, exclusive
         self.all_in_ram = ram_slots >= keys
+        self.policy, self.win, self.hl = "lru", 0, 0.0
+        if ram_policy and ram_policy.startswith("lfu"):
+            parts = (ram_policy.split(":") + ["32", "0"])[1:3]
+            self.policy, self.win, self.hl = "lfu", int(parts[0]), float(parts[1])
+        self.freq, self.tlast, self.now = {}, {}, 0.0
+        if prior is not None:
+            for k, v in prior.items():
+                self.freq[k] = float(v)
+        self.lfu_evictions = 0
+
+    def _f(self, k):
+        f = self.freq.get(k, 0.0)
+        if self.hl and f:
+            f *= 0.5 ** ((self.now - self.tlast.get(k, self.now)) / self.hl)
+        return f
+
+    def observe(self, keys, now):
+        """picks of one layer call (host-visible), now = decode step index"""
+        if self.policy != "lfu":
+            return
+        self.now = now
+        for k in keys:
+            self.freq[k] = self._f(k) + 1.0
+            self.tlast[k] = now
+
+    def _evict_ram(self):
+        if self.policy == "lfu" and self.win > 1:
+            best, bf = None, None
+            for i, k in enumerate(self.ram):
+                if i >= self.win:
+                    break
+                f = self._f(k)
+                if bf is None or f < bf:
+                    best, bf = k, f
+            del self.ram[best]
+            self.lfu_evictions += 1
+            return best
+        return self.ram.popitem(last=False)[0]
 
     def tier(self, key):
         if key in self.vram:
@@ -75,7 +117,7 @@ class Ledger:
         self.ram[key] = None
         self.ram.move_to_end(key)
         if len(self.ram) > self.ram_slots:
-            return self.ram.popitem(last=False)[0]
+            return self._evict_ram()
         return None
 
     def promote(self, key, protect=()):

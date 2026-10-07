@@ -89,6 +89,30 @@ What the planner says:
 - Exact 50 tok/s at C1 therefore needs fewer RAM bytes per token. The options are MTP (tokens in a verify window share
   experts), a higher VRAM hit rate, or lossy top-k.
 
+## Run records: utilization and chokepoints
+
+Every run record (`registry/runs/<id>.json`) carries, next to its standard `table` and `quality`, two measured
+sections produced by `moetier probe` (method and field reference: `docs/utilization.md`):
+
+```text
+utilization.phases.<phase>.<decode|prefill>       phase = a bench cell window (prefill_8k, decode_C1, decode_C1@32k, ...)
+  active_s                                       seconds of decode-only (or prefill-only) activity in the window
+  resources.<name>: {mean, p50, p90, ceiling, pct_of_ceiling{mean,p50,p90}, idle_frac}
+      gpu_util_pct  vram_busy_pct  pcie_h2d_gbps  pcie_d2h_gbps  nvme_read_gbps  cpu_tier_cores_busy_pct
+      cpu_lane_duty_pct  cpu_lane_weight_gbps  ddr_derived_gbps  ram_gib  gpu_power_w
+  per_core_busy_pct                               cpu -> busy % (placement questions)
+utilization.phases.<phase>.time_split             fractions decode / prefill / mixed / idle
+chokepoints.phases.<phase>.decode                 critical-path attribution of decode wall time, per token (ms):
+  per_token_ms {fixed_gpu, gpu_moe, cpu_moe, nvme_stall, copy, overhead}, share, binding
+  lane_last {gpu, cpu, nvme}                      which lane finished a layer last (fraction of layer calls)
+  slack_ms_per_layer, per_layer_ms, detail_ms_per_token, quality (lost/bad samples, launch-bound fraction)
+chokepoints.phases.<phase>.prefill                {gpu_compute, staging_stall, host_gap} per forward and in total
+chokepoints.phases.<phase>.binding                one line: the dominant critical-path bucket + the resource nearest its ceiling
+```
+
+`ceilings` in the hardware record (`registry/hardware/<id>.json`) are what `pct_of_ceiling` divides by. `binding` is
+the bucket a scheduler change has to shrink; a change that does not move it is stopped early.
+
 ## Layout
 
 | path | what |
@@ -99,6 +123,7 @@ What the planner says:
 | `moetier/plan.py` | the scheduler: `plan_layer`, NVMe channel, prefetch |
 | `moetier/transport.py` | transport contract + O_DIRECT record reader + RAM slot pool |
 | `moetier/sim.py` | trace replay and prefill model |
+| `moetier/probe.py` | `moetier probe record` (host sampler) and `report` (utilization + chokepoints for a run record) |
 | `adapters/` | how existing engines implement the contract |
 | `examples/levers.py` | the lever study above |
 

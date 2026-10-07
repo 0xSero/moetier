@@ -18,7 +18,8 @@ def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_m
     freq = np.zeros(L * E)
     for l in range(L):
         np.add.at(freq, l * E + cat[:, l, :R.topk].reshape(-1), 1)
-    led = Ledger(R.vram_slots, R.ram_slots, L * E, exclusive=R.policy.get("ram", "exclusive") == "exclusive")
+    led = Ledger(R.vram_slots, R.ram_slots, L * E, exclusive=R.policy.get("ram", "exclusive") == "exclusive",
+                 ram_policy=R.policy.get("ram_evict", "lru"))
     led.seed([int(k) for k in np.argsort(-freq)])
     nv = NvmeChannel(R.nvme_expert_bytes, R.nvme_bw_gbps, R.nvme_bw_qd1_gbps, R.nvme_latency_ms)
     pf = R.policy.get("prefetch", {})
@@ -33,6 +34,7 @@ def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_m
         if measure:
             snap = (st["t"], nv.reads)
         t = st["t"] + draft_ms
+        led.step = step
         F = R.fixed(len(rows))
         for l in range(L):
             picks = {}
