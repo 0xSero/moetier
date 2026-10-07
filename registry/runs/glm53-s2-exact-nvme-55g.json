@@ -1,0 +1,99 @@
+{
+ "id": "glm53-s2-exact-nvme-55g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S2: exact nv2 at --memory 55g: device-side NVMe stall (host controller + O_DIRECT pthread reader pool, per-key landed flags in mapped memory, no per-layer host sync), exclusive RAM tier (VRAM victims parked D2D in a 32-slot VRAM ring, drained D2H by a copy-engine thread into fresh RAM slots; admissions free their RAM copy), prefill read-ahead through a 192-slot FIFO ring (~1 layer of NVMe experts ahead), staged prefill for >=512 picks, small forwards on the device-side path; K101 HCFUSE (bit-exact)",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 8.28,
+   "prefill_tok_s": 563.5
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 8.23,
+   "per_stream": 8.23
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 8.28,
+   "per_stream": 8.28
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 7.74,
+   "prefill_tok_s": 805.5
+  }
+ ],
+ "per_token": {
+  "decode_tokens": 30248,
+  "decode_steps": 30248,
+  "vram_hit": 0.546,
+  "unique_picks_per_step": 335.6,
+  "vram_hits": 183.1,
+  "ram_hits": 119.1,
+  "nvme_reads": 33.4,
+  "ram_hit_rate_of_vram_misses": 0.781,
+  "cpu_experts": 0.0,
+  "gpu_admits_from_ram": 120.3,
+  "nvme_to_gpu": 34.3,
+  "nvme_to_cpu": 0.0,
+  "prefetch_reads": 0.0,
+  "reply_wait_ms": 5.21,
+  "nvme_wait_ms": 10.85,
+  "cpu_busy_ms": 0.0,
+  "victim_writebacks": 152.4,
+  "wb_no_ring_slot": 0.24,
+  "exclusive_frees": 152.7,
+  "timeouts": 0,
+  "bad_rows": 0,
+  "per_step_note": "per token = per decode step / tokens per step (C2/C4 steps carry 2-4 tokens)",
+  "layer_us": {
+   "us_pub_to_seen": {
+    "p50": 10.2,
+    "p90": 23.6,
+    "p99": 95.3,
+    "mean": 104.0
+   },
+   "us_copy": {
+    "p50": 1949.2,
+    "p90": 4086.3,
+    "p99": 6773.9,
+    "mean": 2196.8
+   },
+   "us_gap_copy_to_next_pub": {
+    "p50": 466.9,
+    "p90": 894.6,
+    "p99": 3200.2,
+    "mean": 693.9
+   },
+   "us_layer_total": {
+    "p50": 2541.6,
+    "p90": 5122.5,
+    "p99": 8348.9,
+    "mean": 3029.3
+   }
+  },
+  "copy_gbps_p50": 21.12
+ },
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "greedy_equal_vs_exact": "5/5",
+  "slot_bytecheck": "128 VRAM + 128 RAM, bad 0+0, tables 0; 128 VRAM + 128 RAM, bad 0+0, tables 0"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 50.7,
+  "end_gib": 50.34,
+  "ram_tier_gib": 42.776,
+  "ram_slots": 4867,
+  "prefill_ring_slots": 192
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/s2a_55g",
+ "note": "exact mode runs C2/C4 streams serially (no -ambs), like G066a/S1c; per layer: copy 2.2 ms for 3.9 admissions at 21 GB/s (SM loads; PCIe-bound), gap 0.69 ms, reply wait p50 4 us; next: S3 CPU tier + batched decode"
+}

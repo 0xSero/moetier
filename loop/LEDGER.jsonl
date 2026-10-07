@@ -4,3 +4,14 @@
 {"ts": "2026-10-06T21:26:02-04:00", "item": "G1", "step": "check s1c_55g (agent owns 3090)", "result": "sweep in progress: prefill 8k 501 / 32k ~762, decode C1 7.25 C2 7.21 agg; guard clean"}
 {"ts": "2026-10-06T21:56:02-04:00", "item": "G1", "step": "check s1c_55g", "result": "decode C1 7.25 C2 7.21 C4 7.25 agg; prefill 8k 501-528 / 32k ~762; 32k C1 decode pending; guard clean"}
 {"ts": "2026-10-06T22:08:55-04:00", "item": "G1", "step": "S1 done", "result": "exact; 55g: C1 7.26 C2 7.21 C4 7.26 32k 6.83, prefill 515/762; next G2 S2", "run": "glm53-s1c-exact-nvme-55g"}
+{"ts": "2026-10-06T22:19:02-04:00", "item": "G2", "step": "check (N119 owns 3090)", "result": "guard clean; agent coding (GPU idle, no s2 runs yet)"}
+{"ts": "2026-10-06T22:49:02-04:00", "item": "G2", "step": "check (N119 owns 3090)", "result": "guard clean; s2/ dir created, still building (GPU idle)"}
+{"ts": "2026-10-06T23:19:05-04:00", "item": "G2", "step": "check (N119 owns 3090)", "result": "guard clean; S2 smoke iteration 4 running"}
+{"ts": "2026-10-06T23:49:03-04:00", "item": "G2", "step": "check (N119 owns 3090)", "result": "guard clean; S2 arm s2a_55g launched (RAM tier 4868 slots 42.8 GiB, rcs 4 GiB reserved, prefill ring 192 slots)"}
+{"ts": "2026-10-07T00:19:05-04:00", "item": "G2", "step": "check s2a_55g", "result": "sweep in progress: prefill 8k ~563 / 32k ~805 (S1c 515/762), decode C1 8.28 C2 8.23 agg (S1c 7.26/7.21); guard clean"}
+{"ts": "2026-10-07T00:49:09-04:00", "item": "G2", "step": "check s2a_55g", "result": "exact (panel top1 1.0 KL 0); decode C1 8.28 C2 8.23 C4 8.28; prefill ~563/805; 32k C1 pending; guard clean"}
+{"ts": "2026-10-07T01:19:07-04:00", "item": "G2", "step": "S2 recorded (by agent); S3 smokes started", "result": "S2 exact: C1 8.28 C2 8.23 C4 8.28, 32k C1 7.74, prefill ~563/805", "run": "glm53-s2-exact-nvme-55g"}
+{"ts": "2026-10-07T01:49:12-04:00", "item": "G2", "step": "check S3 decode-KL diagnosis (N119)", "result": "paired decode KL vs exact: control 0, cpu_default 0.0027, cpu_noclamp 0.0010-0.0020, top1 1.0 on sampled prompts; agent diagnosing the G067 CPU-tier KL issue; guard clean"}
+{"ts": "2026-10-07T02:19:18-04:00", "item": "G2", "step": "S3 KL result + s3a_55g sweep running", "result": "paired decode KL over 1088 pos: control 0; cpu_default mean 0.0047 (p99 0.082) top1 ~0.96; cpu_noclamp 0.0063 (worse) -> clamp not the cause; S3 arm s3a_55g running"}
+{"ts": "2026-10-07T02:49:11-04:00", "item": "G2", "step": "S3a recorded (agent); s3b running", "result": "S3a CPU tier: C1 15.30 C2 14.68 C4 14.59 32k C1 13.77; decode KL ~0.0047 vs exact", "run": "glm53-s3a-cpu-nvme-55g"}
+{"ts": "2026-10-07T03:19:11-04:00", "item": "G2", "step": "check (N119)", "result": "s3b -> s3b2 relaunch: GLM53_MODE=nvme3 with victim ring 24, NV prefetch on, prefetch profiling; guard clean"}

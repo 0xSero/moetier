@@ -56,13 +56,17 @@ def plan_layer(R, ledger, picks, t0, nvme, inflight):
         t = ledger.tier(k)
         (V if t == VRAM else Rm if t == RAM else N).append((k, m))
     push_ms = S / (R.h2d_gbps * 1e6)
-    g = (gpu.per_layer_ms + gpu.per_expert_ms * len(V)) if V else 0.0
+    # GPU lane: per_extra_token_ms (default 0) prices extra rows on one expert, e.g. exllamav3's fused bsz<=8 decode
+    # kernels, which run every (token, expert) slot and re-read a shared expert's weights (MTP verify, C2/C4)
+    gx = gpu.per_extra_token_ms if gpu else 0.0
+    zx = zc.per_extra_token_ms if zc else 0.0
+    g = (gpu.per_layer_ms + sum(gpu.per_expert_ms + gx * (m - 1) for _, m in V)) if V else 0.0
     c = cpu.per_layer_ms if (cpu and (Rm or N)) else 0.0
     p.gpu = [k for k, _ in V]
     # RAM picks: CPU in place vs GPU zero-copy, greedy min-max (biggest token counts first)
     for k, m in sorted(Rm, key=lambda x: -x[1]):
         ce = c + cpu.per_expert_ms + cpu.per_extra_token_ms * (m - 1) if cpu else float("inf")
-        ge = g + (zc.per_expert_ms if zc else float("inf"))
+        ge = g + (zc.per_expert_ms + zx * (m - 1) if zc else float("inf"))
         if max(ce, g) <= max(c, ge):
             c = ce; p.cpu.append(k)
         else:
@@ -78,7 +82,7 @@ def plan_layer(R, ledger, picks, t0, nvme, inflight):
             for k, m in sorted(N, key=lambda x: arr[x[0]]):
                 a = max(0.0, arr[k] - t0)                                        # relative to layer start
                 ce = max(c, a) + cpu.per_expert_ms + cpu.per_extra_token_ms * (m - 1) if cpu else float("inf")
-                ge = max(g, a + push_ms) + (gpu.per_expert_ms if gpu else 0.0)
+                ge = max(g, a + push_ms) + (gpu.per_expert_ms + gx * (m - 1) if gpu else 0.0)
                 if max(ce, g) <= max(c, ge):
                     c = ce; p.nvme_cpu.append(k)
                 else:

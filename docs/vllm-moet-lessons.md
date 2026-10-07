@@ -369,6 +369,8 @@ Speculative decoding (lossless), C1, 3.05 everywhere, all levers [S]:
 - **MTP k=2 is the one modeled lever that clears 45 tok/s at C1 with exact output.** Combined with fused non-MoE
   (already in the base) and a better VRAM hit rate, it puts 50 tok/s in reach without lossy changes [S].
 - research/14 noted DSpark is excluded by the DSV41 serving rules. Check whether the same applies to GLM-5.3 MTP.
+- **Update (N120, docs/mtp-glm53.md):** this checkpoint's measured MTP acceptance is 1.79 (k=1) / 2.27 (k=2), not
+  GB10's 2.85. With it the levers design gives C1 38.1 (k=1) / 36.6 (k=2), not 46; today's S3 config 15.3 -> ~19-20.
 
 ### 6.3 A residual (Δ) format on top of EXL3 trellis (6b)
 

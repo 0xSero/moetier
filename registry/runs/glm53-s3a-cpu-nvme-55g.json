@@ -1,0 +1,123 @@
+{
+ "id": "glm53-s3a-cpu-nvme-55g",
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S3a: S2 + AVX2 CPU tier computing RAM-resident experts in place from their RAM slots (native layout, 22 persistent threads on cpus 2-23, slots pinned per job, swiglu clamp = B004 fix), per-layer lanes by plan_layer min-max (VRAM->GPU, RAM->CPU or GPU-admit, NVMe->CPU after landing or GPU zero-copy without admission), layer-ahead NVMe prefetch (next layer's router on this layer's MoE input), -ambs 4",
+ "measured": "2026-10-07",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 15.3,
+   "prefill_tok_s": 576.0
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 14.68,
+   "per_stream": 14.63
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 14.59,
+   "per_stream": 14.6
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 13.77,
+   "prefill_tok_s": 814.0
+  }
+ ],
+ "per_token": {
+  "decode_tokens": 31553,
+  "decode_steps": 31553,
+  "vram_hit": 0.449,
+  "unique_picks_per_step": 336.0,
+  "vram_hits": 151.0,
+  "ram_hits": 167.1,
+  "nvme_reads": 17.9,
+  "ram_hit_rate_of_vram_misses": 0.903,
+  "cpu_experts": 151.1,
+  "gpu_admits_from_ram": 30.7,
+  "nvme_to_gpu": 4.9,
+  "nvme_to_cpu": 13.9,
+  "prefetch_reads": 35.4,
+  "reply_wait_ms": 2.43,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 38.08,
+  "victim_writebacks": 29.8,
+  "wb_no_ring_slot": 0.0,
+  "exclusive_frees": 30.0,
+  "timeouts": 0,
+  "bad_rows": 0,
+  "per_step_note": "per token = per decode step / tokens per step (C2/C4 steps carry 2-4 tokens)",
+  "layer_us": {
+   "us_pub_to_seen": {
+    "p50": 11.3,
+    "p90": 35.8,
+    "p99": 129.0,
+    "mean": 61.4
+   },
+   "us_copy": {
+    "p50": 583.7,
+    "p90": 1113.6,
+    "p99": 4195.3,
+    "mean": 662.4
+   },
+   "us_gap_copy_to_next_pub": {
+    "p50": 711.7,
+    "p90": 2836.7,
+    "p99": 5811.1,
+    "mean": 1121.7
+   },
+   "us_layer_total": {
+    "p50": 1258.5,
+    "p90": 3566.6,
+    "p99": 8103.2,
+    "mean": 1866.0
+   }
+  },
+  "copy_gbps_p50": 15.31
+ },
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "greedy_equal_vs_exact": "0/5",
+  "slot_bytecheck": "128 VRAM + 128 RAM, bad 0+0, tables 0; 128 VRAM + 128 RAM, bad 0+0, tables 0",
+  "decode_kl_paired": {
+   "control_off": {
+    "positions": 1088,
+    "kl_mean": 0.0,
+    "kl_p99": 0.0,
+    "top1_agree": 1.0,
+    "cpu_experts_per_layer_call": 0.0
+   },
+   "cpu_default": {
+    "positions": 1088,
+    "kl_mean": 0.00468,
+    "kl_p99": 0.08179,
+    "top1_agree": 0.98621,
+    "cpu_experts_per_layer_call": 3.55053
+   },
+   "cpu_noclamp": {
+    "positions": 1088,
+    "kl_mean": 0.00635,
+    "kl_p99": 0.11589,
+    "top1_agree": 0.98346,
+    "cpu_experts_per_layer_call": 3.56388
+   }
+  },
+  "decode_kl_method": "same process, CPU lane off (exact GPU path) greedy reference vs forced decode of the same tokens with the CPU lane on (C052i method)"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 50.94,
+  "end_gib": 50.22,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831,
+  "prefill_ring_slots": 192
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/s3a_55g",
+ "note": "C2/C4 still ran one stream at a time: serve.py gives every job max_new_tokens = remaining context and exllamav3 reserves pages for it (no max_rq_tokens), so a second job never starts until the first ends (measured 1.0 tokens per decode step during C4); S3b sets a page-allocation round (max_rq_tokens 4096, not an output cap). Greedy outputs differ from exact (0/5 equal: CPU arithmetic), panel exact (prefill path has no CPU lane)."
+}
