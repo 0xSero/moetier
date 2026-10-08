@@ -98,9 +98,42 @@ C++/SYCL server loop.
 Sim with the measured handoff (0.14-0.19 ms per layer): 55 GB + 1 B70 gives C1 31.3-31.5, C2 41.6-41.7, C4 52.2. The
 B70 lane costs 7.8-9.7 ms per token, still under the CPU lane's 16.4.
 
+## Step 2: numerics vs the CUDA path (real layers)
+
+The reference is `b70tier/cuda_ref.py`, run on the 3090 (2026-10-08 23:16, 0.23 GiB, kguard clean). It takes 48 real
+checkpoint experts (store layers li 0 / 20 / 41 = model layers 3 / 23 / 44, 16 each) and builds them as exllamav3
+`LinearEXL3` (trellis + suh + svh + mul1). It runs them through `BlockSparseMLP`'s per-expert torch path (up, gate,
+`ext.silu_mul(limit 10)`, down) and sums them with the routing weights in fp32. It also computes an fp64 reference from
+`get_weight_tensor()`.
+
+The B70 side ran on 48:00.0 (23:24-23:25, guard clean): the same 24 cases (M = 1/2/4/8, x scale 0.5 and 4, top-8 of
+the 16, weights summing to 2.5) went through the ring, with one row per pick and rows added per token in fp32.
+
+| comparison (24 cases) | rel L2 | cos |
+|---|---|---|
+| B70 server vs fp64 reference | 0.0013-0.0015 | - |
+| B70 server vs exllamav3 CUDA per-expert path | 0.0112-0.0125 | 0.99992-0.99994 |
+| exllamav3 CUDA per-expert path vs fp64 reference | 0.0112-0.0124 | - |
+| shipped AVX2 CPU tier vs fp64 (its startup selftest, for scale) | 0.0010 | - |
+
+The B70 output matches the fp64 reference as closely as the shipped CPU tier does. Its distance from the CUDA
+per-expert path is the CUDA path's own distance from fp64. The engine's C++ ring client (`nv2_host.cpp`
+`b70_forward`, the code the CPU worker runs in decode) gives the same numbers as the Python client on all 24 cases,
+and every output is finite.
+
 ## Status
 
 - Step 1 (this doc, the sim): done.
-- Step 2: server and latency measured (above). Numerics against exllamav3's CUDA expert path are pending: the
-  reference dump (`b70tier/cuda_ref.py`) is queued on the 3090 lock.
-- Step 3 (integration + measurement): booked for the joint 3090 + B70 window.
+- Step 2 (server, latency, capacity, numerics vs CUDA): done. Code is on glm53-flash-offload branch
+  `n137-b70-tier` (`b70tier/`, `kernels/nv2`, `glm53/nv2.py`, `bench/decode_kl_nv.py`).
+- Step 3 (integration + measurement): **blocked**. B70 48:00.0 dropped off the bus at 2026-10-09 00:16:23 CEST during
+  N130's Qwen run, not an N137 job: pciehp Link Down on 40:03.1, IOMMU Completion-Wait timeouts. `/home` on omarchy then
+  went read-only. The chain is ready (`b70tier/scripts/step3_chain.sh`):
+  1. B70 server up under the B70 lock and guard;
+  2. `s3b70`: panel, full sweep and verify with GLM53_B70=1;
+  3. `s3ctl`: same-session control;
+  4. `s3kl`: paired decode-KL with control_off, cpu_default, cpu_b70 and b70_only;
+  5. a full-RAM pair (120g).
+
+  It needs a working B70 on a card the user approves, and the box recovered (the user decides about a reboot).
+  Nothing ships: the panel and the paired decode-KL have not run.
