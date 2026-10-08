@@ -76,9 +76,31 @@ For the full-RAM layout it reads 27.5 against a measured 28.2 (G067). The 55 GB 
 effects that the sim underprices. The B70 removes most of the NVMe traffic (20 -> 3.4 per token), so the measured
 result should land between sim x 0.74 (about 23 tok/s) and the sim (31.6) at C1.
 
+## Step 2: B70 expert server, measured (48:00.0, 2026-10-08 23:13-23:22 CEST, guard clean)
+
+Code: `omarchy:~/freetoken-exl3/runs/N137-b70tier/`. The engine copy is on branch `n137-b70-tier` of
+glm53-flash-offload: `b70tier/` (server, ring, tests, scripts), `kernels/nv2` (the `LN_B70` lane and the CPU-worker
+ring client), `glm53/nv2.py` (`GLM53_B70=1`) and `bench/decode_kl_nv.py` (variants `b70_only` and `cpu_b70`).
+
+| measurement | value |
+|---|---|
+| LOAD 3,000 experts (28.42 GB) from the NVMe store, O_DIRECT -> VRAM staging -> permute | 4.9 s, 5.77 GB/s (container capped at 6 GB/s); byte spot check 0 bad |
+| capacity | 3,300 experts (31.26 GB) fit: 29.28 of 31.89 GiB allocated |
+| ring round trip p50, 1 / 2 / 3 / 4 rows (one row per pick) | 169-183 / 177-191 / 201-211 / 211-222 µs |
+| 8 / 16 / 32 rows | 308-317 / 480-488 / 822 µs |
+| derived | 0.021 ms per expert (the microbench's 0.0215) + ~0.15 ms fixed per layer call |
+| server phases p50 (1 row, host clock) | H2D submit 45, moe_forward submit 74, D2H submit 78, sync 50 µs |
+
+The fixed cost comes from the Level Zero copy and launch path, not from the ring. A USM bounce buffer only moves the
+time into the sync, and immediate command lists change nothing. Fewer submits would help: a fused copy+MoE graph or a
+C++/SYCL server loop.
+
+Sim with the measured handoff (0.14-0.19 ms per layer): 55 GB + 1 B70 gives C1 31.3-31.5, C2 41.6-41.7, C4 52.2. The
+B70 lane costs 7.8-9.7 ms per token, still under the CPU lane's 16.4.
+
 ## Status
 
 - Step 1 (this doc, the sim): done.
-- Step 2 (B70 expert server + ring + 3090-side client in a copy of the engine, `omarchy:~/freetoken-exl3/runs/N137-b70tier/`;
-  numerics vs the CUDA path on real layers): see below.
-- Step 3 (integration + measurement): waits until slot A (3090) and B70 48:00.0 are both free.
+- Step 2: server and latency measured (above). Numerics against exllamav3's CUDA expert path are pending: the
+  reference dump (`b70tier/cuda_ref.py`) is queued on the 3090 lock.
+- Step 3 (integration + measurement): booked for the joint 3090 + B70 window.
