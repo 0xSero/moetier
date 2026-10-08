@@ -1,0 +1,1405 @@
+{
+ "T_capture": 54442,
+ "requests": 16,
+ "test_tokens": 9680,
+ "test_requests": 4,
+ "looka": {
+  "55": {
+   "ram_slots": 5087,
+   "vram_slots": 1510,
+   "tokens": 9480,
+   "pred": {
+    "edge0@8": {
+     "recall_nvme": 0.0817,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 38.98,
+     "used_per_tok": 4.66,
+     "precision": 0.1196,
+     "read_gb_per_tok": 0.369,
+     "wasted_gb_per_tok": 0.325
+    },
+    "edge0@12": {
+     "recall_nvme": 0.1205,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 67.58,
+     "used_per_tok": 6.34,
+     "precision": 0.0938,
+     "read_gb_per_tok": 0.64,
+     "wasted_gb_per_tok": 0.58
+    },
+    "edge0@16": {
+     "recall_nvme": 0.155,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 99.86,
+     "used_per_tok": 7.74,
+     "precision": 0.0776,
+     "read_gb_per_tok": 0.946,
+     "wasted_gb_per_tok": 0.873
+    },
+    "edge0@24": {
+     "recall_nvme": 0.2168,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 173.0,
+     "used_per_tok": 10.17,
+     "precision": 0.0588,
+     "read_gb_per_tok": 1.639,
+     "wasted_gb_per_tok": 1.543
+    },
+    "edge0@32": {
+     "recall_nvme": 0.2708,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 255.56,
+     "used_per_tok": 12.21,
+     "precision": 0.0478,
+     "read_gb_per_tok": 2.421,
+     "wasted_gb_per_tok": 2.305
+    },
+    "self@8": {
+     "recall_nvme": 0.0797,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 36.69,
+     "used_per_tok": 4.8,
+     "precision": 0.1309,
+     "read_gb_per_tok": 0.348,
+     "wasted_gb_per_tok": 0.302
+    },
+    "self@12": {
+     "recall_nvme": 0.1194,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 63.94,
+     "used_per_tok": 6.52,
+     "precision": 0.1019,
+     "read_gb_per_tok": 0.606,
+     "wasted_gb_per_tok": 0.544
+    },
+    "self@16": {
+     "recall_nvme": 0.156,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 94.97,
+     "used_per_tok": 8.01,
+     "precision": 0.0844,
+     "read_gb_per_tok": 0.9,
+     "wasted_gb_per_tok": 0.824
+    },
+    "self@24": {
+     "recall_nvme": 0.2204,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 165.86,
+     "used_per_tok": 10.53,
+     "precision": 0.0635,
+     "read_gb_per_tok": 1.571,
+     "wasted_gb_per_tok": 1.472
+    },
+    "self@32": {
+     "recall_nvme": 0.2763,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 246.66,
+     "used_per_tok": 12.62,
+     "precision": 0.0512,
+     "read_gb_per_tok": 2.337,
+     "wasted_gb_per_tok": 2.217
+    },
+    "same@8": {
+     "recall_nvme": 0.4786,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 37.01,
+     "used_per_tok": 16.25,
+     "precision": 0.4391,
+     "read_gb_per_tok": 0.351,
+     "wasted_gb_per_tok": 0.197
+    },
+    "same@12": {
+     "recall_nvme": 0.5969,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 66.49,
+     "used_per_tok": 20.26,
+     "precision": 0.3047,
+     "read_gb_per_tok": 0.63,
+     "wasted_gb_per_tok": 0.438
+    },
+    "same@16": {
+     "recall_nvme": 0.6716,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 100.52,
+     "used_per_tok": 22.8,
+     "precision": 0.2268,
+     "read_gb_per_tok": 0.952,
+     "wasted_gb_per_tok": 0.736
+    },
+    "same@24": {
+     "recall_nvme": 0.7634,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 178.65,
+     "used_per_tok": 25.92,
+     "precision": 0.1451,
+     "read_gb_per_tok": 1.693,
+     "wasted_gb_per_tok": 1.447
+    },
+    "same@32": {
+     "recall_nvme": 0.8196,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 267.11,
+     "used_per_tok": 27.82,
+     "precision": 0.1042,
+     "read_gb_per_tok": 2.531,
+     "wasted_gb_per_tok": 2.267
+    },
+    "router_same@8": {
+     "recall_nvme": 0.5464,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 44.49,
+     "used_per_tok": 18.55,
+     "precision": 0.417,
+     "read_gb_per_tok": 0.421,
+     "wasted_gb_per_tok": 0.246
+    },
+    "router_same@12": {
+     "recall_nvme": 0.6727,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 81.99,
+     "used_per_tok": 22.84,
+     "precision": 0.2785,
+     "read_gb_per_tok": 0.777,
+     "wasted_gb_per_tok": 0.56
+    },
+    "router_same@16": {
+     "recall_nvme": 0.7463,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 125.11,
+     "used_per_tok": 25.33,
+     "precision": 0.2025,
+     "read_gb_per_tok": 1.185,
+     "wasted_gb_per_tok": 0.945
+    },
+    "router_same@24": {
+     "recall_nvme": 0.8282,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 222.62,
+     "used_per_tok": 28.12,
+     "precision": 0.1263,
+     "read_gb_per_tok": 2.109,
+     "wasted_gb_per_tok": 1.843
+    },
+    "router_same@32": {
+     "recall_nvme": 0.8741,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 330.52,
+     "used_per_tok": 29.67,
+     "precision": 0.0898,
+     "read_gb_per_tok": 3.131,
+     "wasted_gb_per_tok": 2.85
+    },
+    "router_next@8": {
+     "recall_nvme": 0.0285,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 44.46,
+     "used_per_tok": 3.66,
+     "precision": 0.0822,
+     "read_gb_per_tok": 0.421,
+     "wasted_gb_per_tok": 0.387
+    },
+    "router_next@12": {
+     "recall_nvme": 0.0586,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 81.95,
+     "used_per_tok": 5.08,
+     "precision": 0.062,
+     "read_gb_per_tok": 0.776,
+     "wasted_gb_per_tok": 0.728
+    },
+    "router_next@16": {
+     "recall_nvme": 0.0893,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 125.05,
+     "used_per_tok": 6.33,
+     "precision": 0.0507,
+     "read_gb_per_tok": 1.185,
+     "wasted_gb_per_tok": 1.125
+    },
+    "router_next@24": {
+     "recall_nvme": 0.1464,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 222.53,
+     "used_per_tok": 8.49,
+     "precision": 0.0381,
+     "read_gb_per_tok": 2.108,
+     "wasted_gb_per_tok": 2.028
+    },
+    "router_next@32": {
+     "recall_nvme": 0.1975,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 330.38,
+     "used_per_tok": 10.34,
+     "precision": 0.0313,
+     "read_gb_per_tok": 3.13,
+     "wasted_gb_per_tok": 3.032
+    },
+    "router_self@8": {
+     "recall_nvme": 0.0,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 33.93,
+     "used_per_tok": 3.95,
+     "precision": 0.1165,
+     "read_gb_per_tok": 0.321,
+     "wasted_gb_per_tok": 0.284
+    },
+    "router_self@12": {
+     "recall_nvme": 0.0502,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 64.77,
+     "used_per_tok": 5.65,
+     "precision": 0.0873,
+     "read_gb_per_tok": 0.614,
+     "wasted_gb_per_tok": 0.56
+    },
+    "router_self@16": {
+     "recall_nvme": 0.0926,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 102.34,
+     "used_per_tok": 7.09,
+     "precision": 0.0693,
+     "read_gb_per_tok": 0.97,
+     "wasted_gb_per_tok": 0.902
+    },
+    "router_self@24": {
+     "recall_nvme": 0.1628,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 191.45,
+     "used_per_tok": 9.47,
+     "precision": 0.0495,
+     "read_gb_per_tok": 1.814,
+     "wasted_gb_per_tok": 1.724
+    },
+    "router_self@32": {
+     "recall_nvme": 0.2199,
+     "nvme_picks_per_tok": 33.91,
+     "reads_per_tok": 293.26,
+     "used_per_tok": 11.41,
+     "precision": 0.0389,
+     "read_gb_per_tok": 2.778,
+     "wasted_gb_per_tok": 2.67
+    },
+    "ro_a@8": {
+     "recall_nvme": 0.0003,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 0.03,
+     "used_per_tok": 0.01,
+     "precision": 0.3222,
+     "read_gb_per_tok": 0.0,
+     "wasted_gb_per_tok": 0.0
+    },
+    "ro_a@12": {
+     "recall_nvme": 0.0005,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 0.06,
+     "used_per_tok": 0.02,
+     "precision": 0.2537,
+     "read_gb_per_tok": 0.001,
+     "wasted_gb_per_tok": 0.0
+    },
+    "ro_a@16": {
+     "recall_nvme": 0.0007,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 0.11,
+     "used_per_tok": 0.02,
+     "precision": 0.2124,
+     "read_gb_per_tok": 0.001,
+     "wasted_gb_per_tok": 0.001
+    },
+    "ro_a@24": {
+     "recall_nvme": 0.0014,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 0.46,
+     "used_per_tok": 0.05,
+     "precision": 0.0994,
+     "read_gb_per_tok": 0.004,
+     "wasted_gb_per_tok": 0.004
+    },
+    "ro_a@32": {
+     "recall_nvme": 0.0058,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 4.43,
+     "used_per_tok": 0.2,
+     "precision": 0.0443,
+     "read_gb_per_tok": 0.042,
+     "wasted_gb_per_tok": 0.04
+    },
+    "ro_b@8": {
+     "recall_nvme": 0.1397,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 70.72,
+     "used_per_tok": 4.74,
+     "precision": 0.0671,
+     "read_gb_per_tok": 0.67,
+     "wasted_gb_per_tok": 0.625
+    },
+    "ro_b@12": {
+     "recall_nvme": 0.1822,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 110.41,
+     "used_per_tok": 6.19,
+     "precision": 0.056,
+     "read_gb_per_tok": 1.046,
+     "wasted_gb_per_tok": 0.987
+    },
+    "ro_b@16": {
+     "recall_nvme": 0.2175,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 151.99,
+     "used_per_tok": 7.38,
+     "precision": 0.0486,
+     "read_gb_per_tok": 1.44,
+     "wasted_gb_per_tok": 1.37
+    },
+    "ro_b@24": {
+     "recall_nvme": 0.2761,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 240.19,
+     "used_per_tok": 9.37,
+     "precision": 0.039,
+     "read_gb_per_tok": 2.276,
+     "wasted_gb_per_tok": 2.187
+    },
+    "ro_b@32": {
+     "recall_nvme": 0.3248,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 333.16,
+     "used_per_tok": 11.03,
+     "precision": 0.0331,
+     "read_gb_per_tok": 3.156,
+     "wasted_gb_per_tok": 3.052
+    },
+    "ro_lr@8": {
+     "recall_nvme": 0.0492,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 11.4,
+     "used_per_tok": 1.67,
+     "precision": 0.1464,
+     "read_gb_per_tok": 0.108,
+     "wasted_gb_per_tok": 0.092
+    },
+    "ro_lr@12": {
+     "recall_nvme": 0.0783,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 21.91,
+     "used_per_tok": 2.66,
+     "precision": 0.1214,
+     "read_gb_per_tok": 0.208,
+     "wasted_gb_per_tok": 0.182
+    },
+    "ro_lr@16": {
+     "recall_nvme": 0.1126,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 38.49,
+     "used_per_tok": 3.82,
+     "precision": 0.0993,
+     "read_gb_per_tok": 0.365,
+     "wasted_gb_per_tok": 0.328
+    },
+    "ro_lr@24": {
+     "recall_nvme": 0.1759,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 83.51,
+     "used_per_tok": 5.97,
+     "precision": 0.0715,
+     "read_gb_per_tok": 0.791,
+     "wasted_gb_per_tok": 0.735
+    },
+    "ro_lr@32": {
+     "recall_nvme": 0.24,
+     "nvme_picks_per_tok": 33.95,
+     "reads_per_tok": 153.75,
+     "used_per_tok": 8.15,
+     "precision": 0.053,
+     "read_gb_per_tok": 1.457,
+     "wasted_gb_per_tok": 1.379
+    }
+   },
+   "nvme_share_of_picks": {
+    "ledger": 0.107,
+    "engine": 0.1314
+   }
+  },
+  "16": {
+   "ram_slots": 971,
+   "vram_slots": 1510,
+   "tokens": 9480,
+   "pred": {
+    "edge0@8": {
+     "recall_nvme": 0.1188,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 139.95,
+     "used_per_tok": 25.27,
+     "precision": 0.1805,
+     "read_gb_per_tok": 1.326,
+     "wasted_gb_per_tok": 1.087
+    },
+    "edge0@12": {
+     "recall_nvme": 0.1673,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 226.88,
+     "used_per_tok": 33.24,
+     "precision": 0.1465,
+     "read_gb_per_tok": 2.15,
+     "wasted_gb_per_tok": 1.835
+    },
+    "edge0@16": {
+     "recall_nvme": 0.2085,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 319.49,
+     "used_per_tok": 39.7,
+     "precision": 0.1243,
+     "read_gb_per_tok": 3.027,
+     "wasted_gb_per_tok": 2.651
+    },
+    "edge0@24": {
+     "recall_nvme": 0.2776,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 516.57,
+     "used_per_tok": 50.09,
+     "precision": 0.097,
+     "read_gb_per_tok": 4.894,
+     "wasted_gb_per_tok": 4.419
+    },
+    "edge0@32": {
+     "recall_nvme": 0.3349,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 725.66,
+     "used_per_tok": 58.45,
+     "precision": 0.0805,
+     "read_gb_per_tok": 6.875,
+     "wasted_gb_per_tok": 6.321
+    },
+    "self@8": {
+     "recall_nvme": 0.1175,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 135.89,
+     "used_per_tok": 26.03,
+     "precision": 0.1916,
+     "read_gb_per_tok": 1.287,
+     "wasted_gb_per_tok": 1.041
+    },
+    "self@12": {
+     "recall_nvme": 0.1672,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 221.4,
+     "used_per_tok": 34.25,
+     "precision": 0.1547,
+     "read_gb_per_tok": 2.098,
+     "wasted_gb_per_tok": 1.773
+    },
+    "self@16": {
+     "recall_nvme": 0.2102,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 312.78,
+     "used_per_tok": 40.96,
+     "precision": 0.131,
+     "read_gb_per_tok": 2.963,
+     "wasted_gb_per_tok": 2.575
+    },
+    "self@24": {
+     "recall_nvme": 0.2816,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 507.88,
+     "used_per_tok": 51.59,
+     "precision": 0.1016,
+     "read_gb_per_tok": 4.812,
+     "wasted_gb_per_tok": 4.323
+    },
+    "self@32": {
+     "recall_nvme": 0.3406,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 715.42,
+     "used_per_tok": 60.05,
+     "precision": 0.0839,
+     "read_gb_per_tok": 6.778,
+     "wasted_gb_per_tok": 6.209
+    },
+    "same@8": {
+     "recall_nvme": 0.5582,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 135.9,
+     "used_per_tok": 72.34,
+     "precision": 0.5323,
+     "read_gb_per_tok": 1.288,
+     "wasted_gb_per_tok": 0.602
+    },
+    "same@12": {
+     "recall_nvme": 0.672,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 222.85,
+     "used_per_tok": 87.09,
+     "precision": 0.3908,
+     "read_gb_per_tok": 2.111,
+     "wasted_gb_per_tok": 1.286
+    },
+    "same@16": {
+     "recall_nvme": 0.7405,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 316.55,
+     "used_per_tok": 95.96,
+     "precision": 0.3032,
+     "read_gb_per_tok": 2.999,
+     "wasted_gb_per_tok": 2.09
+    },
+    "same@24": {
+     "recall_nvme": 0.8207,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 517.86,
+     "used_per_tok": 106.35,
+     "precision": 0.2054,
+     "read_gb_per_tok": 4.906,
+     "wasted_gb_per_tok": 3.899
+    },
+    "same@32": {
+     "recall_nvme": 0.8665,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 731.92,
+     "used_per_tok": 112.29,
+     "precision": 0.1534,
+     "read_gb_per_tok": 6.934,
+     "wasted_gb_per_tok": 5.87
+    },
+    "router_same@8": {
+     "recall_nvme": 0.5958,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 142.98,
+     "used_per_tok": 77.21,
+     "precision": 0.54,
+     "read_gb_per_tok": 1.355,
+     "wasted_gb_per_tok": 0.623
+    },
+    "router_same@12": {
+     "recall_nvme": 0.7104,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 236.93,
+     "used_per_tok": 92.06,
+     "precision": 0.3886,
+     "read_gb_per_tok": 2.245,
+     "wasted_gb_per_tok": 1.373
+    },
+    "router_same@16": {
+     "recall_nvme": 0.7754,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 338.41,
+     "used_per_tok": 100.49,
+     "precision": 0.2969,
+     "read_gb_per_tok": 3.206,
+     "wasted_gb_per_tok": 2.254
+    },
+    "router_same@24": {
+     "recall_nvme": 0.8479,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 554.72,
+     "used_per_tok": 109.88,
+     "precision": 0.1981,
+     "read_gb_per_tok": 5.255,
+     "wasted_gb_per_tok": 4.214
+    },
+    "router_same@32": {
+     "recall_nvme": 0.8881,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 782.34,
+     "used_per_tok": 115.09,
+     "precision": 0.1471,
+     "read_gb_per_tok": 7.412,
+     "wasted_gb_per_tok": 6.322
+    },
+    "router_next@8": {
+     "recall_nvme": 0.0302,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 142.92,
+     "used_per_tok": 16.86,
+     "precision": 0.1179,
+     "read_gb_per_tok": 1.354,
+     "wasted_gb_per_tok": 1.194
+    },
+    "router_next@12": {
+     "recall_nvme": 0.0605,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 236.84,
+     "used_per_tok": 22.59,
+     "precision": 0.0954,
+     "read_gb_per_tok": 2.244,
+     "wasted_gb_per_tok": 2.03
+    },
+    "router_next@16": {
+     "recall_nvme": 0.0904,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 338.28,
+     "used_per_tok": 27.41,
+     "precision": 0.081,
+     "read_gb_per_tok": 3.205,
+     "wasted_gb_per_tok": 2.945
+    },
+    "router_next@24": {
+     "recall_nvme": 0.1449,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 554.51,
+     "used_per_tok": 35.45,
+     "precision": 0.0639,
+     "read_gb_per_tok": 5.253,
+     "wasted_gb_per_tok": 4.918
+    },
+    "router_next@32": {
+     "recall_nvme": 0.1926,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 782.06,
+     "used_per_tok": 42.15,
+     "precision": 0.0539,
+     "read_gb_per_tok": 7.409,
+     "wasted_gb_per_tok": 7.01
+    },
+    "router_self@8": {
+     "recall_nvme": 0.0,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 129.53,
+     "used_per_tok": 18.68,
+     "precision": 0.1442,
+     "read_gb_per_tok": 1.227,
+     "wasted_gb_per_tok": 1.05
+    },
+    "router_self@12": {
+     "recall_nvme": 0.0519,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 217.16,
+     "used_per_tok": 25.4,
+     "precision": 0.117,
+     "read_gb_per_tok": 2.057,
+     "wasted_gb_per_tok": 1.817
+    },
+    "router_self@16": {
+     "recall_nvme": 0.0942,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 314.28,
+     "used_per_tok": 30.88,
+     "precision": 0.0983,
+     "read_gb_per_tok": 2.977,
+     "wasted_gb_per_tok": 2.685
+    },
+    "router_self@24": {
+     "recall_nvme": 0.1623,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 524.95,
+     "used_per_tok": 39.7,
+     "precision": 0.0756,
+     "read_gb_per_tok": 4.973,
+     "wasted_gb_per_tok": 4.597
+    },
+    "router_self@32": {
+     "recall_nvme": 0.2164,
+     "nvme_picks_per_tok": 129.52,
+     "reads_per_tok": 749.52,
+     "used_per_tok": 46.7,
+     "precision": 0.0623,
+     "read_gb_per_tok": 7.101,
+     "wasted_gb_per_tok": 6.659
+    },
+    "ro_a@8": {
+     "recall_nvme": 0.0001,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 0.06,
+     "used_per_tok": 0.02,
+     "precision": 0.3073,
+     "read_gb_per_tok": 0.001,
+     "wasted_gb_per_tok": 0.0
+    },
+    "ro_a@12": {
+     "recall_nvme": 0.0003,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 0.13,
+     "used_per_tok": 0.03,
+     "precision": 0.2622,
+     "read_gb_per_tok": 0.001,
+     "wasted_gb_per_tok": 0.001
+    },
+    "ro_a@16": {
+     "recall_nvme": 0.0004,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 0.24,
+     "used_per_tok": 0.05,
+     "precision": 0.2181,
+     "read_gb_per_tok": 0.002,
+     "wasted_gb_per_tok": 0.002
+    },
+    "ro_a@24": {
+     "recall_nvme": 0.0031,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 6.04,
+     "used_per_tok": 0.4,
+     "precision": 0.0659,
+     "read_gb_per_tok": 0.057,
+     "wasted_gb_per_tok": 0.053
+    },
+    "ro_a@32": {
+     "recall_nvme": 0.038,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 90.14,
+     "used_per_tok": 4.92,
+     "precision": 0.0546,
+     "read_gb_per_tok": 0.854,
+     "wasted_gb_per_tok": 0.807
+    },
+    "ro_b@8": {
+     "recall_nvme": 0.2009,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 172.9,
+     "used_per_tok": 26.03,
+     "precision": 0.1506,
+     "read_gb_per_tok": 1.638,
+     "wasted_gb_per_tok": 1.391
+    },
+    "ro_b@12": {
+     "recall_nvme": 0.2525,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 268.91,
+     "used_per_tok": 32.73,
+     "precision": 0.1217,
+     "read_gb_per_tok": 2.548,
+     "wasted_gb_per_tok": 2.238
+    },
+    "ro_b@16": {
+     "recall_nvme": 0.2939,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 368.31,
+     "used_per_tok": 38.09,
+     "precision": 0.1034,
+     "read_gb_per_tok": 3.489,
+     "wasted_gb_per_tok": 3.128
+    },
+    "ro_b@24": {
+     "recall_nvme": 0.3595,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 574.75,
+     "used_per_tok": 46.59,
+     "precision": 0.0811,
+     "read_gb_per_tok": 5.445,
+     "wasted_gb_per_tok": 5.004
+    },
+    "ro_b@32": {
+     "recall_nvme": 0.4125,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 788.63,
+     "used_per_tok": 53.46,
+     "precision": 0.0678,
+     "read_gb_per_tok": 7.472,
+     "wasted_gb_per_tok": 6.965
+    },
+    "ro_lr@8": {
+     "recall_nvme": 0.0803,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 29.53,
+     "used_per_tok": 10.41,
+     "precision": 0.3525,
+     "read_gb_per_tok": 0.28,
+     "wasted_gb_per_tok": 0.181
+    },
+    "ro_lr@12": {
+     "recall_nvme": 0.1209,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 55.2,
+     "used_per_tok": 15.66,
+     "precision": 0.2837,
+     "read_gb_per_tok": 0.523,
+     "wasted_gb_per_tok": 0.375
+    },
+    "ro_lr@16": {
+     "recall_nvme": 0.1657,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 95.31,
+     "used_per_tok": 21.47,
+     "precision": 0.2253,
+     "read_gb_per_tok": 0.903,
+     "wasted_gb_per_tok": 0.7
+    },
+    "ro_lr@24": {
+     "recall_nvme": 0.2427,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 201.07,
+     "used_per_tok": 31.45,
+     "precision": 0.1564,
+     "read_gb_per_tok": 1.905,
+     "wasted_gb_per_tok": 1.607
+    },
+    "ro_lr@32": {
+     "recall_nvme": 0.3173,
+     "nvme_picks_per_tok": 129.59,
+     "reads_per_tok": 358.22,
+     "used_per_tok": 41.12,
+     "precision": 0.1148,
+     "read_gb_per_tok": 3.394,
+     "wasted_gb_per_tok": 3.004
+    }
+   },
+   "nvme_share_of_picks": {
+    "ledger": 0.4115,
+    "engine": 0.1314
+   }
+  }
+ },
+ "engine": {
+  "edge0": {
+   "recall@8/all": 0.2773,
+   "recall@8/nvme": 0.0872,
+   "recall@8/ram": 0.233,
+   "recall@8/vram": 0.4001,
+   "recall@12/all": 0.3431,
+   "recall@12/nvme": 0.1281,
+   "recall@12/ram": 0.2967,
+   "recall@12/vram": 0.4773,
+   "recall@16/all": 0.3935,
+   "recall@16/nvme": 0.1647,
+   "recall@16/ram": 0.3468,
+   "recall@16/vram": 0.5327,
+   "recall@24/all": 0.4693,
+   "recall@24/nvme": 0.2293,
+   "recall@24/ram": 0.4249,
+   "recall@24/vram": 0.6097,
+   "recall@32/all": 0.5262,
+   "recall@32/nvme": 0.2856,
+   "recall@32/ram": 0.4844,
+   "recall@32/vram": 0.6633,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "self": {
+   "recall@8/all": 0.2903,
+   "recall@8/nvme": 0.085,
+   "recall@8/ram": 0.2439,
+   "recall@8/vram": 0.4212,
+   "recall@12/all": 0.358,
+   "recall@12/nvme": 0.1275,
+   "recall@12/ram": 0.31,
+   "recall@12/vram": 0.4996,
+   "recall@16/all": 0.4093,
+   "recall@16/nvme": 0.1659,
+   "recall@16/ram": 0.3616,
+   "recall@16/vram": 0.5551,
+   "recall@24/all": 0.4855,
+   "recall@24/nvme": 0.2335,
+   "recall@24/ram": 0.4406,
+   "recall@24/vram": 0.6304,
+   "recall@32/all": 0.542,
+   "recall@32/nvme": 0.2917,
+   "recall@32/ram": 0.5003,
+   "recall@32/vram": 0.6824,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "same": {
+   "recall@8/all": 0.6286,
+   "recall@8/nvme": 0.4863,
+   "recall@8/ram": 0.6042,
+   "recall@8/vram": 0.7092,
+   "recall@12/all": 0.7347,
+   "recall@12/nvme": 0.6052,
+   "recall@12/ram": 0.7141,
+   "recall@12/vram": 0.806,
+   "recall@16/all": 0.7951,
+   "recall@16/nvme": 0.68,
+   "recall@16/ram": 0.7778,
+   "recall@16/vram": 0.8571,
+   "recall@24/all": 0.8621,
+   "recall@24/nvme": 0.7711,
+   "recall@24/ram": 0.8495,
+   "recall@24/vram": 0.9097,
+   "recall@32/all": 0.8985,
+   "recall@32/nvme": 0.8263,
+   "recall@32/ram": 0.8887,
+   "recall@32/vram": 0.9362,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "router_same": {
+   "recall@8/all": 0.6544,
+   "recall@8/nvme": 0.5481,
+   "recall@8/ram": 0.6404,
+   "recall@8/vram": 0.7093,
+   "recall@12/all": 0.7592,
+   "recall@12/nvme": 0.6751,
+   "recall@12/ram": 0.7482,
+   "recall@12/vram": 0.8024,
+   "recall@16/all": 0.8157,
+   "recall@16/nvme": 0.7482,
+   "recall@16/ram": 0.8067,
+   "recall@16/vram": 0.8506,
+   "recall@24/all": 0.8763,
+   "recall@24/nvme": 0.8296,
+   "recall@24/ram": 0.8703,
+   "recall@24/vram": 0.9003,
+   "recall@32/all": 0.9088,
+   "recall@32/nvme": 0.8755,
+   "recall@32/ram": 0.9042,
+   "recall@32/vram": 0.9263,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "router_next": {
+   "recall@8/all": 0.2247,
+   "recall@8/nvme": 0.0294,
+   "recall@8/ram": 0.1836,
+   "recall@8/vram": 0.3453,
+   "recall@12/all": 0.2764,
+   "recall@12/nvme": 0.0603,
+   "recall@12/ram": 0.233,
+   "recall@12/vram": 0.4071,
+   "recall@16/all": 0.3154,
+   "recall@16/nvme": 0.0921,
+   "recall@16/ram": 0.2712,
+   "recall@16/vram": 0.4496,
+   "recall@24/all": 0.375,
+   "recall@24/nvme": 0.1505,
+   "recall@24/ram": 0.331,
+   "recall@24/vram": 0.5093,
+   "recall@32/all": 0.4211,
+   "recall@32/nvme": 0.2026,
+   "recall@32/ram": 0.3782,
+   "recall@32/vram": 0.5519,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "router_self": {
+   "recall@8/all": 0.2513,
+   "recall@8/nvme": 0.0,
+   "recall@8/ram": 0.2054,
+   "recall@8/vram": 0.3974,
+   "recall@12/all": 0.3102,
+   "recall@12/nvme": 0.0519,
+   "recall@12/ram": 0.2624,
+   "recall@12/vram": 0.4612,
+   "recall@16/all": 0.3526,
+   "recall@16/nvme": 0.0953,
+   "recall@16/ram": 0.3052,
+   "recall@16/vram": 0.5027,
+   "recall@24/all": 0.4146,
+   "recall@24/nvme": 0.168,
+   "recall@24/ram": 0.3686,
+   "recall@24/vram": 0.5591,
+   "recall@32/all": 0.4604,
+   "recall@32/nvme": 0.2263,
+   "recall@32/ram": 0.4165,
+   "recall@32/vram": 0.5979,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "ro_a": {
+   "recall@8/all": 0.2513,
+   "recall@8/nvme": 0.0,
+   "recall@8/ram": 0.2055,
+   "recall@8/vram": 0.3974,
+   "recall@12/all": 0.3175,
+   "recall@12/nvme": 0.0001,
+   "recall@12/ram": 0.2563,
+   "recall@12/vram": 0.5062,
+   "recall@16/all": 0.357,
+   "recall@16/nvme": 0.0002,
+   "recall@16/ram": 0.2946,
+   "recall@16/vram": 0.5609,
+   "recall@24/all": 0.4257,
+   "recall@24/nvme": 0.0006,
+   "recall@24/ram": 0.3576,
+   "recall@24/vram": 0.6604,
+   "recall@32/all": 0.4823,
+   "recall@32/nvme": 0.0049,
+   "recall@32/ram": 0.4129,
+   "recall@32/vram": 0.7368,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "ro_b": {
+   "recall@8/all": 0.2335,
+   "recall@8/nvme": 0.1437,
+   "recall@8/ram": 0.2187,
+   "recall@8/vram": 0.2835,
+   "recall@12/all": 0.2925,
+   "recall@12/nvme": 0.1874,
+   "recall@12/ram": 0.2744,
+   "recall@12/vram": 0.3522,
+   "recall@16/all": 0.3389,
+   "recall@16/nvme": 0.2237,
+   "recall@16/ram": 0.3186,
+   "recall@16/vram": 0.405,
+   "recall@24/all": 0.4109,
+   "recall@24/nvme": 0.2836,
+   "recall@24/ram": 0.3873,
+   "recall@24/vram": 0.4853,
+   "recall@32/all": 0.4671,
+   "recall@32/nvme": 0.3331,
+   "recall@32/ram": 0.4423,
+   "recall@32/vram": 0.5453,
+   "engine_nvme_picks_per_tok": 44.16
+  },
+  "ro_lr": {
+   "recall@8/all": 0.3226,
+   "recall@8/nvme": 0.0505,
+   "recall@8/ram": 0.2597,
+   "recall@8/vram": 0.498,
+   "recall@12/all": 0.3987,
+   "recall@12/nvme": 0.0801,
+   "recall@12/ram": 0.3409,
+   "recall@12/vram": 0.5833,
+   "recall@16/all": 0.457,
+   "recall@16/nvme": 0.1149,
+   "recall@16/ram": 0.4018,
+   "recall@16/vram": 0.6463,
+   "recall@24/all": 0.5401,
+   "recall@24/nvme": 0.1798,
+   "recall@24/ram": 0.491,
+   "recall@24/vram": 0.728,
+   "recall@32/all": 0.6017,
+   "recall@32/nvme": 0.2448,
+   "recall@32/ram": 0.5595,
+   "recall@32/vram": 0.7794,
+   "engine_nvme_picks_per_tok": 44.16
+  }
+ },
+ "pilot": {
+  "55": {
+   "base": {
+    "tok_s": 20.311,
+    "ms_per_tok": 49.234,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 35.79,
+    "reads_per_tok": 0.0,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 0.0,
+    "tokens": 9480
+   },
+   "oracle_next_idle": {
+    "tok_s": 25.557,
+    "ms_per_tok": 39.128,
+    "recall_nvme": 0.9272,
+    "nvme_picks_per_tok": 37.03,
+    "reads_per_tok": 34.43,
+    "used_per_tok": 34.41,
+    "read_gb_per_tok": 0.326,
+    "tokens": 9480
+   },
+   "edge0@8_idle": {
+    "tok_s": 20.606,
+    "ms_per_tok": 48.53,
+    "recall_nvme": 0.0747,
+    "nvme_picks_per_tok": 35.83,
+    "reads_per_tok": 34.11,
+    "used_per_tok": 4.17,
+    "read_gb_per_tok": 0.323,
+    "tokens": 9480
+   },
+   "edge0@16_idle": {
+    "tok_s": 20.777,
+    "ms_per_tok": 48.129,
+    "recall_nvme": 0.1149,
+    "nvme_picks_per_tok": 35.9,
+    "reads_per_tok": 80.65,
+    "used_per_tok": 5.44,
+    "read_gb_per_tok": 0.764,
+    "tokens": 9480
+   },
+   "edge0@32_idle": {
+    "tok_s": 20.806,
+    "ms_per_tok": 48.064,
+    "recall_nvme": 0.1193,
+    "nvme_picks_per_tok": 35.9,
+    "reads_per_tok": 180.71,
+    "used_per_tok": 4.62,
+    "read_gb_per_tok": 1.712,
+    "tokens": 9480
+   },
+   "self@16_idle": {
+    "tok_s": 20.786,
+    "ms_per_tok": 48.109,
+    "recall_nvme": 0.1177,
+    "nvme_picks_per_tok": 35.88,
+    "reads_per_tok": 77.48,
+    "used_per_tok": 5.74,
+    "read_gb_per_tok": 0.734,
+    "tokens": 9480
+   },
+   "router_same@8_idle": {
+    "tok_s": 20.311,
+    "ms_per_tok": 49.234,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 35.79,
+    "reads_per_tok": 44.49,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 0.421,
+    "tokens": 9480
+   },
+   "router_same@16_idle": {
+    "tok_s": 20.311,
+    "ms_per_tok": 49.234,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 35.79,
+    "reads_per_tok": 125.11,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 1.185,
+    "tokens": 9480
+   },
+   "same@16_idle": {
+    "tok_s": 20.311,
+    "ms_per_tok": 49.234,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 35.79,
+    "reads_per_tok": 100.52,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 0.952,
+    "tokens": 9480
+   },
+   "oracle_next_fifo": {
+    "tok_s": 25.286,
+    "ms_per_tok": 39.547,
+    "recall_nvme": 0.9281,
+    "nvme_picks_per_tok": 37.01,
+    "reads_per_tok": 34.42,
+    "used_per_tok": 34.43,
+    "read_gb_per_tok": 0.326,
+    "tokens": 9480
+   },
+   "edge0@8_fifo": {
+    "tok_s": 17.991,
+    "ms_per_tok": 55.583,
+    "recall_nvme": 0.0755,
+    "nvme_picks_per_tok": 35.85,
+    "reads_per_tok": 34.14,
+    "used_per_tok": 4.22,
+    "read_gb_per_tok": 0.323,
+    "tokens": 9480
+   },
+   "edge0@16_fifo": {
+    "tok_s": 15.659,
+    "ms_per_tok": 63.863,
+    "recall_nvme": 0.1439,
+    "nvme_picks_per_tok": 35.87,
+    "reads_per_tok": 80.48,
+    "used_per_tok": 6.9,
+    "read_gb_per_tok": 0.762,
+    "tokens": 9480
+   },
+   "edge0@32_fifo": {
+    "tok_s": 10.746,
+    "ms_per_tok": 93.058,
+    "recall_nvme": 0.2529,
+    "nvme_picks_per_tok": 35.99,
+    "reads_per_tok": 180.37,
+    "used_per_tok": 10.83,
+    "read_gb_per_tok": 1.709,
+    "tokens": 9480
+   },
+   "self@16_fifo": {
+    "tok_s": 15.799,
+    "ms_per_tok": 63.296,
+    "recall_nvme": 0.1448,
+    "nvme_picks_per_tok": 35.9,
+    "reads_per_tok": 77.4,
+    "used_per_tok": 7.14,
+    "read_gb_per_tok": 0.733,
+    "tokens": 9480
+   },
+   "router_same@8_fifo": {
+    "tok_s": 19.655,
+    "ms_per_tok": 50.877,
+    "recall_nvme": 0.5158,
+    "nvme_picks_per_tok": 35.96,
+    "reads_per_tok": 44.5,
+    "used_per_tok": 18.55,
+    "read_gb_per_tok": 0.422,
+    "tokens": 9480
+   },
+   "router_same@16_fifo": {
+    "tok_s": 15.683,
+    "ms_per_tok": 63.765,
+    "recall_nvme": 0.7061,
+    "nvme_picks_per_tok": 35.96,
+    "reads_per_tok": 125.25,
+    "used_per_tok": 25.39,
+    "read_gb_per_tok": 1.187,
+    "tokens": 9480
+   },
+   "same@16_fifo": {
+    "tok_s": 16.913,
+    "ms_per_tok": 59.126,
+    "recall_nvme": 0.6351,
+    "nvme_picks_per_tok": 35.96,
+    "reads_per_tok": 100.68,
+    "used_per_tok": 22.84,
+    "read_gb_per_tok": 0.954,
+    "tokens": 9480
+   }
+  },
+  "16": {
+   "base": {
+    "tok_s": 12.449,
+    "ms_per_tok": 80.325,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 138.25,
+    "reads_per_tok": 0.0,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 0.0,
+    "tokens": 9480
+   },
+   "oracle_next_idle": {
+    "tok_s": 16.273,
+    "ms_per_tok": 61.453,
+    "recall_nvme": 0.3962,
+    "nvme_picks_per_tok": 136.56,
+    "reads_per_tok": 122.14,
+    "used_per_tok": 54.71,
+    "read_gb_per_tok": 1.157,
+    "tokens": 9480
+   },
+   "edge0@8_idle": {
+    "tok_s": 12.959,
+    "ms_per_tok": 77.169,
+    "recall_nvme": 0.0416,
+    "nvme_picks_per_tok": 134.57,
+    "reads_per_tok": 110.78,
+    "used_per_tok": 9.26,
+    "read_gb_per_tok": 1.05,
+    "tokens": 9480
+   },
+   "edge0@16_idle": {
+    "tok_s": 12.988,
+    "ms_per_tok": 76.993,
+    "recall_nvme": 0.0457,
+    "nvme_picks_per_tok": 134.44,
+    "reads_per_tok": 235.42,
+    "used_per_tok": 6.9,
+    "read_gb_per_tok": 2.23,
+    "tokens": 9480
+   },
+   "edge0@32_idle": {
+    "tok_s": 12.916,
+    "ms_per_tok": 77.426,
+    "recall_nvme": 0.0415,
+    "nvme_picks_per_tok": 135.06,
+    "reads_per_tok": 473.82,
+    "used_per_tok": 5.61,
+    "read_gb_per_tok": 4.489,
+    "tokens": 9480
+   },
+   "self@16_idle": {
+    "tok_s": 13.006,
+    "ms_per_tok": 76.89,
+    "recall_nvme": 0.0468,
+    "nvme_picks_per_tok": 134.27,
+    "reads_per_tok": 232.7,
+    "used_per_tok": 7.37,
+    "read_gb_per_tok": 2.205,
+    "tokens": 9480
+   },
+   "router_same@8_idle": {
+    "tok_s": 12.449,
+    "ms_per_tok": 80.325,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 138.25,
+    "reads_per_tok": 142.98,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 1.355,
+    "tokens": 9480
+   },
+   "router_same@16_idle": {
+    "tok_s": 12.449,
+    "ms_per_tok": 80.325,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 138.25,
+    "reads_per_tok": 338.41,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 3.206,
+    "tokens": 9480
+   },
+   "same@16_idle": {
+    "tok_s": 12.449,
+    "ms_per_tok": 80.325,
+    "recall_nvme": 0.0,
+    "nvme_picks_per_tok": 138.25,
+    "reads_per_tok": 316.55,
+    "used_per_tok": 0.0,
+    "read_gb_per_tok": 2.999,
+    "tokens": 9480
+   },
+   "oracle_next_fifo": {
+    "tok_s": 16.208,
+    "ms_per_tok": 61.699,
+    "recall_nvme": 0.885,
+    "nvme_picks_per_tok": 139.52,
+    "reads_per_tok": 124.56,
+    "used_per_tok": 124.58,
+    "read_gb_per_tok": 1.18,
+    "tokens": 9480
+   },
+   "edge0@8_fifo": {
+    "tok_s": 9.372,
+    "ms_per_tok": 106.704,
+    "recall_nvme": 0.086,
+    "nvme_picks_per_tok": 133.35,
+    "reads_per_tok": 108.35,
+    "used_per_tok": 18.53,
+    "read_gb_per_tok": 1.027,
+    "tokens": 9480
+   },
+   "edge0@16_fifo": {
+    "tok_s": 6.728,
+    "ms_per_tok": 148.625,
+    "recall_nvme": 0.1632,
+    "nvme_picks_per_tok": 133.14,
+    "reads_per_tok": 233.32,
+    "used_per_tok": 29.69,
+    "read_gb_per_tok": 2.21,
+    "tokens": 9480
+   },
+   "edge0@32_fifo": {
+    "tok_s": 4.223,
+    "ms_per_tok": 236.786,
+    "recall_nvme": 0.283,
+    "nvme_picks_per_tok": 133.8,
+    "reads_per_tok": 473.23,
+    "used_per_tok": 45.73,
+    "read_gb_per_tok": 4.483,
+    "tokens": 9480
+   },
+   "self@16_fifo": {
+    "tok_s": 6.78,
+    "ms_per_tok": 147.503,
+    "recall_nvme": 0.165,
+    "nvme_picks_per_tok": 132.97,
+    "reads_per_tok": 230.75,
+    "used_per_tok": 30.81,
+    "read_gb_per_tok": 2.186,
+    "tokens": 9480
+   },
+   "router_same@8_fifo": {
+    "tok_s": 10.394,
+    "ms_per_tok": 96.209,
+    "recall_nvme": 0.5457,
+    "nvme_picks_per_tok": 137.39,
+    "reads_per_tok": 140.66,
+    "used_per_tok": 74.97,
+    "read_gb_per_tok": 1.333,
+    "tokens": 9480
+   },
+   "router_same@16_fifo": {
+    "tok_s": 6.309,
+    "ms_per_tok": 158.51,
+    "recall_nvme": 0.7207,
+    "nvme_picks_per_tok": 137.58,
+    "reads_per_tok": 338.36,
+    "used_per_tok": 99.16,
+    "read_gb_per_tok": 3.206,
+    "tokens": 9480
+   },
+   "same@16_fifo": {
+    "tok_s": 6.565,
+    "ms_per_tok": 152.312,
+    "recall_nvme": 0.6866,
+    "nvme_picks_per_tok": 137.21,
+    "reads_per_tok": 314.82,
+    "used_per_tok": 94.21,
+    "read_gb_per_tok": 2.983,
+    "tokens": 9480
+   }
+  }
+ },
+ "route_only_info": {
+  "lr_coef": {
+   "b": 1.7050539255142212,
+   "b2": 0.9871129989624023,
+   "prev": -11.80875015258789,
+   "prev2": -3.1725118160247803,
+   "ema": 14.087485313415527,
+   "logp": -0.2717503607273102
+  }
+ }
+}
