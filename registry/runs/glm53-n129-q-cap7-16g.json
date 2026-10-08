@@ -1,0 +1,84 @@
+{
+ "id": "glm53-n129-q-cap7-16g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 16 GB RAM + RAID capped 7 GB/s (single-drive emulation) (8k prefill + C1)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-16g-nvx4",
+ "change": "store on RAID0 4x 9100 PRO with docker --device-read-bps /dev/md127:7000000000 (emulated single-drive bandwidth); image v4.2-nvme as shipped (sha256:4732a063), GLM53_MODE=nvme registry env, prefetch ON, --memory 16g",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 4.52,
+   "prefill_tok_s": 254.3
+  }
+ ],
+ "per_token": {
+  "vram_hits": 142.796,
+  "ram_hits": 106.04,
+  "nvme": 87.163,
+  "cpu_experts": 163.584,
+  "zc_admits": 15.779,
+  "nvme_gpu": 15.618,
+  "nvme_cpu": 73.293,
+  "reply_wait_ms": 2.403,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 197.459
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 16,
+  "peak_gib": 14.52,
+  "end_gib": 14.52,
+  "ram_tier_gib": 8.517,
+  "ram_slots": 969
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/raidx/runs/q_cap7_16g",
+ "note": "N129 RAID-vs-single experiment 2026-10-08 (user request); natural completions; ~/nvx_bench.lock held for the arm.",
+ "nvme_io": {
+  "top": "md127",
+  "members": [
+   "nvme0n1",
+   "nvme1n1",
+   "nvme2n1",
+   "nvme3n1"
+  ],
+  "ceiling_gbps": 7.0,
+  "phases": {
+   "prefill_8k": {
+    "seconds": 96.0,
+    "read_gbps": 6.83,
+    "device_iops": 58283,
+    "top_iops": 58404,
+    "device_read_latency_ms": 1.882,
+    "top_read_latency_ms": 1.839,
+    "pct_of_ceiling": 97.6
+   },
+   "decode_C1": {
+    "seconds": 848.6,
+    "read_gbps": 7.0,
+    "device_iops": 59805,
+    "top_iops": 59877,
+    "device_read_latency_ms": 1.243,
+    "top_read_latency_ms": 1.206,
+    "pct_of_ceiling": 100.0,
+    "engine": {
+     "dec_tokens": 3712,
+     "note": "per token = per 42 MoE layer calls (engine dec_tok counts layer calls)",
+     "record_reads_per_token": 168.5,
+     "record_read_latency_ms": 8.135,
+     "cpu_lane_nvme_wait_ms_per_token": 164.46,
+     "gpu_nvme_wait_ms_per_token": 0.0,
+     "prefetch_reads_per_token": 119.1
+    }
+   }
+  },
+  "method": "diskstats (device reads, sectors, ms reading) every 0.5 s + engine /stats every 5 s, per sweep phase; NVMe stall = CPU-lane wait for NVMe landings (cpu_wait_land_ns) per decoded token"
+ },
+ "corrected_aer_events_rc80": 19,
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3"
+}
