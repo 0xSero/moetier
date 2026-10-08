@@ -246,5 +246,42 @@
   "greedy_panel_vs_exllamav3": "0/8 exact (32 GB: 0/8); no runaways, all finish=stop",
   "smoke": "after 2 unscored warm-up chats: Paris / prime function / MoE essay all coherent; cold (no warm-up, s16c) the prime prompt ended after 4 tokens"
  },
- "nvme_ceiling_gbs": 26.0
+ "nvme_ceiling_gbs": 26.0,
+ "image": "ghcr.io/sybil-solutions/qwen38-flash-next-b70-offload@sha256:d30df691d6ab890b95f7c6179e4b677a0d759018e39b20e93bf0efdb8780450c (local-ai-images #31, CI run 37800188997; repo sybil-solutions/qwen38-flash-next-b70-offload 2f108fb, merged in PR #2 db27d3c)",
+ "image_table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 29.25,
+   "prefill_tok_s": 1063.6
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 39.28,
+   "prefill_tok_s": 1084.9
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 49.24,
+   "prefill_tok_s": 1233.5
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 29.71,
+   "prefill_tok_s": 1125.9
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 40.14,
+   "prefill_tok_s": 1296.4
+  }
+ ],
+ "registry_key": null,
+ "registry_commit": null,
+ "lab": "failed:chat (local-ai-registry draft PR #192): load reasoning tools context speed pass (25.4 tok/s, prefill 1185); the first request on a fresh server loops ('</think>: red, blue, yellow' repeated, no <|im_end|>) until the 64k context; cold-cache masking 134/480 picks per step in the first 200 decode steps; 32 GiB mode fails the same way",
+ "incident": "2026-10-09 00:16:23 CEST: B70 48:00.0 dropped off the bus (pciehp Link Down / Card not present on 40:03.1, AMD-Vi Completion-Wait timeouts) during the chat-gate probe CGb (32g, RAM tier 12 GB); slot STOPPED, no reboot"
 }

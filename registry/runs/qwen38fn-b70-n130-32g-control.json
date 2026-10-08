@@ -222,5 +222,26 @@
   "greedy_panel_vs_exllamav3": "0/8 exact; item 1 degenerates ('fibonacci_fibonacci_...', 33 tokens)",
   "incident": "first quality attempt (p32-crash1): SGLang scheduler AttributeError ('list'.tolist in _normalize_decode_outputs, token_ids_logprob) then OOM kill with shmem-rss 24 GB at 32g"
  },
- "nvme_ceiling_gbs": 26.0
+ "nvme_ceiling_gbs": 26.0,
+ "lab": "failed:chat on image d30df691 QWEN_B70_MODE=nvme32 (decode 20.7, prefill 1129; other gates pass)",
+ "image_table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 25.21,
+   "prefill_tok_s": 1061.4
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 33.9,
+   "prefill_tok_s": 1168.8
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 26.33,
+   "prefill_tok_s": 1130.7
+  }
+ ]
 }
