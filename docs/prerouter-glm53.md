@@ -168,3 +168,53 @@ python3 examples/prerouter_eval.py --run run55 --exclude 0,41 \
   Decode was 15-17.7 tok/s at C1 with prefetch off.
 - **Separate finding (serve.py).** With `GLM53_MAX_RQ_TOKENS=4096`, `usage.completion_tokens` under-reports long
   completions: one request decoded 21,503 tokens but reported 7,198.
+
+## Follow-up: prefetch depth (router of layer l+k on layer l's MoE input), 2026-10-09
+
+Question (coordinator): does looking further ahead than today's prefetch pay? Today's `GLM53_NV_PREFETCH` is k = 1,
+top-8. Gate for an engine patch (`GLM53_NV_PF_DEPTH`): k ≥ 2 must add at least +5 % simulated at 55 GB, or +8 % at
+16 GB, over k = 1.
+
+**Result: no.** The best k ≥ 2 option adds +1.6-2.1 % at 55 GB (k2@8+k1@16: 22.29 vs 21.83 / 21.95 tok/s) and
++2.0 % at 16 GB (k2@2+k1@8: 14.59 vs 14.30). No patch was written.
+
+Setup:
+- Offline on the Mac (`examples/prefetch_depth.py`), no training. All 54,442 captured tokens, consumers 1-41.
+- k@N = top-N of sigmoid(router(c) · z[t, c-k]) + bias, issued at layer c-k. The source is layer 0 when c < k.
+- A + B = union. Each component is issued at its own layer, and only keys not already in flight are read.
+- Reads land in a ring that never enters RAM. Prefetch reads are low priority: one starts only on an idle channel,
+  a started read is never interrupted, and a queued read is cancelled at its consumer layer.
+
+| prefetch | recall NVMe, engine 55 GB | ledger 55 GB: recall / precision / reads per tok | ledger 16 GB: recall / precision / reads per tok | sim tok/s 55 GB | sim tok/s 16 GB |
+|---|---|---|---|---|---|
+| none | - | - | - | 20.73 | 12.85 |
+| **k1@8 (today)** | 0.568 | 0.563 / 0.43 / 42 | 0.622 / 0.56 / 139 | **21.83 (+5.3 %)** | **14.30 (+11.2 %)** |
+| k1@16 | 0.771 | 0.768 / 0.19 / 127 | 0.803 / 0.30 / 340 | 21.95 | 14.31 |
+| k2@8 | 0.467 | 0.462 / 0.30 / 49 | 0.522 / 0.44 / 147 | 21.83 | 14.16 |
+| k2@16 | 0.646 | 0.641 / 0.14 / 142 | 0.688 / 0.24 / 355 | 21.95 | 14.11 |
+| k3@8 | 0.409 | 0.405 / 0.23 / 55 | 0.464 / 0.38 / 155 | 21.49 | 13.76 |
+| k4@8 | 0.373 | 0.368 / 0.20 / 60 | 0.426 / 0.33 / 161 | - | - |
+| k2@8+k1@8 | 0.624 | 0.620 / 0.29 / 69 | 0.674 / 0.42 / 200 | 22.20 | 14.21 |
+| k2@16+k1@8 | 0.717 | 0.713 / 0.15 / 152 | 0.757 / 0.25 / 382 | 21.99 | 14.11 |
+| k3@8+k2@8+k1@8 | 0.651 | 0.647 / 0.22 / 95 | 0.698 / 0.34 / 256 | 21.92 | 13.79 |
+| k2@4+k1@8 | 0.581 | - | - | 22.14 | 14.47 |
+| k2@8+k1@16 | 0.785 | - | - | **22.29 (+7.5 %)** | 14.20 |
+| k2@4+k1@16 | 0.775 | - | - | 22.27 | 14.47 |
+| k2@2+k1@8 | 0.571 | - | - | 22.02 | **14.59 (+13.5 %)** |
+| perfect prediction, k = 1 / 2 / 4 | 1.0 | - | - | 23.22 / 25.54 / 25.76 | 14.87 / 17.35 / 17.64 |
+
+What limits it:
+- **Lead time is the bottleneck of today's prefetch.** Even a perfect k = 1 prediction lands only 63 % (55 GB) and
+  29 % (16 GB) of its reads before the layer that needs them. At k = 2, a perfect prediction lands 92 % / 55 %, and
+  the bound rises from +12 % to +23 % (55 GB) and from +16 % to +35 % (16 GB).
+- **The router's accuracy falls with depth.** NVMe recall at N = 8 is 0.57 / 0.47 / 0.41 / 0.37 for k = 1-4, and
+  precision falls faster.
+  - The deeper guesses cost channel time that the k = 1 reads need, most of all at 16 GB, where the channel is busy.
+  - Unions recover recall (0.62-0.79) but double or triple the reads, so the realized gain stays at +1.5-2 %.
+- **Sim caveat.** The sim's single serialized channel prices today's k1@8 at +5.3 % at 55 GB. N129 measured +13 %
+  same-session. If the real RAID's parallelism scales gains the same way, the best mix might reach about +4-5 % over
+  k1 at 55 GB. That is still at or below the gate.
+  - An in-engine try of `k2@8+k1@16` would be cheap if someone wants to check the scaling. It would add a second hint
+    list to `nv_pub` and run the router of l+2 on z_l.
+
+Raw numbers: `docs/prefetch-depth-glm53.results.json`, `docs/prefetch-depth-glm53.extra.json`.
