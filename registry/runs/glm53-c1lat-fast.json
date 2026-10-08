@@ -1,0 +1,52 @@
+{
+ "id": "glm53-c1lat-fast",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 all experts in RAM (fast mode, G067 config) \u00b7 C1 latency waterfall",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-fast",
+ "change": "GLM53_MODE=fast (GPU expert cache 1376 slots + zero-copy admissions + AVX2 CPU tier on a block-contiguous 114 GB copy), glm53n campaign code on image bb633b0b, --memory 240g (peak hit the cap: use >= 260g), nsys session (kernel-level, NVTX off)",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": null,
+   "conc": 1,
+   "decode": 28.05,
+   "decode_client_steady_per_request": [
+    28.18,
+    29.31,
+    26.65
+   ],
+   "tokens": [
+    2831,
+    2705,
+    4583
+   ]
+  }
+ ],
+ "per_token_ms": {
+  "wall": 35.7,
+  "admission_copy_ec_copy": 13.9,
+  "non_moe_graph_and_host_gaps": 10.2,
+  "gpu_wait_cpu_partial_ft_combine": 4.9,
+  "routed_moe_vram": 4.2,
+  "router_split_norm_glue": 2.6
+ },
+ "cpu_tier": {
+  "experts_per_layer": 4.27,
+  "host_ms_per_job": 0.532,
+  "ms_per_expert": 0.125,
+  "threads": "22 on cpus 4-25"
+ },
+ "expert_cache": {
+  "hit_rate": 0.774,
+  "admissions_per_token": 34.7,
+  "admission_gbps": 23.6
+ },
+ "ceiling_estimate": {
+  "tok_s": 44,
+  "assumes": "non-MoE at roofline (6.4 ms), zero host gaps, CPU/GPU split rebalanced (~0.64 admissions/layer, CPU wait 0)"
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/F1_fast_lat",
+ "analysis": "docs/latency-glm53-c1/analysis_fast.json",
+ "note": "N129 step 1 (2026-10-08 23:01-23:08 CEST). nsys window covered ~3.8 steady tokens (start latency); CUDA-graph kernels are not itemised (default graph-level trace), so non-MoE GPU and host gaps are lumped as GPU idle. Re-capture with --cuda-graph-trace=node pending."
+}

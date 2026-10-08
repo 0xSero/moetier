@@ -218,3 +218,30 @@ Fixes for `sim.py`:
 Same configs measured on the same day varied by up to about 17%. Afternoon (15:46) was fast; 22:00-02:00 was slow.
 Every component moved together and GPU clocks were identical. The probe now samples CPU frequency: CPU-lane cores ran
 at about 3,660 MHz in the evening. Only same-session A/B comparisons are trustworthy here.
+
+## 7. Fast all-RAM mode (G067 config), 2026-10-08 (N129)
+
+Run F1_fast_lat: `GLM53_MODE=fast`, campaign code glm53n (NVTX off), `--memory 240g`, three natural-EOS C1 requests
+at 28.18 / 29.31 / 26.65 tok/s, so about 35.7 ms per token. The memory.peak hit the 240 GiB cap; use 260g or more. The
+Nsight Systems window covered about 3.8 steady tokens. Kernels launched from CUDA graphs are not itemised, so the
+non-MoE GPU time is lumped with host gaps as GPU idle. Engine counters cover all 10,119 tokens.
+
+| sink | ms/token | note |
+|---|---|---|
+| expert-cache admission copy (`ec_copy_k`) | 13.9 (39%) | 34.7 admissions/token x 9.44 MB at 23.6 GB/s: PCIe H2D already at its floor, so only fewer admissions reduce it |
+| non-MoE GPU (graph-launched) + host gaps | 10.2 (29%) | roofline for the non-MoE work is about 6.4 ms |
+| GPU waits for the CPU partial (`ft_combine_k`) | 4.9 (14%) | engine counter 0.122 ms per layer |
+| routed MoE on VRAM experts | 4.2 (12%) | cache hit rate 0.774 |
+| router, `ft_split`, norms glue | about 2.6 | |
+
+The CPU tier here runs 4.27 experts per layer at **0.125 ms per expert**. It reads a block-contiguous copy of the experts
+with 22 threads. The 55 GB NVMe mode runs at 0.22 ms per expert on the native layout, so the swizzled layout is worth
+about 1.75x per expert in-engine.
+
+Ceiling estimate: about 44 tok/s. That assumes three things:
+- non-MoE work at roofline;
+- no host gaps;
+- the CPU/GPU split rebalanced to about 0.64 admissions per layer, so the CPU wait drops to 0.
+
+The biggest single lever is fewer admissions, by admit-on-second-touch or by sending more misses to the now-cheap CPU
+lane. Data: `docs/latency-glm53-c1/analysis_fast.json`, run record `glm53-c1lat-fast`.

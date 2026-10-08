@@ -1,0 +1,215 @@
+{
+ "nsys": {
+  "window_ms": 134.76,
+  "kernels": 2127,
+  "gpu_busy_frac": 0.716,
+  "gpu_idle_ms": 38.22,
+  "kernel_time_ms_by_class": {
+   "torch elementwise / glue": {
+    "ms": 52.55,
+    "n": 327
+   },
+   "other": {
+    "ms": 22.37,
+    "n": 816
+   },
+   "routed MoE (EXL3)": {
+    "ms": 15.96,
+    "n": 316
+   },
+   "dense GEMM/GEMV (EXL3 linears)": {
+    "ms": 2.46,
+    "n": 4
+   },
+   "router": {
+    "ms": 1.67,
+    "n": 314
+   },
+   "norms": {
+    "ms": 1.5,
+    "n": 342
+   },
+   "sampling": {
+    "ms": 0.02,
+    "n": 4
+   },
+   "hyper-connections": {
+    "ms": 0.01,
+    "n": 4
+   }
+  },
+  "top_kernels_ms": {
+   "ec_copy_k": {
+    "ms": 52.31,
+    "n": 158
+   },
+   "ft_combine_k": {
+    "ms": 18.54,
+    "n": 158
+   },
+   "exl3_moe_coop_a_kernel": {
+    "ms": 10.58,
+    "n": 158
+   },
+   "exl3_moe_coop_b_kernel": {
+    "ms": 5.38,
+    "n": 158
+   },
+   "exl3_gemm_kernel": {
+    "ms": 2.46,
+    "n": 4
+   },
+   "ft_split_fast_k": {
+    "ms": 1.68,
+    "n": 158
+   },
+   "k_finalize_norm": {
+    "ms": 1.49,
+    "n": 338
+   },
+   "k_apply_partials": {
+    "ms": 1.31,
+    "n": 338
+   },
+   "routing_gemv_kernel": {
+    "ms": 1.08,
+    "n": 157
+   },
+   "ec_step_k": {
+    "ms": 0.84,
+    "n": 158
+   },
+   "routing_ds3_nogroup_topk_kernel": {
+    "ms": 0.6,
+    "n": 157
+   },
+   "vectorized_elementwise_kernel": {
+    "ms": 0.22,
+    "n": 161
+   },
+   "reduce_kernel": {
+    "ms": 0.02,
+    "n": 4
+   },
+   "fs_partial_argmax_kernel": {
+    "ms": 0.02,
+    "n": 4
+   },
+   "rms_norm_kernel": {
+    "ms": 0.01,
+    "n": 4
+   },
+   "hc_apply_kernel": {
+    "ms": 0.01,
+    "n": 4
+   },
+   "elementwise_kernel": {
+    "ms": 0.01,
+    "n": 4
+   },
+   "fs_finalize_kernel": {
+    "ms": 0.01,
+    "n": 4
+   }
+  },
+  "nvtx_ms": {},
+  "memcpy": {
+   "2": {
+    "ms": 0.0,
+    "n": 4,
+    "MB": 0.0
+   },
+   "1": {
+    "ms": 0.01,
+    "n": 12,
+    "MB": 0.1
+   }
+  }
+ },
+ "stats_after_lat": {
+  "requests": 3,
+  "completion_tokens": 10119,
+  "expert_cache": [
+   {
+    "device": "cuda:0",
+    "layers": 42,
+    "slots": 1280,
+    "slot_bytes": 9437184,
+    "arena_gb": 12.08,
+    "elastic": {
+     "enter": 0,
+     "exit": 0,
+     "realloc_fail": 0,
+     "flex_chunks": 36,
+     "flex_gb": 10.87,
+     "in_prefill": false
+    },
+    "mem_alloc_gb": 22.09,
+    "mem_peak_gb": 22.5,
+    "hits": 1237479,
+    "misses": 361558,
+    "admitted": 351163,
+    "no_victim": 0,
+    "evictions": 351143,
+    "hit_rate": 0.7739,
+    "stage": {
+     "forwards": 0,
+     "layers": 0,
+     "experts": 0,
+     "overflow": 0,
+     "per_buffer": 295
+    },
+    "picks_hist": {
+     "8": 424998,
+     "32": 42,
+     "256": 82,
+     "512": 41
+    },
+    "stage_timing_last_forward": null
+   }
+  ],
+  "cpu_tier": {
+   "calls": 424998,
+   "unique_hits": 1235890,
+   "unique_misses": 2164094,
+   "cpu_experts": 1812931,
+   "cpu_experts_per_call": 4.266,
+   "misses_per_call": 5.092,
+   "hit_rate_unique": 0.3635,
+   "gpu_wait_ms_per_job": 0.1218,
+   "gpu_waits": 424720,
+   "timeouts": 0,
+   "host_jobs": 424720,
+   "host_busy_ms_per_job": 0.5322,
+   "host_empty_jobs": 0,
+   "cpu_copy_gb": 114.2,
+   "selftest": {
+    "EXACT": 0.000994,
+    "AFFINE": 0.001045,
+    "I16": 0.00105
+   },
+   "policy": [
+    0.4000000059604645,
+    0.023000000044703484,
+    0.10999999940395355,
+    0.10400000214576721,
+    0.20000000298023224,
+    32.0,
+    -1.0,
+    0.0
+   ]
+  },
+  "k_overlap": {
+   "overlapped": 424998,
+   "fallback": 123,
+   "bc_stripped": 42
+  },
+  "k_hcfuse": {
+   "fused_sites": 910710,
+   "flushes": 10119,
+   "fallback_blocks": 135,
+   "checked_sites": 0,
+   "check_mismatch": 0
+  }
+ }
+}
