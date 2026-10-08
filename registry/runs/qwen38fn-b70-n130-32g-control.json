@@ -1,0 +1,226 @@
+{
+ "id": "qwen38fn-b70-n130-32g-control",
+ "title": "Qwen3.8-Flash-Next \u00b7 1\u00d7 Arc Pro B70 \u00b7 32 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 srv23 same-session control",
+ "kv_cache": "131k fp8 (1.5 GiB)",
+ "gpu_count": 1,
+ "recipe": "qwen38fn-arcb70-32g-nvx4",
+ "contended": [
+  "A"
+ ],
+ "measured": "2026-10-08",
+ "change": "srv23 exact env, stock N104 code, --memory 32g, on 48:00.0 with cpuset 40-47 (same session as qwen38fn-b70-n130-16g)",
+ "hardware_note": "Arc Pro B70 0000:48:00.0 only (render node /dev/dri/by-path/pci-0000:48:00.0-render = renderD131, ZE_AFFINITY_MASK=0), --cpuset-cpus 40-47, NVMe reads uncapped (no --device-read-bps), store /mnt/nvx/n104/qwen_experts.bin on md127 RAID0; xpu lock xpu-0000_48_00_0; each phase under flock ~/nvx_bench.lock; guard (journal fatal patterns, pciehp, AER uncorrectable, xe GT reset on 48:00.0, MCE, D-state) every 60 s: 163 checks clean, boot count 0",
+ "source": "omarchy ~/freetoken-exl3/runs/N130-16g/ (n130_serve.sh = N104 n104_serve.sh copy; n130_phase2.sh; bench_matrix_n130.py = bench_matrix.py + abs timestamps; n130_mon.py 1 s md127/gtidle/cgroup; n130_analyze.py)",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 25.61,
+   "decode_per_stream": [
+    25.61
+   ],
+   "prefill_tok_s": 1134.7,
+   "completion": [
+    763
+   ],
+   "ttft_s": [
+    7.21
+   ],
+   "nvme_prefill": {
+    "gbs": 4.46,
+    "pct_of_26": 17.2,
+    "peak_1s_gbs": 6.44,
+    "iops": 36373,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.34,
+    "pct_of_26": 1.3,
+    "peak_1s_gbs": 0.69,
+    "iops": 2966,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 68.9,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 30.5,
+   "decode_per_stream": [
+    15.21,
+    15.94
+   ],
+   "prefill_tok_s": 1143.3,
+   "completion": [
+    652,
+    743
+   ],
+   "ttft_s": [
+    14.17,
+    14.31
+   ],
+   "nvme_prefill": {
+    "gbs": 4.44,
+    "pct_of_26": 17.1,
+    "peak_1s_gbs": 6.85,
+    "iops": 36175,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.49,
+    "pct_of_26": 1.9,
+    "peak_1s_gbs": 0.9,
+    "iops": 4208,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 73.0,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 32.43,
+   "decode_per_stream": [
+    7.63,
+    7.51,
+    8.11,
+    8.12
+   ],
+   "prefill_tok_s": 1289.9,
+   "completion": [
+    791,
+    848,
+    779,
+    783
+   ],
+   "ttft_s": [
+    19.19,
+    12.33,
+    25.28,
+    25.38
+   ],
+   "nvme_prefill": {
+    "gbs": 4.97,
+    "pct_of_26": 19.1,
+    "peak_1s_gbs": 6.78,
+    "iops": 40477,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.7,
+    "pct_of_26": 2.7,
+    "peak_1s_gbs": 1.36,
+    "iops": 6060,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 81.5,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 27.33,
+   "decode_per_stream": [
+    27.33
+   ],
+   "prefill_tok_s": 1193.4,
+   "completion": [
+    650
+   ],
+   "ttft_s": [
+    27.59
+   ],
+   "nvme_prefill": {
+    "gbs": 5.12,
+    "pct_of_26": 19.7,
+    "peak_1s_gbs": 8.77,
+    "iops": 41726,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.36,
+    "pct_of_26": 1.4,
+    "peak_1s_gbs": 1.19,
+    "iops": 3100,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 83.9,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 31.34,
+   "decode_per_stream": [
+    15.68,
+    12.64
+   ],
+   "prefill_tok_s": 1321.0,
+   "completion": [
+    703,
+    836
+   ],
+   "ttft_s": [
+    49.85,
+    33.83
+   ],
+   "nvme_prefill": {
+    "gbs": 5.63,
+    "pct_of_26": 21.7,
+    "peak_1s_gbs": 9.17,
+    "iops": 45903,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.42,
+    "pct_of_26": 1.6,
+    "peak_1s_gbs": 1.41,
+    "iops": 3623,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 91.9,
+    "decode": 100.0
+   }
+  }
+ ],
+ "memory": {
+  "cap_gib": 32,
+  "in_run_peak_anon_plus_shmem_gib": 21.9,
+  "anon_peak_gib": 9.51,
+  "oom_kill_note": "1 OOM kill at teardown only"
+ },
+ "tier": {
+  "masked_per_step_matrix": "5-60",
+  "ram_tier": "7.0 GB resident, memfd 7.0-7.2 GB"
+ },
+ "quality": {
+  "kind": "approximate (masked decode picks)",
+  "ref_panel_clean": {
+   "first": {
+    "top1": 0.9843,
+    "kl": 0.00282
+   },
+   "repeat": {
+    "top1": 0.982,
+    "kl": 0.00846
+   }
+  },
+  "decode_vs_prefill_kl_items0_5": {
+   "kl": 0.0205,
+   "top1": 0.963
+  },
+  "greedy_panel_vs_exllamav3": "0/8 exact; item 1 degenerates ('fibonacci_fibonacci_...', 33 tokens)",
+  "incident": "first quality attempt (p32-crash1): SGLang scheduler AttributeError ('list'.tolist in _normalize_decode_outputs, token_ids_logprob) then OOM kill with shmem-rss 24 GB at 32g"
+ },
+ "nvme_ceiling_gbs": 26.0
+}

@@ -1,0 +1,34 @@
+{
+ "id": "qwen38fn-arcb70-16g-nvx4",
+ "status": "candidate",
+ "model": "qwen3.8-flash-next-exl3-3.05bpw",
+ "hardware": "omarchy-arcb70-nvx4",
+ "engines": [
+  "exl3xpu-arc"
+ ],
+ "budget": {
+  "ram_gb": 16,
+  "runtime_gb": 9.5,
+  "other_gb": 2.5,
+  "vram_expert_slots": 8000,
+  "note": "measured in-run: anon 9.4-9.5 GiB (scheduler 6.6, launcher 1.3, detokenizer 1.0), shmem = RAM tier memfd 2.0 + HOSTBUF ring 2x0.91 (MAP_SHARED /dev/zero); peak anon+shmem 14.3-14.5 GiB"
+ },
+ "policy": {
+  "vram": "device LRU, write-through on miss",
+  "ram": "exclusive, admission-controlled (ADMIT=1)",
+  "seed": "frequency",
+  "exact": "mask",
+  "overlap": true,
+  "prefetch": {
+   "depth": 0,
+   "recall": 0.0
+  },
+  "decode_fill_queues": 8
+ },
+ "quality": "lossy decode (masked picks): paired decode-vs-prefill KL 0.055 nats vs 0.021 for the 32 GB srv23 config on the same panel items; prefill panel same as 32 GB",
+ "serve": {
+  "repo": "github.com/sybil-solutions/qwen38-flash-next-b70-offload",
+  "script": "omarchy ~/freetoken-exl3/runs/N130-16g/n130_serve.sh",
+  "env": "MEM=16g NVTOVR=runs/N130-16g/nvtier_n130.py ADMIT=1 DFQ=8 STAGE=1 NVASYNC=1 HCXPU=1 HOSTBUF=2 RAM_GB=2 MAXTOT=131072 CHUNK=8192 MAXRUN=4 MAMBA=32 SLOTS=8000 GRAPH_BS=1,2,4 QSAIMPL=sycl_row QSASELECT=sycl"
+ }
+}

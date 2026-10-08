@@ -15,6 +15,7 @@
  "recipe": [
   "glm53-rtx3090-55g-nvx4",
   "glm53-rtx3090-55g-nvx4-cold2b",
+  "qwen38fn-arcb70-16g-nvx4",
   "qwen38fn-arcb70-32g-nvx4"
  ],
  "runs": [
@@ -51,6 +52,8 @@
   "glm53-u6a-pfoff",
   "glm53-u6b-pfoff",
   "glm53-u7-rd32",
+  "qwen38fn-b70-n130-16g",
+  "qwen38fn-b70-n130-32g-control",
   "qwen38fn-b70-srv20",
   "qwen38fn-b70-srv21",
   "qwen38fn-b70-srv22",
@@ -71,6 +74,12 @@
    "status": "what-if",
    "model": "glm-5.3-flash-exl3-3.05bpw",
    "hardware": "omarchy-rtx3090-nvx4"
+  },
+  {
+   "id": "qwen38fn-arcb70-16g-nvx4",
+   "status": "candidate",
+   "model": "qwen3.8-flash-next-exl3-3.05bpw",
+   "hardware": "omarchy-arcb70-nvx4"
   },
   {
    "id": "qwen38fn-arcb70-32g-nvx4",

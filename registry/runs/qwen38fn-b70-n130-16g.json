@@ -1,0 +1,250 @@
+{
+ "id": "qwen38fn-b70-n130-16g",
+ "title": "Qwen3.8-Flash-Next \u00b7 1\u00d7 Arc Pro B70 \u00b7 16 GB RAM + NVMe RAID0 (4x 9100 PRO)",
+ "kv_cache": "131k fp8 (1.5 GiB)",
+ "gpu_count": 1,
+ "recipe": "qwen38fn-arcb70-16g-nvx4",
+ "contended": [
+  "A"
+ ],
+ "contended_note": "slot A (RTX 3090 81:00.0, other agent's GLM-5.3 runs) busy on CPU/GPU between and during phases; NVMe phases serialized with ~/nvx_bench.lock",
+ "measured": "2026-10-08",
+ "change": "srv23 env at --memory 16g --memory-swap 16g: RAM_GB=2, HOSTBUF=2, + ADMIT=1 + DFQ=8 (nvtier_n130.py). Stock srv23 code at RAM_GB=2 collapses (see findings).",
+ "hardware_note": "Arc Pro B70 0000:48:00.0 only (render node /dev/dri/by-path/pci-0000:48:00.0-render = renderD131, ZE_AFFINITY_MASK=0), --cpuset-cpus 40-47, NVMe reads uncapped (no --device-read-bps), store /mnt/nvx/n104/qwen_experts.bin on md127 RAID0; xpu lock xpu-0000_48_00_0; each phase under flock ~/nvx_bench.lock; guard (journal fatal patterns, pciehp, AER uncorrectable, xe GT reset on 48:00.0, MCE, D-state) every 60 s: 163 checks clean, boot count 0",
+ "code": "nvtier_n130.py = N104 nvtier.py (sha 545529bf) + two env-gated additions (default off = srv23 code): EXL3_NVTIER_ADMIT=1 admission-controlled decode tier (evict RAM copies of VRAM-resident experts first, other keys only after 4 steps, admit NVMe fills only into free budget, <=256 in flight, most-missed first) and EXL3_NVTIER_DECODE_FILL_QUEUES=8 (8 O_DIRECT decode-fill workers, key%8 routing keeps per-key fill/punch order). sha 7772b22d",
+ "source": "omarchy ~/freetoken-exl3/runs/N130-16g/ (n130_serve.sh = N104 n104_serve.sh copy; n130_phase2.sh; bench_matrix_n130.py = bench_matrix.py + abs timestamps; n130_mon.py 1 s md127/gtidle/cgroup; n130_analyze.py)",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 29.2,
+   "decode_per_stream": [
+    29.2
+   ],
+   "prefill_tok_s": 1139.0,
+   "completion": [
+    805
+   ],
+   "ttft_s": [
+    7.18
+   ],
+   "nvme_prefill": {
+    "gbs": 4.11,
+    "pct_of_26": 15.8,
+    "peak_1s_gbs": 6.62,
+    "iops": 33476,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.81,
+    "pct_of_26": 3.1,
+    "peak_1s_gbs": 1.36,
+    "iops": 7054,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 68.9,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 38.72,
+   "decode_per_stream": [
+    19.29,
+    20.15
+   ],
+   "prefill_tok_s": 1153.6,
+   "completion": [
+    655,
+    742
+   ],
+   "ttft_s": [
+    14.04,
+    14.18
+   ],
+   "nvme_prefill": {
+    "gbs": 4.37,
+    "pct_of_26": 16.8,
+    "peak_1s_gbs": 6.9,
+    "iops": 35647,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 1.42,
+    "pct_of_26": 5.5,
+    "peak_1s_gbs": 2.49,
+    "iops": 12311,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 71.4,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 52.6,
+   "decode_per_stream": [
+    11.17,
+    12.19,
+    13.15,
+    13.17
+   ],
+   "prefill_tok_s": 1300.9,
+   "completion": [
+    836,
+    824,
+    786,
+    786
+   ],
+   "ttft_s": [
+    12.12,
+    18.96,
+    25.07,
+    25.17
+   ],
+   "nvme_prefill": {
+    "gbs": 4.93,
+    "pct_of_26": 19.0,
+    "peak_1s_gbs": 6.96,
+    "iops": 40218,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 2.31,
+    "pct_of_26": 8.9,
+    "peak_1s_gbs": 3.15,
+    "iops": 20025,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 81.4,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 30.57,
+   "decode_per_stream": [
+    30.57
+   ],
+   "prefill_tok_s": 1183.8,
+   "completion": [
+    643
+   ],
+   "ttft_s": [
+    27.82
+   ],
+   "nvme_prefill": {
+    "gbs": 5.35,
+    "pct_of_26": 20.6,
+    "peak_1s_gbs": 8.93,
+    "iops": 43586,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 0.75,
+    "pct_of_26": 2.9,
+    "peak_1s_gbs": 1.3,
+    "iops": 6536,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 83.5,
+    "decode": 100.0
+   }
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 41.31,
+   "decode_per_stream": [
+    14.58,
+    20.88
+   ],
+   "prefill_tok_s": 1331.9,
+   "completion": [
+    791,
+    824
+   ],
+   "ttft_s": [
+    33.48,
+    49.45
+   ],
+   "nvme_prefill": {
+    "gbs": 5.58,
+    "pct_of_26": 21.5,
+    "peak_1s_gbs": 9.47,
+    "iops": 45502,
+    "avg_req_kb": 120
+   },
+   "nvme_decode": {
+    "gbs": 1.34,
+    "pct_of_26": 5.1,
+    "peak_1s_gbs": 2.1,
+    "iops": 11577,
+    "avg_req_kb": 113
+   },
+   "b70_gt0_non_rc6_pct": {
+    "prefill": 91.8,
+    "decode": 100.0
+   }
+  }
+ ],
+ "memory": {
+  "cap_gib": 16,
+  "in_run_peak_anon_plus_shmem_gib": 14.3,
+  "anon_peak_gib": 9.52,
+  "swap_gib": 0,
+  "oom_kill_note": "memory.current sits at the 16 GiB cap (page cache); no OOM during the run; 1 OOM kill at docker stop teardown (scheduler faults in ~3.5 GB of the 48 GB sparse memfd/SVM range while exiting; same teardown OOM seen at 32 GB with shmem-rss 24 GB)"
+ },
+ "tier": {
+  "masked_per_step_matrix": "18-135 (C4 cells highest)",
+  "ram_tier": "2.0 GB resident = memfd 2.0-2.1 GB (no overshoot)",
+  "inflight": "15-25 typical"
+ },
+ "quality": {
+  "kind": "lossy",
+  "ref_panel_clean": {
+   "first": {
+    "top1": 0.9847,
+    "kl": 0.00297
+   },
+   "repeat": {
+    "top1": 0.9787,
+    "kl": 0.00762
+   },
+   "same_session_32g_srv23": {
+    "first": {
+     "top1": 0.9843,
+     "kl": 0.00282
+    },
+    "repeat": {
+     "top1": 0.982,
+     "kl": 0.00846
+    }
+   },
+   "note": "kit/tools/score_ref_panel.py (teacher-forced prefill vs exllamav3 top-20), fresh server + flush_cache; kit band top1>=0.987 KL<=0.0013 is missed equally by the 32 GB srv23 config -> stack-level, not the 16 GB settings"
+  },
+  "decode_vs_prefill_kl": {
+   "positions": 3145,
+   "kl": 0.0419,
+   "top1": 0.9526,
+   "items0_5_kl": 0.0553,
+   "items0_5_top1": 0.938,
+   "same_session_32g_srv23_items0_5": {
+    "kl": 0.0205,
+    "top1": 0.963,
+    "note": "32 GB run stopped at item 6 by an SGLang 500 (token_ids_logprob in an overlap decode batch)"
+   },
+   "method": "decode_kl_n130.py: greedy to EOS through the decode path with top-20 logprobs, flush_cache, teacher-force the same ids through the prefill path, KL(prefill||decode) on the decode top-20 support"
+  },
+  "greedy_panel_vs_exllamav3": "0/8 exact (32 GB: 0/8); no runaways, all finish=stop",
+  "smoke": "after 2 unscored warm-up chats: Paris / prime function / MoE essay all coherent; cold (no warm-up, s16c) the prime prompt ended after 4 tokens"
+ },
+ "nvme_ceiling_gbs": 26.0
+}
