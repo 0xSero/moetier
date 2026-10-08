@@ -51,6 +51,7 @@ class Recipe:
     raw: dict = field(default_factory=dict)
     ram_expert_bytes: int = 0      # per-tier record size (0 = expert_bytes); vram keeps expert_bytes
     nvme_expert_bytes: int = 0
+    b70_slots: list = field(default_factory=list)   # second-tier GPU expert slots, one entry per card
 
     @property
     def keys(self):
@@ -90,6 +91,19 @@ def resolve(reg, recipe_id, **overrides):
                 for k in ("per_layer_ms", "per_expert_ms", "per_extra_token_ms"):
                     if k in o:
                         setattr(lanes[name], k, o[k])
+    # recipe.b70: second-tier GPUs that each hold a static expert set and compute it from their own VRAM.
+    # {"engine": "exl3xpu-arc", "cards": [3000, ...] slots per card, "handoff_ms": host<->card round trip per layer}.
+    # Lane cost = engine's model lane "gpu" (per_layer + per_expert + per_extra_token) + handoff_ms per layer.
+    bt = r.get("b70")
+    b70_slots = []
+    if bt and bt.get("cards"):
+        e = reg["engine"][bt["engine"]]
+        g = dict(e["lanes"]["gpu"])
+        g.update({k: v for k, v in e.get("model_lanes", {}).get(r["model"], {}).get("gpu", {}).items()
+                  if k in ("per_layer_ms", "per_expert_ms", "per_extra_token_ms")})
+        lanes["b70"] = Lane("b70", "b70", g.get("per_layer_ms", 0.0) + float(bt.get("handoff_ms", 0.0)),
+                            g.get("per_expert_ms", 0.0), g.get("per_extra_token_ms", 0.0))
+        b70_slots = [int(n) for n in bt["cards"]]
     for name, o in r.get("lane_overrides", {}).items():      # what-if: a faster kernel or handoff on one lane
         for k, v in o.items():
             setattr(lanes[name], k, v)
@@ -107,4 +121,4 @@ def resolve(reg, recipe_id, **overrides):
                   nvme_bw_qd1_gbps=hw["nvme"].get("bw_qd1_gbps", hw["nvme"]["bw_gbps"]),
                   nvme_latency_ms=hw["nvme"].get("latency_ms", 0.1), policy=r["policy"],
                   fixed_ms=r["calibration"]["fixed_ms"], prefill=r["calibration"].get("prefill", {}), raw=r,
-                  ram_expert_bytes=ram_b, nvme_expert_bytes=nvme_b)
+                  ram_expert_bytes=ram_b, nvme_expert_bytes=nvme_b, b70_slots=b70_slots)

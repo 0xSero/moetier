@@ -19,14 +19,15 @@ def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_m
     for l in range(L):
         np.add.at(freq, l * E + cat[:, l, :R.topk].reshape(-1), 1)
     led = Ledger(R.vram_slots, R.ram_slots, L * E, exclusive=R.policy.get("ram", "exclusive") == "exclusive",
-                 ram_policy=R.policy.get("ram_evict", "lru"))
+                 ram_policy=R.policy.get("ram_evict", "lru"), b70_slots=getattr(R, "b70_slots", []))
     led.seed([int(k) for k in np.argsort(-freq)])
     nv = NvmeChannel(R.nvme_expert_bytes, R.nvme_bw_gbps, R.nvme_bw_qd1_gbps, R.nvme_latency_ms)
     pf = R.policy.get("prefetch", {})
     recall = pf.get("recall", 0.0) if pf.get("depth", 0) else 0.0
     # lockstep: `conc` streams each decoding their own trace segment (cycled)
     cur = [(i % len(streams), (i * 997) % max(1, len(streams[i % len(streams)]))) for i in range(conc)]
-    st = dict(t=0.0, tok=0, steps=0, picks=0, vram=0, ram_cpu=0, zc=0, nvme=0, masked=0, gpu=0.0, cpu=0.0, fixed=0.0)
+    st = dict(t=0.0, tok=0, steps=0, picks=0, vram=0, ram_cpu=0, zc=0, nvme=0, masked=0, gpu=0.0, cpu=0.0, fixed=0.0, b70=0,
+              b70_x=0, b70_ms=0.0)
     inflight, step = {}, 0
     while True:
         rows = [streams[s][(i + w) % len(streams[s])] for s, i in cur for w in range(window)]   # [conc*window][L][topk]
@@ -58,6 +59,9 @@ def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_m
                 st["masked"] += len(p.masked)
                 st["gpu"] += p.gpu_ms
                 st["cpu"] += p.cpu_ms
+                st["b70"] += sum(picks[k] for k in p.b70)
+                st["b70_x"] += len(p.b70)
+                st["b70_ms"] += p.b70_ms
                 st["fixed"] += F / L
         nv.free_at = max(nv.free_at, 0.0)
         if measure:
@@ -77,7 +81,11 @@ def run(R, streams, conc=1, warm=200, max_steps=0, window=1, accept=1.0, draft_m
                 cpu_experts_per_tok=round(st["ram_cpu"] / n, 1), zerocopy_per_tok=round(st["zc"] / n, 1),
                 nvme_per_tok=round(st["nvme"] / n, 1), masked_per_tok=round(st["masked"] / n, 1),
                 ms_fixed=round(st["fixed"] / steps, 2), ms_gpu_moe=round(st["gpu"] / steps, 2),
-                ms_cpu_moe=round(st["cpu"] / steps, 2), vram_slots=R.vram_slots, ram_slots=R.ram_slots)
+                ms_cpu_moe=round(st["cpu"] / steps, 2), vram_slots=R.vram_slots, ram_slots=R.ram_slots,
+                **(dict(b70_hit=round(st["b70"] / max(1, st["picks"]), 3),
+                        gpu_hit=round((st["vram"] + st["b70"]) / max(1, st["picks"]), 3),
+                        b70_experts_per_tok=round(st["b70_x"] / n, 1), ms_b70_moe=round(st["b70_ms"] / steps, 2),
+                        b70_slots=list(R.b70_slots)) if getattr(R, "b70_slots", None) else {}))
 
 
 def prefill(R, prompt):
