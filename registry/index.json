@@ -19,8 +19,11 @@
  ],
  "runs": [
   "b70-microbench-2026-10-07",
+  "glm53-16g-r16-screen",
+  "glm53-16g-r48-screen",
   "glm53-55g-pfon-cap8",
   "glm53-55g-pfon-cap8-pair",
+  "glm53-55g-pfon-n129",
   "glm53-55g-pfon-nocap-pair",
   "glm53-58g-pfoff",
   "glm53-c1lat-pfoff",
