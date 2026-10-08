@@ -1056,5 +1056,6 @@
    }
   },
   "method": "diskmon.py: /proc/diskstats md127 + members every 0.5 s, per sweep phase (dmsum.py)"
- }
+ },
+ "registry_key": "nvidia/rtx-3090-24gb/glm-5.3-flash.exllamav3-nvme16g.128k (on image v4.2-nvme)"
 }

@@ -1,0 +1,72 @@
+{
+ "id": "glm53-v42-image-smoke-16g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 16 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.2-nvme smoke (as shipped)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-16g-nvx4",
+ "change": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063 (glm53-flash-offload 3bdb502), GLM53_MODE=nvme, launch env of the registry recipe, --memory 16g, NVMe uncapped, no code mounts",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 12.72,
+   "prefill_tok_s": 654.4
+  }
+ ],
+ "per_token": {
+  "vram_hits": 141.022,
+  "ram_hits": 108.095,
+  "nvme": 86.884,
+  "cpu_experts": 168.762,
+  "zc_admits": 16.524,
+  "nvme_gpu": 11.632,
+  "nvme_cpu": 77.166,
+  "reply_wait_ms": 2.531,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 61.696
+ },
+ "quality": {},
+ "memory": {
+  "ram_tier_gib": 8.525,
+  "ram_slots": 970
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/accept16/img_16g",
+ "note": "N129 2026-10-08 16:56-17:07 CEST, 8k prefill + C1 screen (natural completions). Lock ~/nvx_bench.lock held.",
+ "nvme_io": {
+  "ceiling_gbps": 26.0,
+  "members": [
+   "nvme3n1",
+   "nvme1n1",
+   "nvme0n1",
+   "nvme2n1"
+  ],
+  "phases": {
+   "prefill_8k": {
+    "seconds": 37.5,
+    "read_gbps": 17.27,
+    "pct_of_ceiling": 66.4,
+    "peak_1s_gbps": 24.73,
+    "md_iops": 147745,
+    "device_iops": 147745,
+    "avg_read_kb_device": 114.2
+   },
+   "decode_C1": {
+    "seconds": 280.3,
+    "read_gbps": 19.85,
+    "pct_of_ceiling": 76.3,
+    "peak_1s_gbps": 23.87,
+    "md_iops": 169789,
+    "device_iops": 169789,
+    "avg_read_kb_device": 114.2
+   }
+  }
+ },
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3",
+ "registry_key": "nvidia/rtx-3090-24gb/glm-5.3-flash.exllamav3-nvme16g.128k",
+ "registry_commit": "cfe500e1914979e8a8bf49041264ab10faeeaede",
+ "lab": "reported (failed:speed 13.1 < 15; load chat reasoning tools context pass; prefill 1006)"
+}

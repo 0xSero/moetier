@@ -1,0 +1,69 @@
+{
+ "id": "glm53-v42-image-smoke-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.2-nvme smoke (as shipped)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063 (glm53-flash-offload 3bdb502), GLM53_MODE=nvme, launch env of the registry recipe, --memory 55g, NVMe uncapped, no code mounts",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 17.25,
+   "prefill_tok_s": 662.4
+  }
+ ],
+ "per_token": {
+  "vram_hits": 142.985,
+  "ram_hits": 169.26,
+  "nvme": 23.756,
+  "cpu_experts": 154.241,
+  "zc_admits": 32.424,
+  "nvme_gpu": 8.568,
+  "nvme_cpu": 16.542,
+  "reply_wait_ms": 0.481,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 36.87
+ },
+ "quality": {},
+ "memory": {
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/accept16/img_55g",
+ "note": "N129 2026-10-08 16:56-17:07 CEST, 8k prefill + C1 screen (natural completions). Lock ~/nvx_bench.lock held.",
+ "nvme_io": {
+  "ceiling_gbps": 26.0,
+  "members": [
+   "nvme3n1",
+   "nvme1n1",
+   "nvme0n1",
+   "nvme2n1"
+  ],
+  "phases": {
+   "prefill_8k": {
+    "seconds": 37.0,
+    "read_gbps": 11.28,
+    "pct_of_ceiling": 43.4,
+    "peak_1s_gbps": 16.64,
+    "md_iops": 90661,
+    "device_iops": 90661,
+    "avg_read_kb_device": 121.5
+   },
+   "decode_C1": {
+    "seconds": 177.2,
+    "read_gbps": 8.66,
+    "pct_of_ceiling": 33.3,
+    "peak_1s_gbps": 14.02,
+    "md_iops": 69657,
+    "device_iops": 69657,
+    "avg_read_kb_device": 121.5
+   }
+  }
+ },
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3"
+}
