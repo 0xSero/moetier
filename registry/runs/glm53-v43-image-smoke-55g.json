@@ -1,0 +1,39 @@
+{
+ "id": "glm53-v43-image-smoke-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.3-nvme smoke (as shipped)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:547405e6 (commit 4dafe6f: CPU-kernel trellis window clamp, bit-identical), GLM53_MODE=nvme registry env, --memory 55g, NVMe uncapped",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 17.39,
+   "prefill_tok_s": 656.8
+  }
+ ],
+ "per_token": {
+  "vram_hits": 144.602,
+  "ram_hits": 168.451,
+  "nvme": 22.948,
+  "cpu_experts": 153.197,
+  "zc_admits": 31.931,
+  "nvme_gpu": 8.161,
+  "nvme_cpu": 15.921,
+  "reply_wait_ms": 0.458,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 35.584
+ },
+ "quality": {},
+ "memory": {
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/accept16/img43_55g",
+ "note": "N129 2026-10-09 01:22-01:34 CEST (after the 00:35 reboot), 8k prefill + C1 screen."
+}
