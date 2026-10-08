@@ -1,0 +1,1359 @@
+{
+ "id": "glm53-55g-pfon-cap8-pair",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 \u00b7 S3b env, prefetch ON, NVMe reads capped 8 GB/s (screen C1/C4)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "S3b env + GLM53_NV_PREFETCH=1 (glm53a code), docker --device-read-bps /dev/md127:8gb; screening 8k prefill + C1 + C4",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 16.84,
+   "prefill_tok_s": 472.5
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 13.04,
+   "per_stream": 3.7
+  }
+ ],
+ "per_token": {
+  "vram_hits": 122.608,
+  "ram_hits": 174.458,
+  "nvme": 23.696,
+  "cpu_experts": 151.388,
+  "zc_admits": 43.18,
+  "nvme_gpu": 11.282,
+  "nvme_cpu": 12.951,
+  "reply_wait_ms": 1.282,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 51.264
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 49.69,
+  "end_gib": 49.68,
+  "ram_tier_gib": 42.451,
+  "ram_slots": 4830
+ },
+ "utilization": {
+  "method": {
+   "sampler": "moetier probe record (stdlib + NVML ctypes)",
+   "interval_s": 0.1,
+   "active_windows": "per sample interval from the engine's live counters: decode = dec_reqs advanced, prefill = staged layers / prefill tokens advanced, mixed = both (excluded), idle = neither",
+   "gpu_util_pct": "NVML utilization.gpu: % of time a kernel was resident (spin-waiting kernels count as busy)",
+   "vram_busy_pct": "NVML utilization.memory: % of time the memory controller was busy (time-based, not GB/s; an upper bound on VRAM bandwidth use vs the 936 GB/s ceiling)",
+   "pcie": "NVML PCIe throughput rx/tx (device view, 20 ms window per sample)",
+   "nvme_read_gbps": "/proc/diskstats sectors read on the md array",
+   "cpu": "/proc/stat busy per core over the server cpuset (spin counts as busy); cpu_lane_duty_pct = engine CPU job time / wall (useful work)",
+   "ddr_derived_gbps": "derived (no DF/UMC counters without root): CPU-lane weight bytes + PCIe rx + PCIe tx + NVMe read bytes",
+   "ceilings": "hardware record `ceilings`"
+  },
+  "phases": {
+   "prefill_8k": {
+    "decode": {
+     "active_s": 2.3,
+     "resources": {
+      "gpu_util_pct": {
+       "mean": 82.739,
+       "p50": 87.0,
+       "p90": 98.8,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 82.7,
+        "p50": 87.0,
+        "p90": 98.8
+       },
+       "idle_frac": 0.0
+      },
+      "vram_busy_pct": {
+       "mean": 5.739,
+       "p50": 6.0,
+       "p90": 9.0,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 5.7,
+        "p50": 6.0,
+        "p90": 9.0
+       },
+       "idle_frac": 0.348
+      },
+      "pcie_h2d_gbps": {
+       "mean": 5.471,
+       "p50": 3.568,
+       "p90": 12.672,
+       "n": 23,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 19.5,
+        "p50": 12.7,
+        "p90": 45.3
+       },
+       "idle_frac": 0.391
+      },
+      "pcie_d2h_gbps": {
+       "mean": 2.148,
+       "p50": 1.359,
+       "p90": 2.562,
+       "n": 23,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 7.7,
+        "p50": 4.9,
+        "p90": 9.2
+       },
+       "idle_frac": 0.565
+      },
+      "nvme_read_gbps": {
+       "mean": 7.629,
+       "p50": 8.483,
+       "p90": 11.192,
+       "n": 23,
+       "ceiling": 26.0,
+       "pct_of_ceiling": {
+        "mean": 29.3,
+        "p50": 32.6,
+        "p90": 43.0
+       },
+       "idle_frac": 0.043
+      },
+      "cpu_cores_busy_pct": {
+       "mean": 44.353,
+       "p50": 41.4,
+       "p90": 67.776,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 44.4,
+        "p50": 41.4,
+        "p90": 67.8
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_cores_busy_pct": {
+       "mean": 62.021,
+       "p50": 55.727,
+       "p90": 99.917,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 62.0,
+        "p50": 55.7,
+        "p90": 99.9
+       },
+       "idle_frac": 0.0
+      },
+      "host_other_cpus_busy_pct": {
+       "mean": 3.937,
+       "p50": 1.0,
+       "p90": 11.142,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 3.9,
+        "p50": 1.0,
+        "p90": 11.1
+       },
+       "idle_frac": 0.652
+      },
+      "cpu_lane_duty_pct": {
+       "mean": 54.258,
+       "p50": 63.869,
+       "p90": 89.543,
+       "n": 23,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 54.3,
+        "p50": 63.9,
+        "p90": 89.5
+       },
+       "idle_frac": 0.043
+      },
+      "cpu_lane_weight_gbps": {
+       "mean": 16.28,
+       "p50": 12.646,
+       "p90": 31.615,
+       "n": 23,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 11.8,
+        "p50": 9.2,
+        "p90": 22.9
+       },
+       "idle_frac": 0.087
+      },
+      "ddr_derived_gbps": {
+       "mean": 31.528,
+       "p50": 26.333,
+       "p90": 54.375,
+       "n": 23,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 22.8,
+        "p50": 19.1,
+        "p90": 39.4
+       },
+       "idle_frac": 0.0
+      },
+      "ram_gib": {
+       "mean": 48.471,
+       "p50": 48.391,
+       "p90": 48.783,
+       "n": 23
+      },
+      "gpu_power_w": {
+       "mean": 179.008,
+       "p50": 175.593,
+       "p90": 186.829,
+       "n": 23,
+       "ceiling": 350,
+       "pct_of_ceiling": {
+        "mean": 51.1,
+        "p50": 50.2,
+        "p90": 53.4
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_mhz": {
+       "mean": 3722.947,
+       "p50": 3797.045,
+       "p90": 3857.009,
+       "n": 23
+      },
+      "gpu_sm_mhz": {
+       "mean": 1950.0,
+       "p50": 1950.0,
+       "p90": 1950.0,
+       "n": 23
+      }
+     },
+     "per_core_busy_pct": {
+      "0": 22.8,
+      "1": 1.3,
+      "2": 57.9,
+      "3": 62.5,
+      "4": 62.6,
+      "5": 62.4,
+      "6": 62.3,
+      "7": 63.1,
+      "8": 62.1,
+      "9": 62.4,
+      "10": 61.3,
+      "11": 62.8,
+      "12": 63.1,
+      "13": 62.3,
+      "14": 62.7,
+      "15": 62.2,
+      "16": 61.3,
+      "17": 61.3,
+      "18": 62.6,
+      "19": 62.5,
+      "20": 61.4,
+      "21": 61.6,
+      "22": 62.0,
+      "23": 62.2,
+      "24": 100.0,
+      "25": 93.0,
+      "26": 40.4,
+      "27": 13.5,
+      "28": 20.3,
+      "29": 2.6,
+      "30": 3.6,
+      "31": 6.3,
+      "32": 4.1,
+      "33": 10.9,
+      "34": 2.9,
+      "35": 5.1,
+      "36": 3.1,
+      "37": 4.7,
+      "38": 5.5,
+      "39": 4.8,
+      "40": 1.4,
+      "41": 0.9,
+      "42": 2.4,
+      "43": 3.7,
+      "44": 0.7,
+      "45": 1.7,
+      "46": 1.9,
+      "47": 2.6
+     }
+    },
+    "prefill": {
+     "active_s": 25.9,
+     "resources": {
+      "gpu_util_pct": {
+       "mean": 71.671,
+       "p50": 67.0,
+       "p90": 100.0,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 71.7,
+        "p50": 67.0,
+        "p90": 100.0
+       },
+       "idle_frac": 0.008
+      },
+      "vram_busy_pct": {
+       "mean": 26.298,
+       "p50": 13.0,
+       "p90": 69.6,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 26.3,
+        "p50": 13.0,
+        "p90": 69.6
+       },
+       "idle_frac": 0.188
+      },
+      "pcie_h2d_gbps": {
+       "mean": 24.438,
+       "p50": 27.871,
+       "p90": 28.559,
+       "n": 255,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 87.3,
+        "p50": 99.5,
+        "p90": 102.0
+       },
+       "idle_frac": 0.035
+      },
+      "pcie_d2h_gbps": {
+       "mean": 3.041,
+       "p50": 3.251,
+       "p90": 3.272,
+       "n": 255,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 10.9,
+        "p50": 11.6,
+        "p90": 11.7
+       },
+       "idle_frac": 0.055
+      },
+      "nvme_read_gbps": {
+       "mean": 8.736,
+       "p50": 8.588,
+       "p90": 8.882,
+       "n": 255,
+       "ceiling": 26.0,
+       "pct_of_ceiling": {
+        "mean": 33.6,
+        "p50": 33.0,
+        "p90": 34.2
+       },
+       "idle_frac": 0.004
+      },
+      "cpu_cores_busy_pct": {
+       "mean": 5.197,
+       "p50": 4.834,
+       "p90": 7.802,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 5.2,
+        "p50": 4.8,
+        "p90": 7.8
+       },
+       "idle_frac": 0.537
+      },
+      "cpu_tier_cores_busy_pct": {
+       "mean": 2.696,
+       "p50": 2.15,
+       "p90": 3.911,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 2.7,
+        "p50": 2.1,
+        "p90": 3.9
+       },
+       "idle_frac": 0.961
+      },
+      "host_other_cpus_busy_pct": {
+       "mean": 3.522,
+       "p50": 0.91,
+       "p90": 10.066,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 3.5,
+        "p50": 0.9,
+        "p90": 10.1
+       },
+       "idle_frac": 0.749
+      },
+      "cpu_lane_duty_pct": {
+       "mean": 0.0,
+       "p50": 0.0,
+       "p90": 0.0,
+       "n": 255,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+       },
+       "idle_frac": 1.0
+      },
+      "cpu_lane_weight_gbps": {
+       "mean": 0.0,
+       "p50": 0.0,
+       "p90": 0.0,
+       "n": 255,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 0.0,
+        "p50": 0.0,
+        "p90": 0.0
+       },
+       "idle_frac": 1.0
+      },
+      "ddr_derived_gbps": {
+       "mean": 36.214,
+       "p50": 39.176,
+       "p90": 40.438,
+       "n": 255,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 26.2,
+        "p50": 28.4,
+        "p90": 29.3
+       },
+       "idle_frac": 0.004
+      },
+      "ram_gib": {
+       "mean": 48.459,
+       "p50": 48.531,
+       "p90": 48.811,
+       "n": 255
+      },
+      "gpu_power_w": {
+       "mean": 254.353,
+       "p50": 263.352,
+       "p90": 331.465,
+       "n": 255,
+       "ceiling": 350,
+       "pct_of_ceiling": {
+        "mean": 72.7,
+        "p50": 75.2,
+        "p90": 94.7
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_mhz": {
+       "mean": 3888.186,
+       "p50": 3896.273,
+       "p90": 3896.636,
+       "n": 255
+      },
+      "gpu_sm_mhz": {
+       "mean": 1840.765,
+       "p50": 1920.0,
+       "p90": 1950.0,
+       "n": 255
+      }
+     },
+     "per_core_busy_pct": {
+      "0": 12.0,
+      "1": 5.5,
+      "2": 2.9,
+      "3": 2.8,
+      "4": 2.4,
+      "5": 2.8,
+      "6": 3.2,
+      "7": 2.4,
+      "8": 2.7,
+      "9": 3.7,
+      "10": 2.5,
+      "11": 3.0,
+      "12": 3.5,
+      "13": 3.4,
+      "14": 2.7,
+      "15": 2.5,
+      "16": 2.2,
+      "17": 2.2,
+      "18": 2.2,
+      "19": 3.6,
+      "20": 2.1,
+      "21": 1.9,
+      "22": 2.4,
+      "23": 2.1,
+      "24": 20.9,
+      "25": 6.7,
+      "26": 19.8,
+      "27": 11.4,
+      "28": 18.7,
+      "29": 11.3,
+      "30": 12.5,
+      "31": 3.7,
+      "32": 2.3,
+      "33": 6.8,
+      "34": 2.6,
+      "35": 4.1,
+      "36": 10.0,
+      "37": 2.5,
+      "38": 2.4,
+      "39": 2.6,
+      "40": 1.2,
+      "41": 7.0,
+      "42": 0.8,
+      "43": 5.2,
+      "44": 1.2,
+      "45": 0.6,
+      "46": 0.8,
+      "47": 0.9
+     }
+    },
+    "time_split": {
+     "decode": 0.044,
+     "prefill": 0.502,
+     "mixed": 0.0,
+     "idle": 0.454,
+     "unknown": 0.0
+    }
+   },
+   "decode_C1": {
+    "decode": {
+     "active_s": 242.5,
+     "resources": {
+      "gpu_util_pct": {
+       "mean": 97.835,
+       "p50": 98.0,
+       "p90": 99.0,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 97.8,
+        "p50": 98.0,
+        "p90": 99.0
+       },
+       "idle_frac": 0.002
+      },
+      "vram_busy_pct": {
+       "mean": 21.063,
+       "p50": 23.0,
+       "p90": 27.0,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 21.1,
+        "p50": 23.0,
+        "p90": 27.0
+       },
+       "idle_frac": 0.02
+      },
+      "pcie_h2d_gbps": {
+       "mean": 6.682,
+       "p50": 7.127,
+       "p90": 9.655,
+       "n": 2426,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 23.9,
+        "p50": 25.5,
+        "p90": 34.5
+       },
+       "idle_frac": 0.061
+      },
+      "pcie_d2h_gbps": {
+       "mean": 7.345,
+       "p50": 7.534,
+       "p90": 9.898,
+       "n": 2426,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 26.2,
+        "p50": 26.9,
+        "p90": 35.4
+       },
+       "idle_frac": 0.012
+      },
+      "nvme_read_gbps": {
+       "mean": 8.322,
+       "p50": 8.588,
+       "p90": 11.099,
+       "n": 2426,
+       "ceiling": 26.0,
+       "pct_of_ceiling": {
+        "mean": 32.0,
+        "p50": 33.0,
+        "p90": 42.7
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_cores_busy_pct": {
+       "mean": 62.434,
+       "p50": 64.858,
+       "p90": 68.099,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 62.4,
+        "p50": 64.9,
+        "p90": 68.1
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_cores_busy_pct": {
+       "mean": 93.185,
+       "p50": 99.545,
+       "p90": 100.0,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 93.2,
+        "p50": 99.5,
+        "p90": 100.0
+       },
+       "idle_frac": 0.0
+      },
+      "host_other_cpus_busy_pct": {
+       "mean": 3.322,
+       "p50": 1.74,
+       "p90": 10.0,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 3.3,
+        "p50": 1.7,
+        "p90": 10.0
+       },
+       "idle_frac": 0.838
+      },
+      "cpu_lane_duty_pct": {
+       "mean": 63.517,
+       "p50": 62.557,
+       "p90": 79.805,
+       "n": 2426,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 63.5,
+        "p50": 62.6,
+        "p90": 79.8
+       },
+       "idle_frac": 0.001
+      },
+      "cpu_lane_weight_gbps": {
+       "mean": 24.61,
+       "p50": 27.253,
+       "p90": 29.727,
+       "n": 2426,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 17.8,
+        "p50": 19.7,
+        "p90": 21.5
+       },
+       "idle_frac": 0.006
+      },
+      "ddr_derived_gbps": {
+       "mean": 46.959,
+       "p50": 49.002,
+       "p90": 56.104,
+       "n": 2426,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 34.0,
+        "p50": 35.5,
+        "p90": 40.7
+       },
+       "idle_frac": 0.0
+      },
+      "ram_gib": {
+       "mean": 48.969,
+       "p50": 48.957,
+       "p90": 48.992,
+       "n": 2426
+      },
+      "gpu_power_w": {
+       "mean": 268.788,
+       "p50": 271.059,
+       "p90": 287.946,
+       "n": 2426,
+       "ceiling": 350,
+       "pct_of_ceiling": {
+        "mean": 76.8,
+        "p50": 77.4,
+        "p90": 82.3
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_mhz": {
+       "mean": 3625.144,
+       "p50": 3659.023,
+       "p90": 3749.227,
+       "n": 2426
+      },
+      "gpu_sm_mhz": {
+       "mean": 1936.725,
+       "p50": 1935.0,
+       "p90": 1950.0,
+       "n": 2426
+      }
+     },
+     "per_core_busy_pct": {
+      "0": 5.4,
+      "1": 1.7,
+      "2": 87.4,
+      "3": 93.5,
+      "4": 93.5,
+      "5": 93.5,
+      "6": 93.4,
+      "7": 93.5,
+      "8": 93.4,
+      "9": 93.4,
+      "10": 93.5,
+      "11": 93.5,
+      "12": 93.5,
+      "13": 93.5,
+      "14": 93.5,
+      "15": 93.4,
+      "16": 93.4,
+      "17": 93.4,
+      "18": 93.4,
+      "19": 93.5,
+      "20": 93.4,
+      "21": 93.5,
+      "22": 93.5,
+      "23": 93.5,
+      "24": 99.9,
+      "25": 99.8,
+      "26": 18.8,
+      "27": 7.8,
+      "28": 5.7,
+      "29": 8.0,
+      "30": 16.8,
+      "31": 6.6,
+      "32": 8.3,
+      "33": 7.8,
+      "34": 5.6,
+      "35": 6.8,
+      "36": 5.8,
+      "37": 4.0,
+      "38": 13.7,
+      "39": 6.8,
+      "40": 3.0,
+      "41": 2.5,
+      "42": 4.4,
+      "43": 6.0,
+      "44": 1.6,
+      "45": 4.7,
+      "46": 1.9,
+      "47": 2.1
+     }
+    },
+    "time_split": {
+     "decode": 0.982,
+     "prefill": 0.0,
+     "mixed": 0.0,
+     "idle": 0.018,
+     "unknown": 0.0
+    }
+   },
+   "decode_C4": {
+    "decode": {
+     "active_s": 1141.3,
+     "resources": {
+      "gpu_util_pct": {
+       "mean": 97.753,
+       "p50": 98.0,
+       "p90": 100.0,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 97.8,
+        "p50": 98.0,
+        "p90": 100.0
+       },
+       "idle_frac": 0.001
+      },
+      "vram_busy_pct": {
+       "mean": 10.63,
+       "p50": 10.0,
+       "p90": 17.0,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 10.6,
+        "p50": 10.0,
+        "p90": 17.0
+       },
+       "idle_frac": 0.059
+      },
+      "pcie_h2d_gbps": {
+       "mean": 6.418,
+       "p50": 5.61,
+       "p90": 14.57,
+       "n": 11412,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 22.9,
+        "p50": 20.0,
+        "p90": 52.0
+       },
+       "idle_frac": 0.342
+      },
+      "pcie_d2h_gbps": {
+       "mean": 10.016,
+       "p50": 10.753,
+       "p90": 14.715,
+       "n": 11412,
+       "ceiling": 28.0,
+       "pct_of_ceiling": {
+        "mean": 35.8,
+        "p50": 38.4,
+        "p90": 52.6
+       },
+       "idle_frac": 0.024
+      },
+      "nvme_read_gbps": {
+       "mean": 8.608,
+       "p50": 8.588,
+       "p90": 10.626,
+       "n": 11412,
+       "ceiling": 26.0,
+       "pct_of_ceiling": {
+        "mean": 33.1,
+        "p50": 33.0,
+        "p90": 40.9
+       },
+       "idle_frac": 0.001
+      },
+      "cpu_cores_busy_pct": {
+       "mean": 48.362,
+       "p50": 46.23,
+       "p90": 66.316,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 48.4,
+        "p50": 46.2,
+        "p90": 66.3
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_cores_busy_pct": {
+       "mean": 68.614,
+       "p50": 65.055,
+       "p90": 99.432,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 68.6,
+        "p50": 65.1,
+        "p90": 99.4
+       },
+       "idle_frac": 0.0
+      },
+      "host_other_cpus_busy_pct": {
+       "mean": 3.618,
+       "p50": 1.82,
+       "p90": 10.119,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 3.6,
+        "p50": 1.8,
+        "p90": 10.1
+       },
+       "idle_frac": 0.807
+      },
+      "cpu_lane_duty_pct": {
+       "mean": 70.655,
+       "p50": 73.928,
+       "p90": 93.687,
+       "n": 11412,
+       "ceiling": 100.0,
+       "pct_of_ceiling": {
+        "mean": 70.7,
+        "p50": 73.9,
+        "p90": 93.7
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_lane_weight_gbps": {
+       "mean": 18.892,
+       "p50": 18.308,
+       "p90": 27.085,
+       "n": 11412,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 13.7,
+        "p50": 13.3,
+        "p90": 19.6
+       },
+       "idle_frac": 0.018
+      },
+      "ddr_derived_gbps": {
+       "mean": 43.934,
+       "p50": 43.555,
+       "p90": 59.087,
+       "n": 11412,
+       "ceiling": 138,
+       "pct_of_ceiling": {
+        "mean": 31.8,
+        "p50": 31.6,
+        "p90": 42.8
+       },
+       "idle_frac": 0.001
+      },
+      "ram_gib": {
+       "mean": 49.338,
+       "p50": 49.385,
+       "p90": 49.395,
+       "n": 11412
+      },
+      "gpu_power_w": {
+       "mean": 221.301,
+       "p50": 217.06,
+       "p90": 237.806,
+       "n": 11412,
+       "ceiling": 350,
+       "pct_of_ceiling": {
+        "mean": 63.2,
+        "p50": 62.0,
+        "p90": 67.9
+       },
+       "idle_frac": 0.0
+      },
+      "cpu_tier_mhz": {
+       "mean": 3689.996,
+       "p50": 3753.773,
+       "p90": 3809.864,
+       "n": 11412
+      },
+      "gpu_sm_mhz": {
+       "mean": 1948.425,
+       "p50": 1950.0,
+       "p90": 1950.0,
+       "n": 11412
+      }
+     },
+     "per_core_busy_pct": {
+      "0": 8.7,
+      "1": 2.3,
+      "2": 62.6,
+      "3": 68.9,
+      "4": 68.9,
+      "5": 68.9,
+      "6": 68.9,
+      "7": 68.9,
+      "8": 68.9,
+      "9": 68.9,
+      "10": 68.9,
+      "11": 68.9,
+      "12": 68.9,
+      "13": 69.0,
+      "14": 68.8,
+      "15": 68.9,
+      "16": 68.9,
+      "17": 68.9,
+      "18": 68.9,
+      "19": 69.1,
+      "20": 68.9,
+      "21": 68.9,
+      "22": 68.9,
+      "23": 68.9,
+      "24": 99.9,
+      "25": 99.9,
+      "26": 41.6,
+      "27": 6.6,
+      "28": 8.4,
+      "29": 5.4,
+      "30": 13.9,
+      "31": 7.9,
+      "32": 5.3,
+      "33": 8.0,
+      "34": 5.2,
+      "35": 6.6,
+      "36": 4.7,
+      "37": 3.8,
+      "38": 4.4,
+      "39": 6.3,
+      "40": 1.7,
+      "41": 3.4,
+      "42": 2.5,
+      "43": 5.6,
+      "44": 4.2,
+      "45": 2.3,
+      "46": 2.1,
+      "47": 3.3
+     }
+    },
+    "time_split": {
+     "decode": 0.988,
+     "prefill": 0.0,
+     "mixed": 0.0,
+     "idle": 0.012,
+     "unknown": 0.0
+    }
+   }
+  }
+ },
+ "chokepoints": {
+  "phases": {
+   "prefill_8k": {
+    "decode": {
+     "tokens": 19,
+     "steps": 19,
+     "tokens_per_step": 1.0,
+     "layer_calls": 805,
+     "wall_ms_per_token": 106.211,
+     "tok_s_from_wall": 9.42,
+     "per_token_ms": {
+      "fixed_gpu": 10.842,
+      "gpu_moe": 10.105,
+      "cpu_moe": 10.944,
+      "nvme_stall": 46.253,
+      "copy": 19.15,
+      "overhead": 8.918
+     },
+     "share": {
+      "fixed_gpu": 0.102,
+      "gpu_moe": 0.095,
+      "cpu_moe": 0.103,
+      "nvme_stall": 0.435,
+      "copy": 0.18,
+      "overhead": 0.084
+     },
+     "binding": "nvme_stall",
+     "binding_lane": "cpu",
+     "moe_stage_ms_per_token": 86.452,
+     "detail_ms_per_token": {
+      "plan_wait": 0.829,
+      "dev_bookkeeping": 0.498,
+      "bubble_ub": 7.591,
+      "fixed_in_step": 10.555,
+      "fixed_step_boundary": 0.287,
+      "copy_nvme": 25.789,
+      "cpu_wait_nvme": 20.463,
+      "cpu_lane_busy": 66.391,
+      "cpu_dispatch": 0.029,
+      "gpu_lane": 55.044
+     },
+     "lane_last": {
+      "gpu": 0.0,
+      "cpu": 0.758,
+      "nvme": 0.242
+     },
+     "slack_ms_per_layer": {
+      "gpu_waiting_on_cpu": 0.7413,
+      "cpu_idle_before_gpu": 0.0
+     },
+     "per_layer_ms": {
+      "gpu_lane": 1.2992,
+      "cpu_lane": 1.567,
+      "copy": 1.0607,
+      "nvme_wait": 1.0917
+     },
+     "per_step": {
+      "cpu_experts": 207.5,
+      "nvme_picks": 38.5
+     },
+     "quality": {
+      "lost": 0,
+      "bad_order": 0,
+      "no_combine": 0,
+      "idle_gaps": 4,
+      "launch_bound_frac": 0.017,
+      "launch_ring_miss": 0,
+      "cpu_start_after_reply_ms": 0.3359,
+      "cpu_end_to_seen_ms": 0.1494,
+      "cpu_end_to_seen_wb_busy_ms": 0.0,
+      "wb_busy_frac_of_waits": 0.0
+     }
+    },
+    "prefill": {
+     "tokens": 24573,
+     "forwards": 6,
+     "tok_s_active": 947.6,
+     "ms_total": {
+      "gpu_compute": 43697.1,
+      "staging_stall": 600.2,
+      "host_gap": 6086.7
+     },
+     "ms_per_forward": {
+      "gpu_compute": 7282.8,
+      "staging_stall": 100.0,
+      "host_gap": 1014.4
+     },
+     "share": {
+      "gpu_compute": 0.867,
+      "staging_stall": 0.012,
+      "host_gap": 0.121
+     },
+     "binding": "gpu_compute",
+     "nvme_reads": 42828,
+     "note": "PFPROF stall/span of forward k are booked when forward k+1 begins (one forward lag)"
+    },
+    "binding": {
+     "decode": {
+      "critical_path": "nvme_stall",
+      "lane_last": "cpu",
+      "critical_share": 0.435,
+      "resource_nearest_ceiling": {
+       "resource": "cpu_lane_duty_pct",
+       "pct_mean": 54.3
+      }
+     },
+     "prefill": {
+      "critical_path": "gpu_compute",
+      "lane_last": null,
+      "critical_share": 0.867,
+      "resource_nearest_ceiling": {
+       "resource": "pcie_h2d_gbps",
+       "pct_mean": 87.3
+      }
+     }
+    }
+   },
+   "decode_C1": {
+    "decode": {
+     "tokens": 3999,
+     "steps": 3999,
+     "tokens_per_step": 1.0,
+     "layer_calls": 167966,
+     "wall_ms_per_token": 60.433,
+     "tok_s_from_wall": 16.55,
+     "per_token_ms": {
+      "fixed_gpu": 11.1,
+      "gpu_moe": 8.753,
+      "cpu_moe": 7.934,
+      "nvme_stall": 10.661,
+      "copy": 17.084,
+      "overhead": 4.901
+     },
+     "share": {
+      "fixed_gpu": 0.184,
+      "gpu_moe": 0.145,
+      "cpu_moe": 0.131,
+      "nvme_stall": 0.176,
+      "copy": 0.283,
+      "overhead": 0.081
+     },
+     "binding": "copy",
+     "binding_lane": "cpu",
+     "moe_stage_ms_per_token": 44.432,
+     "detail_ms_per_token": {
+      "plan_wait": 2.077,
+      "dev_bookkeeping": 0.62,
+      "bubble_ub": 2.204,
+      "fixed_in_step": 10.44,
+      "fixed_step_boundary": 0.66,
+      "copy_nvme": 5.426,
+      "cpu_wait_nvme": 5.236,
+      "cpu_lane_busy": 38.529,
+      "cpu_dispatch": 0.007,
+      "gpu_lane": 31.263
+     },
+     "lane_last": {
+      "gpu": 0.001,
+      "cpu": 0.875,
+      "nvme": 0.124
+     },
+     "slack_ms_per_layer": {
+      "gpu_waiting_on_cpu": 0.3135,
+      "cpu_idle_before_gpu": 0.0
+     },
+     "per_layer_ms": {
+      "gpu_lane": 0.7443,
+      "cpu_lane": 0.9184,
+      "copy": 0.5359,
+      "nvme_wait": 0.2538
+     },
+     "per_step": {
+      "cpu_experts": 156.0,
+      "nvme_picks": 18.6
+     },
+     "quality": {
+      "lost": 0,
+      "bad_order": 0,
+      "no_combine": 0,
+      "idle_gaps": 11,
+      "launch_bound_frac": 0.0,
+      "launch_ring_miss": 0,
+      "cpu_start_after_reply_ms": 0.0762,
+      "cpu_end_to_seen_ms": 0.0789,
+      "cpu_end_to_seen_wb_busy_ms": 0.0,
+      "wb_busy_frac_of_waits": 0.0
+     }
+    },
+    "prefill": null,
+    "binding": {
+     "decode": {
+      "critical_path": "copy",
+      "lane_last": "cpu",
+      "critical_share": 0.283,
+      "resource_nearest_ceiling": {
+       "resource": "cpu_lane_duty_pct",
+       "pct_mean": 63.5
+      }
+     }
+    }
+   },
+   "decode_C4": {
+    "decode": {
+     "tokens": 14858,
+     "steps": 5247,
+     "tokens_per_step": 2.83,
+     "layer_calls": 220415,
+     "wall_ms_per_token": 76.656,
+     "tok_s_from_wall": 13.05,
+     "per_token_ms": {
+      "fixed_gpu": 3.766,
+      "gpu_moe": 9.03,
+      "cpu_moe": 1.983,
+      "nvme_stall": 42.234,
+      "copy": 14.817,
+      "overhead": 4.824
+     },
+     "share": {
+      "fixed_gpu": 0.049,
+      "gpu_moe": 0.118,
+      "cpu_moe": 0.026,
+      "nvme_stall": 0.551,
+      "copy": 0.193,
+      "overhead": 0.063
+     },
+     "binding": "nvme_stall",
+     "binding_lane": "cpu",
+     "moe_stage_ms_per_token": 68.064,
+     "detail_ms_per_token": {
+      "plan_wait": 1.181,
+      "dev_bookkeeping": 0.392,
+      "bubble_ub": 3.251,
+      "fixed_in_step": 3.701,
+      "fixed_step_boundary": 0.066,
+      "copy_nvme": 37.011,
+      "cpu_wait_nvme": 5.223,
+      "cpu_lane_busy": 54.65,
+      "cpu_dispatch": 0.015,
+      "gpu_lane": 60.858
+     },
+     "lane_last": {
+      "gpu": 0.002,
+      "cpu": 0.826,
+      "nvme": 0.172
+     },
+     "slack_ms_per_layer": {
+      "gpu_waiting_on_cpu": 0.4858,
+      "cpu_idle_before_gpu": 0.0042
+     },
+     "per_layer_ms": {
+      "gpu_lane": 4.1024,
+      "cpu_lane": 3.6861,
+      "copy": 3.4937,
+      "nvme_wait": 2.847
+     },
+     "per_step": {
+      "cpu_experts": 403.2,
+      "nvme_picks": 70.9
+     },
+     "quality": {
+      "lost": 0,
+      "bad_order": 0,
+      "no_combine": 0,
+      "idle_gaps": 31,
+      "launch_bound_frac": 0.158,
+      "launch_ring_miss": 0,
+      "cpu_start_after_reply_ms": 0.2233,
+      "cpu_end_to_seen_ms": 0.7055,
+      "cpu_end_to_seen_wb_busy_ms": 0.0,
+      "wb_busy_frac_of_waits": 0.0
+     }
+    },
+    "prefill": null,
+    "binding": {
+     "decode": {
+      "critical_path": "nvme_stall",
+      "lane_last": "cpu",
+      "critical_share": 0.551,
+      "resource_nearest_ceiling": {
+       "resource": "cpu_lane_duty_pct",
+       "pct_mean": 70.7
+      }
+     }
+    }
+   }
+  }
+ },
+ "engine_critical_path_end": {
+  "tokens": 18881,
+  "steps": 9270,
+  "layer_calls": 389381,
+  "wall_ms_per_token": 73.265,
+  "tok_s_active": 13.65,
+  "per_token_ms": {
+   "fixed_gpu": 5.329,
+   "gpu_moe": 8.973,
+   "cpu_moe": 3.255,
+   "nvme_stall": 35.562,
+   "copy": 15.302,
+   "overhead": 4.845
+  },
+  "share": {
+   "fixed_gpu": 0.073,
+   "gpu_moe": 0.122,
+   "cpu_moe": 0.044,
+   "nvme_stall": 0.485,
+   "copy": 0.209,
+   "overhead": 0.066
+  },
+  "binding": "nvme_stall",
+  "detail_ms_per_token": {
+   "plan_wait": 1.371,
+   "dev_bookkeeping": 0.44,
+   "bubble_layer_ub": 1.634,
+   "bubble_step_ub": 1.4,
+   "fixed_in_step": 5.137,
+   "fixed_step_boundary": 0.192,
+   "copy_nvme": 30.306,
+   "cpu_wait_nvme": 5.256,
+   "cpu_lane_busy": 51.265,
+   "cpu_dispatch": 0.013,
+   "gpu_lane": 54.581
+  },
+  "lane_last": {
+   "gpu": 0.001,
+   "cpu": 0.847,
+   "nvme": 0.152
+  },
+  "slack_ms_per_layer": {
+   "gpu_waiting_on_cpu": 0.4127,
+   "cpu_idle_before_gpu": 0.0024
+  },
+  "per_layer_mean": {
+   "gpu_lane_ms": 2.6466,
+   "cpu_lane_ms": 2.4858,
+   "copy_ms": 0.742,
+   "nvme_wait_ms": 1.7244,
+   "cpu_crit_ms": 0.4127,
+   "gap_ms": 0.3283
+  },
+  "quality": {
+   "lost": 0,
+   "bad_order": 0,
+   "no_combine": 0,
+   "small_skipped": 410,
+   "idle_gaps": 47,
+   "idle_ms": 53272.7,
+   "launch_bound_frac": 0.09,
+   "launch_ring_miss": 0,
+   "clock_off_ns": 1881383668,
+   "cpu_start_after_reply_ms": 0.1601,
+   "cpu_end_to_seen_ms": 0.4333
+  }
+ },
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/n55_pfon_cap8",
+ "note": "Same-session pair 2026-10-08 09:28-10:19 (slots B/C parked): uncapped C1 18.23 / C4 19.59 / 8k prefill 645 vs cap8 C1 16.84 / C4 13.04 / prefill 477 -> the read cap costs ~8% C1, ~33% C4, ~26% prefill; the C4 loss seen with prefetch on (glm53-55g-pfon-cap8) is the cap, not prefetch.",
+ "contended": []
+}
