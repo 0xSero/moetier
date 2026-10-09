@@ -1,0 +1,15 @@
+1334a1335,1348
+> 
+> 
+> # ---- HOM-272 b70prof (mounted over the image copy; the only change to this file): env-gated observation hook
+> _b70prof_activate_orig = activate
+> 
+> 
+> def activate() -> None:
+>     _b70prof_activate_orig()
+>     if os.environ.get("B70PROF", "0") == "1":
+>         try:
+>             from . import b70prof
+>             b70prof.install()
+>         except Exception as e:  # pragma: no cover
+>             logger.warning("b70prof not installed (%s)", e)

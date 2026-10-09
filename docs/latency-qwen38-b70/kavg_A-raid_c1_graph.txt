@@ -1,0 +1,86 @@
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                                   Name    Self CPU %      Self CPU   CPU total %     CPU total  CPU time avg      Self XPU    Self XPU %     XPU total  XPU time avg    # of Calls  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+                                            aten::copy_         0.73%      17.348ms         2.47%      58.898ms      34.026us       3.482ms        37.27%       3.482ms       2.011us          1731  
+                                           aten::argmax         0.14%       3.383ms         0.26%       6.197ms     105.026us       2.112ms        22.61%       2.112ms      35.803us            59  
+at::native::xpu::ReduceKernel<1, at::native::xpu::Re...         0.00%       0.000us         0.00%       0.000us       0.000us       2.112ms        22.61%       2.112ms      35.803us            59  
+                            Memcpy D2H (DEVICE -> HOST)         0.00%       0.000us         0.00%       0.000us       0.000us       1.956ms        20.94%       1.956ms       8.185us           239  
+                                            aten::index         0.26%       6.233ms         0.73%      17.371ms      73.295us     790.229us         8.46%     790.229us       3.334us           237  
+                          Memcpy D2D (DEVICE -> DEVICE)         0.00%       0.000us         0.00%       0.000us       0.000us     745.226us         7.98%     745.226us       1.244us           599  
+                         _qsa_graph_row_metadata_kernel         0.00%       0.000us         0.00%       0.000us       0.000us     615.704us         6.59%     615.704us      10.262us            60  
+                                 aten::_index_put_impl_         0.17%       4.120ms         0.51%      12.279ms      69.370us     593.555us         6.35%     593.555us       3.353us           177  
+                            Memcpy H2D (HOST -> DEVICE)         0.00%       0.000us         0.00%       0.000us       0.000us     590.590us         6.32%     590.590us       1.650us           358  
+at::native::xpu::VectorizedElementwiseKernel<2, at::...         0.00%       0.000us         0.00%       0.000us       0.000us     560.992us         6.01%     560.992us       1.585us           354  
+at::native::xpu::IndexKernelFunctor<at::native::xpu:...         0.00%       0.000us         0.00%       0.000us       0.000us     429.133us         4.59%     429.133us       3.606us           119  
+                                zeMemGetAllocProperties         0.01%     318.261us         0.01%     318.261us       0.178us     400.626us         4.29%     400.626us       0.224us          1792  
+at::native::xpu::IndexKernelFunctor<at::native::xpu:...         0.00%       0.000us         0.00%       0.000us       0.000us     393.996us         4.22%     393.996us       3.339us           118  
+                                              aten::add         0.37%       8.932ms         0.78%      18.680ms      39.575us     374.997us         4.01%     374.997us       0.794us           472  
+at::native::xpu::IndexKernelFunctor<at::native::xpu:...         0.00%       0.000us         0.00%       0.000us       0.000us     361.096us         3.87%     361.096us       3.060us           118  
+                                   aten::_foreach_copy_         0.82%      19.677ms         1.79%      42.663ms     355.524us     324.855us         3.48%     855.181us       7.127us           120  
+                                              aten::sub         0.18%       4.178ms         0.50%      12.024ms      67.932us     275.555us         2.95%     275.555us       1.557us           177  
+                                     zeEventQueryStatus        81.25%        1.938s        81.25%        1.938s       1.636ms     270.428us         2.90%     270.428us       0.228us          1185  
+                                 zeEventHostSynchronize         0.04%     959.005us         0.04%     959.005us       1.473us     246.324us         2.64%     246.324us       0.378us           651  
+                                      aten::index_copy_         0.06%       1.487ms         0.19%       4.436ms      73.928us     216.735us         2.32%     216.735us       3.612us            60  
+at::native::xpu::IndexElementwiseKernelFunctor<4, at...         0.00%       0.000us         0.00%       0.000us       0.000us     216.735us         2.32%     216.735us       3.612us            60  
+                         zeCommandListAppendSignalEvent         0.01%     141.911us         0.01%     141.911us       0.159us     204.188us         2.19%     204.188us       0.229us           892  
+at::native::xpu::IndexKernelFunctor<at::native::xpu:...         0.00%       0.000us         0.00%       0.000us       0.000us     199.559us         2.14%     199.559us       3.382us            59  
+at::native::xpu::ElementwiseGlobalRangeKernel<at::na...         0.00%       0.000us         0.00%       0.000us       0.000us     188.288us         2.02%     188.288us       1.582us           119  
+at::native::xpu::UnrolledElementwiseKernel<at::nativ...         0.00%       0.000us         0.00%       0.000us       0.000us     168.929us         1.81%     168.929us       2.863us            59  
+at::native::xpu::MultiTensorApplyKernelFunctor<at::n...         0.00%       0.000us         0.00%       0.000us       0.000us     157.280us         1.68%     157.280us       2.621us            60  
+                                            aten::fill_         0.08%       1.793ms         0.26%       6.306ms      26.497us     136.940us         1.47%     136.940us       0.575us           238  
+                                    alloc_decode_kernel         0.00%       0.000us         0.00%       0.000us       0.000us     132.676us         1.42%     132.676us       2.249us            59  
+                zeCommandListAppendWriteGlobalTimestamp         0.86%      20.468ms         0.86%      20.468ms      68.684us     127.693us         1.37%     127.693us       0.428us           298  
+                                           aten::gather         0.13%       3.212ms         0.25%       5.919ms     100.323us     117.801us         1.26%     117.801us       1.997us            59  
+at::native::xpu::ScatterGatherElementwiseKernelFunct...         0.00%       0.000us         0.00%       0.000us       0.000us     117.801us         1.26%     117.801us       1.997us            59  
+                            zeDeviceGetGlobalTimestamps         0.23%       5.378ms         0.23%       5.378ms      18.046us      99.620us         1.07%      99.620us       0.334us           298  
+at::native::xpu::VectorizedElementwiseKernel<4, at::...         0.00%       0.000us         0.00%       0.000us       0.000us      89.560us         0.96%      89.560us       1.518us            59  
+                                            aten::clamp         0.05%       1.143ms         0.14%       3.342ms      56.644us      88.622us         0.95%      88.622us       1.502us            59  
+at::native::xpu::VectorizedElementwiseKernel<2, at::...         0.00%       0.000us         0.00%       0.000us       0.000us      88.622us         0.95%      88.622us       1.502us            59  
+                               _qsa_graph_layout_kernel         0.00%       0.000us         0.00%       0.000us       0.000us      78.952us         0.85%      78.952us       1.316us            60  
+at::native::xpu::VectorizedElementwiseKernel<2, at::...         0.00%       0.000us         0.00%       0.000us       0.000us      78.536us         0.84%      78.536us       1.309us            60  
+                       urEnqueueKernelLaunchWithArgsExp         2.12%      50.681ms         2.84%      67.731ms      42.306us      72.336us         0.77%     215.654us       0.135us          1601  
+           zeCommandListAppendLaunchKernelWithArguments         0.69%      16.579ms         0.69%      16.579ms      10.355us      72.336us         0.77%      72.336us       0.045us          1601  
+                                   zeKernelSetGroupSize         0.01%     250.907us         0.01%     250.907us       0.157us      70.982us         0.76%      70.982us       0.044us          1601  
+at::native::xpu::VectorizedElementwiseKernel<4, at::...         0.00%       0.000us         0.00%       0.000us       0.000us      58.404us         0.63%      58.404us       0.973us            60  
+                        zeCommandListAppendWaitOnEvents         0.02%     394.786us         0.02%     394.786us       3.346us      25.722us         0.28%      25.722us       0.218us           118  
+            zeCommandListImmediateAppendCommandListsExp         0.05%       1.090ms         0.05%       1.090ms      18.171us      22.652us         0.24%      22.652us       0.378us            60  
+                                      step[DECODE bs=1]         1.42%      33.920ms         4.45%     106.084ms       1.768ms       0.000us         0.00%       1.955ms      32.575us            60  
+                                            aten::slice         0.17%       3.974ms         0.21%       4.942ms       3.054us       0.000us         0.00%       0.000us       0.000us          1618  
+                                       aten::as_strided         0.08%       1.988ms         0.08%       1.988ms       0.630us       0.000us         0.00%       0.000us       0.000us          3157  
+                                     urEnqueueUSMMemcpy         1.25%      29.911ms         1.58%      37.644ms      31.475us       0.000us         0.00%       0.000us       0.000us          1196  
+                          zeCommandListAppendMemoryCopy         0.32%       7.733ms         0.32%       7.733ms       6.466us       0.000us         0.00%       0.000us       0.000us          1196  
+                                            aten::empty         0.19%       4.528ms         0.19%       4.595ms       9.654us       0.000us         0.00%       0.000us       0.000us           476  
+                                    aten::scalar_tensor         0.01%     356.494us         0.30%       7.090ms      59.085us       0.000us         0.00%     136.940us       1.141us           120  
+                                             aten::view         0.04%     991.990us         0.04%     991.990us       1.048us       0.000us         0.00%       0.000us       0.000us           947  
+                                           aten::expand         0.01%     308.122us         0.02%     392.429us       1.649us       0.000us         0.00%       0.000us       0.000us           238  
+                                          aten::reshape         0.02%     369.561us         0.03%     713.024us       1.206us       0.000us         0.00%       0.000us       0.000us           591  
+                               zeKernelSuggestGroupSize         0.01%     220.859us         0.01%     220.859us       0.533us       0.000us         0.00%       0.000us       0.000us           414  
+                                           aten::detach         0.01%     268.327us         0.02%     544.915us       1.816us       0.000us         0.00%       0.000us       0.000us           300  
+                                                 detach         0.01%     276.588us         0.01%     276.588us       0.922us       0.000us         0.00%       0.000us       0.000us           300  
+                                               aten::to         0.04%     887.981us         2.05%      48.883ms      41.182us       0.000us         0.00%     673.130us       0.567us          1187  
+                                     aten::resolve_conj         0.00%      70.609us         0.00%      70.609us       0.148us       0.000us         0.00%       0.000us       0.000us           477  
+                                      aten::resolve_neg         0.00%      43.244us         0.00%      43.244us       0.091us       0.000us         0.00%       0.000us       0.000us           477  
+                                       aten::lift_fresh         0.01%     137.356us         0.01%     137.356us       0.767us       0.000us         0.00%       0.000us       0.000us           179  
+                                       aten::pin_memory         0.01%     264.541us         0.25%       5.858ms      32.727us       0.000us         0.00%       0.000us       0.000us           179  
+                                        aten::is_pinned         0.04%       1.016ms         0.04%       1.072ms       5.991us       0.000us         0.00%       0.000us       0.000us           179  
+                                      aten::_pin_memory         0.14%       3.445ms         0.19%       4.521ms      25.258us       0.000us         0.00%       0.000us       0.000us           179  
+                                             aten::set_         0.01%     201.985us         0.01%     201.985us       1.128us       0.000us         0.00%       0.000us       0.000us           179  
+                                         aten::_to_copy         0.06%       1.455ms         2.01%      47.995ms     101.256us       0.000us         0.00%     673.130us       1.420us           474  
+                                    aten::empty_strided         1.12%      26.762ms         1.12%      26.778ms      50.240us       0.000us         0.00%       0.000us       0.000us           533  
+                                  zeKernelGetProperties         0.00%      70.721us         0.00%      70.721us       0.599us       0.000us         0.00%       0.000us       0.000us           118  
+                                       aten::index_put_         0.02%     421.704us         0.53%      12.700ms      71.753us       0.000us         0.00%     593.555us       3.353us           177  
+                                     copy_result_to_cpu         0.19%       4.621ms         1.41%      33.724ms     571.588us       0.000us         0.00%      94.934us       1.609us            59  
+                         scheduler.process_batch_result         0.54%      12.815ms         0.54%      12.954ms     219.566us       0.000us         0.00%       6.718us       0.114us            59  
+                                scheduler.recv_requests         0.15%       3.644ms         0.15%       3.644ms      61.769us       0.000us         0.00%       0.000us       0.000us            59  
+                       scheduler.process_input_requests         0.04%     932.092us         0.04%     932.092us      15.798us       0.000us         0.00%       0.000us       0.000us            59  
+                        scheduler.get_next_batch_to_run         1.09%      26.074ms         3.67%      87.638ms       1.485ms       0.000us         0.00%       1.734ms      29.383us            59  
+                                        aten::remainder         0.06%       1.347ms         0.06%       1.347ms      11.414us       0.000us         0.00%       0.000us       0.000us           118  
+                                               aten::eq         0.02%     471.512us         0.02%     471.512us       2.664us       0.000us         0.00%       0.000us       0.000us           177  
+                                              aten::sum         0.04%     970.431us         0.06%       1.347ms      11.415us       0.000us         0.00%       0.000us       0.000us           118  
+                                             aten::item         0.00%     108.471us         0.01%     173.223us       1.468us       0.000us         0.00%       0.000us       0.000us           118  
+                              aten::_local_scalar_dense         0.00%      64.752us         0.00%      64.752us       0.549us       0.000us         0.00%       0.000us       0.000us           118  
+                                            aten::clone         0.01%     142.628us         0.14%       3.311ms      56.118us       0.000us         0.00%      73.984us       1.254us            59  
+                                          aten::detach_         0.00%      50.705us         0.00%     101.778us       1.725us       0.000us         0.00%       0.000us       0.000us            59  
+-------------------------------------------------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  ------------  
+Self CPU time total: 2.386s
+Self XPU time total: 9.341ms

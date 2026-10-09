@@ -85,7 +85,9 @@
   "qwen38fn-b70-srv23",
   "qwen38fn-b70-srv24b",
   "qwen38fn-b70-srv25",
-  "qwen38fn-b70-srv26"
+  "qwen38fn-b70-srv26",
+  "qwen38fn-b70-prof-cap7",
+  "qwen38fn-b70-prof-raid"
  ],
  "recipes": [
   {

@@ -1,0 +1,75 @@
+{
+ "id": "qwen38fn-b70-prof-cap7",
+ "title": "Qwen3.8-Flash-Next \u00b7 1\u00d7 Arc Pro B70 \u00b7 16 GB RAM + NVMe capped 7 GB/s \u00b7 nvme16 profiling pass (B-cap7)",
+ "kv_cache": "131k fp8 (1.5 GiB)",
+ "gpu_count": 1,
+ "recipe": "qwen38fn-arcb70-32g-nvx4",
+ "measured": "2026-10-09",
+ "contended": [],
+ "hardware_note": "Arc Pro B70 0000:48:00.0 only; docker samples every 60 s showed no other GPU container",
+ "source": "docs/latency-qwen38-b70.md; omarchy:~/b70prof/runs",
+ "quality": "nvme16 (approximate: masked decode picks). All completions ended with stop; no output cap sent. C4 runs as C3 + C1: 4th request queued by SGLang KV reservation (#queue-req 1).",
+ "change": "QWEN_B70_MODE=nvme16, 16 GiB cap (recipe family qwen38fn-arcb70; no 16g recipe record yet) | A-raid + --device-read-bps /dev/md127:7000000000 (single-drive emulation)",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 26.56,
+   "decode_per_stream": [
+    28.01,
+    24.13,
+    27.55
+   ],
+   "prefill_tok_s": 975.0,
+   "completion": [
+    231,
+    455,
+    463
+   ],
+   "ttft_s": [
+    9.8,
+    7.79,
+    7.63
+   ]
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 29.49,
+   "decode_per_stream": [
+    12.14,
+    12.38,
+    12.27,
+    26.27
+   ],
+   "prefill_tok_s": 1028.0,
+   "completion": [
+    403,
+    425,
+    426,
+    423
+   ],
+   "ttft_s": [
+    15.57,
+    23.4,
+    23.05,
+    56.37
+   ]
+  }
+ ],
+ "per_token": {
+  "wall_ms": 38.06,
+  "graph_ms": 33.04,
+  "graph_intercept_ms": 27.48,
+  "svm_admit_ms": 1.3,
+  "victim_writeback_ms": 4.26,
+  "nvme_wait_ms": 0.0,
+  "tier_tail_ms": 1.49,
+  "interstep_gap_ms": 3.54,
+  "admits": 9.4,
+  "victims": 4.62,
+  "masked_picks": 24.6,
+  "c3_step_ms": 62.73,
+  "c3_steady_tok_s": 47.8
+ }
+}
