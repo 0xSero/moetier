@@ -1,0 +1,51 @@
+{
+ "id": "glm53-n129-ab-ctl-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 N135 CPU-kernel A/B: GLM53_NV_CPU_KERN=0 (current ft_core kernel, control)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "image v4.3-nvme (547405e6) with kernels/nv2 = N135 branch 55f053d (apply_n135.py), same code in every arm; GLM53_NV_CPU_KERN=0 (current ft_core kernel, control)",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 17.7,
+   "prefill_tok_s": 656.4
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 19.25,
+   "per_stream": 5.46
+  }
+ ],
+ "per_token": {
+  "vram_hits": 123.094,
+  "ram_hits": 169.371,
+  "nvme": 26.831,
+  "cpu_experts": 149.779,
+  "zc_admits": 41.876,
+  "nvme_gpu": 12.789,
+  "nvme_cpu": 14.575,
+  "reply_wait_ms": 0.357,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 31.238
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 49.41,
+  "end_gib": 49.39,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/raidx/runs/ab_ctl_55g",
+ "note": "N129 qab135, same session 2026-10-09 06:09-07:54 CEST: 55g ctl / k1 / k1m0, then 16g ctl / k1.",
+ "contended": [
+  "skills-gym gym-ref container on B70 48 with cpus 40-47 (same in all arms)"
+ ]
+}
