@@ -1,0 +1,86 @@
+{
+ "id": "glm53-n129-v46-full-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.6 as shipped",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "image v4.6-nvme (aa74200f: N135 CPU kernel + N136 decode switches default-on), GLM53_MODE=nvme registry env, --memory 55g, NVMe uncapped, no code mounts",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 19.47,
+   "prefill_tok_s": 663.5
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 19.09,
+   "per_stream": 10.02
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 19.75,
+   "per_stream": 5.53
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 18.3,
+   "prefill_tok_s": 969.5
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 18.44,
+   "per_stream": 10.15
+  }
+ ],
+ "per_token": {
+  "vram_hits": 128.387,
+  "ram_hits": 169.785,
+  "nvme": 26.018,
+  "cpu_experts": 148.18,
+  "zc_admits": 41.036,
+  "nvme_gpu": 12.8,
+  "nvme_cpu": 13.824,
+  "reply_wait_ms": 0.388,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 29.293,
+  "b70_experts": 0.0,
+  "b70_wait_ms": 0.0
+ },
+ "quality": {
+  "decode_kl_paired": {
+   "control_off": {
+    "positions": 1088,
+    "kl_mean": 0.0,
+    "kl_p99": 0.0,
+    "top1_agree": 1.0,
+    "cpu_experts_per_layer_call": 0.0
+   },
+   "cpu_default": {
+    "positions": 1088,
+    "kl_mean": 0.00766,
+    "kl_p99": 0.14085,
+    "top1_agree": 0.97702,
+    "cpu_experts_per_layer_call": 3.57012
+   }
+  },
+  "decode_kl_method": "same process, CPU lane off (exact GPU path) greedy natural-EOS reference vs forced decode of the same tokens with the CPU lane on"
+ },
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 50.89,
+  "end_gib": 50.55,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/raidx/runs/v46_full_55g",
+ "note": "N129 qv46, same session 2026-10-09 12:05-13:41 CEST (v4.4 control first). Paired decode KL (1088 positions): 0.0077 mean, p99 0.141, top-1 0.977."
+}
