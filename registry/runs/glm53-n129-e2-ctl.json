@@ -1,0 +1,31 @@
+{
+ "id": "glm53-n129-e2-ctl",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 E2 control (v4.6 defaults, routing K=8)",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "image v4.6-nvme with hom272/glm53e2 (glm53v46 + e2_route.py, knobs off)",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 19.4,
+   "prefill_tok_s": 662.4
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 20.05,
+   "per_stream": 5.5
+  }
+ ],
+ "per_token": {},
+ "quality": {},
+ "memory": {},
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/runs/e2_ctl",
+ "note": "N129 E2 step 1 control only (2026-10-09 14:20-14:30); the K/tau arms and the KL were not run (box shutdown)."
+}
