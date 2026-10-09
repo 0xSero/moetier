@@ -1,0 +1,108 @@
+{
+ "id": "glm53-n137-ctl-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 \u00b7 same-session control (B70 tier off)",
+ "kv_cache": "131k fp16 (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "same code and image as glm53-n137-b70-55g with GLM53_B70=0 (= shipped nvme mode + window clamp); the B70 server stayed up idle on 43-47",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 17.48,
+   "prefill_tok_s": 656.8
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 17.84,
+   "per_stream": 9.52
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 19.11,
+   "per_stream": 5.43
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 16.28,
+   "prefill_tok_s": 965.9
+  },
+  {
+   "prefill": 32768,
+   "conc": 2,
+   "decode": 17.35,
+   "per_stream": 9.37
+  }
+ ],
+ "per_token": {
+  "vram_hits": 128.704,
+  "ram_hits": 170.329,
+  "nvme": 25.728,
+  "cpu_experts": 147.815,
+  "zc_admits": 41.301,
+  "nvme_gpu": 12.912,
+  "nvme_cpu": 13.432,
+  "reply_wait_ms": 0.4,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 31.671,
+  "b70_experts": 0.0,
+  "b70_wait_ms": 0.0
+ },
+ "quality": {
+  "decode_kl_paired": {
+   "control_off": {
+    "positions": 1088,
+    "kl_mean": 0.0,
+    "kl_p99": 0.0,
+    "kl_max": 0.0,
+    "top1_agree": 1.0,
+    "cpu_experts_per_layer_call": 0.0,
+    "b70_experts_per_layer_call": 0.0
+   },
+   "cpu_default": {
+    "positions": 1088,
+    "kl_mean": 0.00699,
+    "kl_p99": 0.12137,
+    "kl_max": 1.0232,
+    "top1_agree": 0.97978,
+    "cpu_experts_per_layer_call": 3.56346,
+    "b70_experts_per_layer_call": 0.0
+   },
+   "cpu_b70": {
+    "positions": 1088,
+    "kl_mean": 0.00337,
+    "kl_p99": 0.06436,
+    "kl_max": 0.15696,
+    "top1_agree": 0.98805,
+    "cpu_experts_per_layer_call": 2.25523,
+    "b70_experts_per_layer_call": 1.91868
+   },
+   "b70_only": {
+    "positions": 1088,
+    "kl_mean": 0.00708,
+    "kl_p99": 0.11954,
+    "kl_max": 0.98773,
+    "top1_agree": 0.98162,
+    "cpu_experts_per_layer_call": 0.0,
+    "b70_experts_per_layer_call": 2.34248
+   }
+  },
+  "decode_kl_method": "arm s3kl (2026-10-09 05:25-05:34, 55 GB, same image/code): one process; reference = CPU lane off + B70 lane off (exact GPU path) greedy natural-EOS decode of 6 prompts x 192 tokens; each variant re-decodes the same tokens forced: control_off (method check, KL 0), cpu_default (shipped CPU lane), cpu_b70 (shipped config with the B70 tier), b70_only (B70 lane, CPU lane off)",
+  "b70_numerics": "24 cases, 48 real experts (store li 0/20/41), M 1/2/4/8, top-8: B70 server vs fp64 reference rel L2 0.0013-0.0015 (shipped AVX2 CPU tier selftest 0.0010); B70 vs exllamav3 CUDA per-expert path 0.0112-0.0125, equal to CUDA-vs-fp64 0.0112-0.0124 (N137 step 2, out/s2num)"
+ },
+ "memory": {
+  "ram_tier_gib": 42.539,
+  "ram_slots": 4840
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:/Users/sero/freetoken-exl3/runs/N137-b70tier/runs/s3ctl",
+ "note": "N137 step 3 control, 2026-10-09 04:20-04:59 CEST, between the two B70 arms.",
+ "contended": [],
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a"
+}

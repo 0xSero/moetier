@@ -1,0 +1,52 @@
+{
+  "id": "glm53-rtx3090-b70-55g-nvx4",
+  "status": "design",
+  "model": "glm-5.3-flash-exl3-3.05bpw",
+  "hardware": "omarchy-rtx3090-nvx4",
+  "engines": [
+    "exllamav3-cuda",
+    "avx2-exl3-cpu"
+  ],
+  "budget": {
+    "ram_gb": 55,
+    "runtime_gb": 4.0,
+    "other_gb": 2.8,
+    "vram_expert_slots": 1510
+  },
+  "policy": {
+    "vram": "clock, admit GPU-routed misses",
+    "ram": "exclusive",
+    "seed": "frequency",
+    "exact": "stall",
+    "overlap": true,
+    "prefetch": {
+      "depth": 1,
+      "recall": 0.0
+    }
+  },
+  "calibration": {
+    "fixed_ms": {
+      "1": 14.0,
+      "2": 20.0,
+      "4": 30.0
+    },
+    "prefill": {
+      "chunk": 8192,
+      "compute_ms_per_layer": 176.35,
+      "first_request_ms": 4130
+    },
+    "source": "G067 all-RAM 28.15 / 31.57 / 33.98 decode, 710 / 951 prefill; b70 lane: exl3xpu-arc model_lanes GLM gpu (0.010 + 0.0215/expert + 0.020/extra token) + handoff"
+  },
+  "b70": {
+    "engine": "exl3xpu-arc",
+    "cards": [
+      3000
+    ],
+    "handoff_ms": 0.12,
+    "devices": [
+      "0000:48:00.0"
+    ],
+    "placement": "static: frequency ranks after the 3090 VRAM seed, exclusive of 3090 VRAM and of the RAM tier; never evicted",
+    "note": "handoff_ms = per MoE layer, host ring write -> B70 server sees it -> H2D hidden (8 KB/token) + moe kernel launch -> D2H partials + landed flag -> 3090 combine. Estimate 0.12 ms (B70 submit 7 us x3, 4 B flag RTT 11 us, flag lag after a kernel on an idle queue 81 us; b70-microbench-2026-10-07) until N137 measures it. 3000 slots x 9,474,048 B = 28.4 GB of the B70's 32 GB."
+  }
+}

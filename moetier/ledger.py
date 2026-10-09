@@ -4,11 +4,13 @@ Rule (learned the hard way, N111): a device kernel may report a victim, but only
 resident in a tier, and only after its bytes have landed. Eviction clears the flag first; memory is reused only
 after the device has observed the clear (transport fences this).
 
-Tiers: vram (clock over N slots), ram (exclusive LRU of experts NOT in vram, or inclusive), nvme (everything).
+Tiers: vram (clock over N slots), b70 (a static, frequency-seeded expert set per second-tier GPU, e.g. Arc Pro B70
+cards; never evicted, exclusive of vram and of an exclusive ram tier), ram (exclusive LRU of experts NOT in vram/b70, or
+inclusive), nvme (everything).
 """
 from collections import OrderedDict
 
-VRAM, RAM, NVME = "vram", "ram", "nvme"
+VRAM, RAM, NVME, B70 = "vram", "ram", "nvme", "b70"
 
 
 class Clock:
@@ -44,7 +46,7 @@ class Clock:
 
 
 class Ledger:
-    def __init__(self, vram_slots, ram_slots, keys, exclusive=True, ram_policy="lru", prior=None):
+    def __init__(self, vram_slots, ram_slots, keys, exclusive=True, ram_policy="lru", prior=None, b70_slots=()):
         """ram_policy: 'lru' (evict the least recently used), or 'lfu:<window>:<halflife>' = sampled LFU with recency:
         among the <window> least recently used RAM entries evict the one with the lowest decayed pick frequency
         (half-life in decode steps; 0 = no decay). Frequency counts every pick of the key in any tier (the host sees all
@@ -60,6 +62,8 @@ class Ledger:
             for k, v in prior.items():
                 self.freq[k] = float(v)
         self.lfu_evictions = 0
+        self.b70_slots = [int(n) for n in b70_slots]       # per second-tier card; key -> card index once seeded
+        self.b70 = {}
 
     def _f(self, k):
         f = self.freq.get(k, 0.0)
@@ -93,17 +97,26 @@ class Ledger:
     def tier(self, key):
         if key in self.vram:
             return VRAM
+        if key in self.b70:
+            return B70
         if self.all_in_ram or key in self.ram:
             return RAM
         return NVME
 
     def seed(self, ranked_keys):
-        """Hottest -> vram, next -> ram (exclusive) or hottest -> ram (inclusive)."""
+        """Hottest -> vram, next -> b70 cards (rank round-robin, so every layer's b70 picks spread over the cards), next
+        -> ram (exclusive) or hottest -> ram (inclusive)."""
         for k in ranked_keys[: self.vram.n]:
             self.vram.admit(k)
         self.vram.ref = bytearray(self.vram.n)
+        nb, left, i = sum(self.b70_slots), list(self.b70_slots), 0
+        for k in ranked_keys[self.vram.n: self.vram.n + nb]:
+            while left[i % len(left)] == 0:
+                i += 1
+            c = i % len(left)
+            self.b70[k], left[c], i = c, left[c] - 1, i + 1
         if not self.all_in_ram:
-            src = ranked_keys[self.vram.n:] if self.exclusive else ranked_keys
+            src = ranked_keys[self.vram.n + nb:] if self.exclusive else ranked_keys
             for k in src[: self.ram_slots]:
                 self.ram[k] = None
 

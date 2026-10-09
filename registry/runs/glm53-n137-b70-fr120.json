@@ -1,0 +1,65 @@
+{
+ "id": "glm53-n137-b70-fr120",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 + 1\u00d7 Arc Pro B70 \u00b7 120 GB RAM cap (all experts in RAM) + NVMe RAID0 \u00b7 B70 expert tier",
+ "kv_cache": "131k fp16 (~1.5 GiB est.)",
+ "gpu_count": 2,
+ "recipe": "glm53-rtx3090-b70-55g-nvx4",
+ "change": "same as glm53-n137-b70-55g with --memory 120g (nvme mode, RAM tier holds every non-VRAM, non-B70 expert); 8k rows only (--no-32k-decode)",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 28.51,
+   "prefill_tok_s": 664.3
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 34.55,
+   "per_stream": 17.91
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 39.99,
+   "per_stream": 10.95
+  }
+ ],
+ "per_token": {
+  "vram_hits": 105.844,
+  "ram_hits": 110.971,
+  "nvme": 0.0,
+  "cpu_experts": 89.034,
+  "zc_admits": 26.653,
+  "nvme_gpu": 0.074,
+  "nvme_cpu": 0.0,
+  "reply_wait_ms": 0.037,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 14.674,
+  "b70_experts": 103.368,
+  "b70_wait_ms": 0.227
+ },
+ "quality": {
+  "note": "quality measured at 55 GB (glm53-n137-b70-55g: panel 1.0/0, paired decode-KL); same code"
+ },
+ "memory": {
+  "ram_tier_gib": 107.543,
+  "ram_slots": 12236
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:/Users/sero/freetoken-exl3/runs/N137-b70tier/runs/s3frb70",
+ "note": "N137 step 3 full-RAM pair, 2026-10-09 05:34-05:48 CEST; control glm53-n137-ctl-fr120 05:48-06:08 (B70 server stopped for it).",
+ "contended": [],
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a",
+ "registry_key": "rtx-3090-24gb/glm-5.3-flash.exllamav3-nvme-b70.128k (launch exllamav3-glm-5.3-flash-exl3-3.05bpw-nvme-55g-b70-128k-rtx-3090-24gb, candidate: companion, not in the plugin catalog)",
+ "registry_commit": "sybil-solutions/local-ai-registry fd6cb1c (PR #195)",
+ "lab": "reported",
+ "shipped_images": {
+  "engine": "ghcr.io/sybil-solutions/glm53-flash-offload:v4.5-b70@sha256:8e95f5f9f5e2373d5a80c556cdbc24ae5be8e63dd9f1520bdeb0bc0d02bc5fc5",
+  "companion": "ghcr.io/sybil-solutions/glm53-b70-expert-server:v1@sha256:6cc0980556ee859cef1175cb0df2a3e73d29f30d51d2c6c7bad80ea90047f9f3",
+  "code": "sybil-solutions/glm53-flash-offload afdf390 (PR #9)"
+ }
+}

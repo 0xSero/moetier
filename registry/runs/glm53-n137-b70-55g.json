@@ -1,0 +1,125 @@
+{
+ "id": "glm53-n137-b70-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 + 1\u00d7 Arc Pro B70 \u00b7 55 GB RAM + NVMe RAID0 \u00b7 B70 expert tier",
+ "kv_cache": "131k fp16 (~1.5 GiB est.)",
+ "gpu_count": 2,
+ "recipe": "glm53-rtx3090-b70-55g-nvx4",
+ "change": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063 (v4.2-nvme) with glm53-flash-offload n137-b70-tier (1563f6a: b70 lane + window clamp) mounted at /opt/glm53; B70 expert server = sglang-exl3-xpu-flashnext@sha256:24c87275 + _moe_n128.so (spir64, swiglu clamp 10) + b70tier/b70srv.py; GLM53_MODE=nvme GLM53_B70=1 (3000 warm-ranked experts after the 3090's VRAM set on the B70, exclusive of VRAM + RAM), --memory 55g, cpuset 2-39; B70 server cpuset 43-47 (spin 46), --memory 16g",
+ "measured": "2026-10-08",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 26.4,
+   "prefill_tok_s": 647.9
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 30.34,
+   "per_stream": 16.92
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 33.0,
+   "per_stream": 9.85
+  },
+  {
+   "prefill": 32768,
+   "conc": 1,
+   "decode": 24.6,
+   "prefill_tok_s": 973.7
+  }
+ ],
+ "per_token": {
+  "vram_hits": 109.12,
+  "ram_hits": 105.172,
+  "nvme": 6.184,
+  "cpu_experts": 88.446,
+  "zc_admits": 23.06,
+  "nvme_gpu": 3.845,
+  "nvme_cpu": 3.098,
+  "reply_wait_ms": 0.161,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 17.214,
+  "b70_experts": 103.912,
+  "b70_wait_ms": 0.375
+ },
+ "quality": {
+  "panel_top1": 1.0,
+  "panel_kl": 0.0,
+  "decode_kl_paired": {
+   "control_off": {
+    "positions": 1088,
+    "kl_mean": 0.0,
+    "kl_p99": 0.0,
+    "kl_max": 0.0,
+    "top1_agree": 1.0,
+    "cpu_experts_per_layer_call": 0.0,
+    "b70_experts_per_layer_call": 0.0
+   },
+   "cpu_default": {
+    "positions": 1088,
+    "kl_mean": 0.00699,
+    "kl_p99": 0.12137,
+    "kl_max": 1.0232,
+    "top1_agree": 0.97978,
+    "cpu_experts_per_layer_call": 3.56346,
+    "b70_experts_per_layer_call": 0.0
+   },
+   "cpu_b70": {
+    "positions": 1088,
+    "kl_mean": 0.00337,
+    "kl_p99": 0.06436,
+    "kl_max": 0.15696,
+    "top1_agree": 0.98805,
+    "cpu_experts_per_layer_call": 2.25523,
+    "b70_experts_per_layer_call": 1.91868
+   },
+   "b70_only": {
+    "positions": 1088,
+    "kl_mean": 0.00708,
+    "kl_p99": 0.11954,
+    "kl_max": 0.98773,
+    "top1_agree": 0.98162,
+    "cpu_experts_per_layer_call": 0.0,
+    "b70_experts_per_layer_call": 2.34248
+   }
+  },
+  "decode_kl_method": "arm s3kl (2026-10-09 05:25-05:34, 55 GB, same image/code): one process; reference = CPU lane off + B70 lane off (exact GPU path) greedy natural-EOS decode of 6 prompts x 192 tokens; each variant re-decodes the same tokens forced: control_off (method check, KL 0), cpu_default (shipped CPU lane), cpu_b70 (shipped config with the B70 tier), b70_only (B70 lane, CPU lane off)",
+  "slot_bytecheck": "128 VRAM + 128 RAM, bad 0+0, tables 0",
+  "b70_numerics": "24 cases, 48 real experts (store li 0/20/41), M 1/2/4/8, top-8: B70 server vs fp64 reference rel L2 0.0013-0.0015 (shipped AVX2 CPU tier selftest 0.0010); B70 vs exllamav3 CUDA per-expert path 0.0112-0.0125, equal to CUDA-vs-fp64 0.0112-0.0124 (N137 step 2, out/s2num)"
+ },
+ "memory": {
+  "ram_tier_gib": 42.539,
+  "ram_slots": 4840
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:/Users/sero/freetoken-exl3/runs/N137-b70tier/runs/s3b70",
+ "note": "N137 step 3, 2026-10-09 02:41-03:05 CEST, arm 1 of the same-session A/B (control s3ctl 04:20-04:59, repeat s3b70r 04:59-05:25; N136/N129 windows ran between arms 1 and 2, nothing concurrent). 32k C2 not run in this arm (see glm53-n137-b70r-55g). B70 guard clean throughout.",
+ "b70": {
+  "card": "Arc Pro B70 0000:48:00.0",
+  "experts": 3000,
+  "vram_gib": 26.63,
+  "load_s": 4.9,
+  "jobs": 762353,
+  "rows": 3577108,
+  "rtt_us_mean": 701.381,
+  "wait_us_mean": 16.293,
+  "err": 0,
+  "ring": "host tmpfs (/dev/shm/n137), one row per pick, fp16"
+ },
+ "contended": [],
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a",
+ "registry_key": "rtx-3090-24gb/glm-5.3-flash.exllamav3-nvme-b70.128k (launch exllamav3-glm-5.3-flash-exl3-3.05bpw-nvme-55g-b70-128k-rtx-3090-24gb, candidate: companion, not in the plugin catalog)",
+ "registry_commit": "sybil-solutions/local-ai-registry fd6cb1c (PR #195)",
+ "lab": "reported",
+ "shipped_images": {
+  "engine": "ghcr.io/sybil-solutions/glm53-flash-offload:v4.5-b70@sha256:8e95f5f9f5e2373d5a80c556cdbc24ae5be8e63dd9f1520bdeb0bc0d02bc5fc5",
+  "companion": "ghcr.io/sybil-solutions/glm53-b70-expert-server:v1@sha256:6cc0980556ee859cef1175cb0df2a3e73d29f30d51d2c6c7bad80ea90047f9f3",
+  "code": "sybil-solutions/glm53-flash-offload afdf390 (PR #9)"
+ }
+}

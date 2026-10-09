@@ -1,0 +1,57 @@
+{
+ "id": "glm53-n137-ctl-fr120",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 120 GB RAM cap (all experts in RAM) + NVMe RAID0 \u00b7 same-session control (B70 tier off)",
+ "kv_cache": "131k fp16 (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "same code and image as glm53-n137-b70-fr120 with GLM53_B70=0, --memory 120g; 8k rows only",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 22.09,
+   "prefill_tok_s": 665.2
+  },
+  {
+   "prefill": 8192,
+   "conc": 2,
+   "decode": 23.32,
+   "per_stream": 12.29
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 24.64,
+   "per_stream": 6.82
+  }
+ ],
+ "per_token": {
+  "vram_hits": 122.556,
+  "ram_hits": 198.576,
+  "nvme": 0.612,
+  "cpu_experts": 155.035,
+  "zc_admits": 51.15,
+  "nvme_gpu": 0.553,
+  "nvme_cpu": 0.059,
+  "reply_wait_ms": 0.079,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 23.226,
+  "b70_experts": 0.0,
+  "b70_wait_ms": 0.0
+ },
+ "quality": {
+  "note": "quality measured at 55 GB (glm53-n137-b70-55g: panel 1.0/0, paired decode-KL); same code"
+ },
+ "memory": {
+  "ram_tier_gib": 107.543,
+  "ram_slots": 12236
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:/Users/sero/freetoken-exl3/runs/N137-b70tier/runs/s3frctl",
+ "note": "N137 step 3 full-RAM control, 2026-10-09 05:48-06:08 CEST; B70 server stopped (card released to the skills gym).",
+ "contended": [],
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a"
+}

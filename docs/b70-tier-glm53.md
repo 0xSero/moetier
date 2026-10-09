@@ -1,0 +1,178 @@
+# B70 as a second expert tier for GLM-5.3-Flash on omarchy (N137)
+
+HOM-272, 2026-10-08. One Arc Pro B70 (32 GB, slot `0000:48:00.0`) holds about 3,000 GLM-5.3-Flash experts next to
+the RTX 3090's VRAM cache. Without it those experts sit in RAM or on NVMe. Stretch design: three B70s plus the 3090
+(~120 GB of VRAM) hold all 12,096 experts (114.6 GB).
+
+## Design
+
+Each MoE layer call in decode works like this.
+
+1. The 3090 publishes the layer's picks and its MoE input rows (fp16, 8 KB per token) to the mapped request ring. This
+   step is unchanged from nv2 (`kernels/nv2`).
+2. The host controller (`nv2_host.cpp` `plan_and_reply`) assigns each unique pick to a lane: `vram` (3090), `b70`,
+   `cpu`/`zerocopy` (RAM tier) or `nvme->cpu`/`nvme->gpu`. The order is: VRAM-resident, then B70-resident (a static
+   key set), then RAM, then NVMe. A B70 pick is masked on the 3090 (id -1, weight 0) the same way a CPU pick is, so
+   the device-side code path is the CPU lane's.
+3. The CPU worker, which owns the job for that layer, posts the B70 picks first: expert ids, routing weights, and the
+   x rows copied from `hx` go into a shared host ring (`/dev/shm`, mapped by both containers). It then computes its
+   own CPU picks, waits for the B70's landed flag (seq), adds the B70's fp32 partial into `hout`, and signals
+   `HC_CDONE`. The 3090's `nv_combine` adds `hout` as it does today.
+4. The B70 expert server is a persistent process on the B70. It spins on the ring and does an H2D of x, runs
+   `moe_forward` (`_moe_n128.so`, swiglu clamp 10) over the slot pointer table of its resident experts, does a D2H of
+   the partial, and writes the seq flag.
+
+The three lanes overlap. The 3090 runs its VRAM experts, the CPU runs its RAM experts, and the B70 runs its own
+experts, all at the same time. A layer costs `max(gpu, cpu, b70)`.
+
+Placement is static. After the 3090's warm VRAM set, the B70 takes the next frequency ranks (warm-start scores). It is
+exclusive of the 3090 cache and of the RAM tier. Its keys are never admitted to the 3090 and never warmed into RAM, so
+RAM holds the next ranks after them. Prefill keeps today's staged path. B70 keys are read from NVMe there like any
+other non-RAM expert (N129 measured 16 GB prefill at 654 tok/s vs 662 at 55 GB, so prefill barely depends on how many
+experts RAM holds).
+
+Cost model, b70 lane per layer: `handoff + 0.010 + 0.0215 x experts + 0.020 x extra tokens`. The last three terms are
+the exl3xpu-arc GLM model lane from the b70-microbench. `handoff` covers the ring write, the B70 server noticing the
+request, the submit, the H2D of 8 KB per token, the D2H of the partial and the flag. The design estimate is 0.12 ms:
+three submits at 7 µs, an 11 µs flag round trip, and 81 µs of flag lag after a kernel on an idle queue. N137 measures
+it.
+
+Implementation: `plan.py` has a `b70` lane (one lane per card, cards in parallel). The ledger has a static `b70` tier
+(rank round-robin over cards). The recipe is `glm53-rtx3090-b70-55g-nvx4` (`b70.cards`, `b70.handoff_ms`). The script
+is `examples/b70_tier.py`, with raw output in `b70-tier-glm53.sim.jsonl`.
+
+## Expected (sim, G002 decode trace, 9,250 tokens)
+
+| config | C1 | C2 | C4 | GPU hit (3090 + B70) | CPU experts/tok | NVMe/tok | C1 ms/step: fixed + max(3090, CPU, B70) |
+|---|---|---|---|---|---|---|---|
+| 55 GB today: 3090 + CPU + NVMe | 23.37 | 30.06 | 33.42 | 0.512 | 134.3 | 20.2 | 14.0 + max(14.6, 28.3, -) |
+| 55 GB + 1 B70 x 3000, handoff 0.12 | **31.56** | 41.71 | 52.19 | 0.441 + 0.292 = 0.733 | 84.6 | 3.4 | 14.0 + max(11.0, 16.4, 7.0) |
+| same, handoff 0.05 | 31.62 | 41.75 | 52.19 | 0.733 | 84.6 | 3.4 | 14.0 + max(11.0, 16.4, 4.4) |
+| same, handoff 0.25 | 30.81 | 41.49 | 52.16 | 0.733 | 84.6 | 3.4 | 14.0 + max(11.0, 16.4, 11.9) |
+| same, handoff 0.50 | 25.81 | 39.35 | 51.92 | 0.733 | 84.6 | 3.4 | 14.0 + max(11.0, 16.4, 21.4) |
+| 55 GB + 1 B70 x 3300 | 32.46 | 43.13 | 54.13 | 0.756 | 78.1 | 2.7 | 14.0 + max(10.8, 15.1, 7.2) |
+| reference: 3000 more slots on the 3090 itself | 31.15 | 41.13 | 50.63 | 0.758 | 77.0 | 3.3 | 14.0 + max(13.3, 15.4, -) |
+| full RAM (G067 layout): 3090 + CPU | 27.49 | 32.92 | 36.31 | 0.508 | 150.5 | 0 | 14.0 + max(16.7, 21.7, -) |
+| full RAM + 1 B70 x 3000 | **33.15** | 43.85 | 52.72 | 0.728 | 89.4 | 0 | 14.0 + max(11.1, 14.9, 7.0) |
+| stretch: 3090 + 3 B70 x 3000, 55 GB | **39.81** | 58.30 | 80.09 | 0.996 | 1.6 | 0 | 14.0 + max(10.3, 0.4, 7.5) |
+| stretch: 3090 + 3 B70 x 3200 (55 GB or full RAM) | 39.83 | 58.30 | 80.09 | 0.999 | 0.5 | 0 | 14.0 + max(10.3, 0.1, 7.5) |
+| stretch, handoff 0.25 | 36.56 | 55.36 | 77.58 | 0.999 | 0.5 | 0 | 14.0 + max(10.3, 0.1, 12.9) |
+
+How to read it:
+- One B70 moves the 55 GB config from CPU-bound (28.3 ms of CPU MoE per token) to a near tie between the CPU (16.4)
+  and the fixed non-MoE time. NVMe reads per token fall from 20.2 to 3.4, because the B70 frees RAM for colder
+  experts. C1 gains about +35%. The B70 lane is only 7 ms per token, so it is not the bottleneck while handoff stays
+  at or below ~0.25 ms per layer. At 0.5 ms it becomes the bound and most of the C1 gain is lost.
+- The B70 is worth the same as 3,000 more slots on the 3090 itself (31.56 vs 31.15 at C1), and more at C4. It is a
+  third lane in parallel, not a longer 3090 queue.
+- C2/C4 gain more than C1 (+39%, +56%) because the CPU lane stops growing with concurrency once fewer experts are
+  on it.
+- Stretch: with every expert in GPU memory the CPU and NVMe lanes disappear. C1 is then bound by the fixed 14 ms of
+  non-MoE time plus the 3090's own MoE (10.3 ms). The next lever is the fixed time (fused kernels and graphs: 14 -> 9 ms
+  gives about 50 tok/s in this sim).
+
+Calibration caveat: this sim reads 23.4 for the 55 GB config, but v4.2-nvme measures 17.3 at C1 and about 18 at C4.
+For the full-RAM layout it reads 27.5 against a measured 28.2 (G067). The 55 GB gap comes from NVMe stall and sync
+effects that the sim underprices. The B70 removes most of the NVMe traffic (20 -> 3.4 per token), so the measured
+result should land between sim x 0.74 (about 23 tok/s) and the sim (31.6) at C1.
+
+## Step 2: B70 expert server, measured (48:00.0, 2026-10-08 23:13-23:22 CEST, guard clean)
+
+Code: `omarchy:~/freetoken-exl3/runs/N137-b70tier/`. The engine copy is on branch `n137-b70-tier` of
+glm53-flash-offload: `b70tier/` (server, ring, tests, scripts), `kernels/nv2` (the `LN_B70` lane and the CPU-worker
+ring client), `glm53/nv2.py` (`GLM53_B70=1`) and `bench/decode_kl_nv.py` (variants `b70_only` and `cpu_b70`).
+
+| measurement | value |
+|---|---|
+| LOAD 3,000 experts (28.42 GB) from the NVMe store, O_DIRECT -> VRAM staging -> permute | 4.9 s, 5.77 GB/s (container capped at 6 GB/s); byte spot check 0 bad |
+| capacity | 3,300 experts (31.26 GB) fit: 29.28 of 31.89 GiB allocated |
+| ring round trip p50, 1 / 2 / 3 / 4 rows (one row per pick) | 169-183 / 177-191 / 201-211 / 211-222 µs |
+| 8 / 16 / 32 rows | 308-317 / 480-488 / 822 µs |
+| derived | 0.021 ms per expert (the microbench's 0.0215) + ~0.15 ms fixed per layer call |
+| server phases p50 (1 row, host clock) | H2D submit 45, moe_forward submit 74, D2H submit 78, sync 50 µs |
+
+The fixed cost comes from the Level Zero copy and launch path, not from the ring. A USM bounce buffer only moves the
+time into the sync, and immediate command lists change nothing. Fewer submits would help: a fused copy+MoE graph or a
+C++/SYCL server loop.
+
+Sim with the measured handoff (0.14-0.19 ms per layer): 55 GB + 1 B70 gives C1 31.3-31.5, C2 41.6-41.7, C4 52.2. The
+B70 lane costs 7.8-9.7 ms per token, still under the CPU lane's 16.4.
+
+## Step 2: numerics vs the CUDA path (real layers)
+
+The reference is `b70tier/cuda_ref.py`, run on the 3090 (2026-10-08 23:16, 0.23 GiB, kguard clean). It takes 48 real
+checkpoint experts (store layers li 0 / 20 / 41 = model layers 3 / 23 / 44, 16 each) and builds them as exllamav3
+`LinearEXL3` (trellis + suh + svh + mul1). It runs them through `BlockSparseMLP`'s per-expert torch path (up, gate,
+`ext.silu_mul(limit 10)`, down) and sums them with the routing weights in fp32. It also computes an fp64 reference from
+`get_weight_tensor()`.
+
+The B70 side ran on 48:00.0 (23:24-23:25, guard clean): the same 24 cases (M = 1/2/4/8, x scale 0.5 and 4, top-8 of
+the 16, weights summing to 2.5) went through the ring, with one row per pick and rows added per token in fp32.
+
+| comparison (24 cases) | rel L2 | cos |
+|---|---|---|
+| B70 server vs fp64 reference | 0.0013-0.0015 | - |
+| B70 server vs exllamav3 CUDA per-expert path | 0.0112-0.0125 | 0.99992-0.99994 |
+| exllamav3 CUDA per-expert path vs fp64 reference | 0.0112-0.0124 | - |
+| shipped AVX2 CPU tier vs fp64 (its startup selftest, for scale) | 0.0010 | - |
+
+The B70 output matches the fp64 reference as closely as the shipped CPU tier does. Its distance from the CUDA
+per-expert path is the CUDA path's own distance from fp64. The engine's C++ ring client (`nv2_host.cpp`
+`b70_forward`, the code the CPU worker runs in decode) gives the same numbers as the Python client on all 24 cases,
+and every output is finite.
+
+## Step 3: same-session A/B on omarchy (2026-10-09, measured)
+
+Image `glm53-flash-offload@sha256:4732a063` (v4.2-nvme), with the repo copy (branch `n137-b70-tier`, b70 lane and window clamp)
+mounted over it. The B70 expert server ran on Arc Pro B70 48:00.0 with 3,000 experts. The 3090 arms ran back to back
+while N137 held `gpu3090.lock`; no other job ran at the same time. The B70 guard was clean the whole time.
+
+**GLM-5.3-Flash · 55 GB RAM + NVMe RAID0, decode tok/s (aggregate) and prefill tok/s**
+
+| prefill size | prefill speed | decode speed | concurrency | kv cache | gpu count |
+|---|---|---|---|---|---|
+| 8k | 657 / 648-658 | 17.48 / **26.40-26.61** | 1 | 131k fp16 | 1 / 2 |
+| 8k | - | 17.84 / **30.34-30.63** | 2 | 131k fp16 | 1 / 2 |
+| 8k | - | 19.11 / **33.00-33.54** | 4 | 131k fp16 | 1 / 2 |
+| 32k | 966 / 968-974 | 16.28 / **24.60-24.92** | 1 | 131k fp16 | 1 / 2 |
+| 32k | - | 17.35 / **29.09** | 2 | 131k fp16 | 1 / 2 |
+
+Each cell reads control (3090 only, `GLM53_B70=0`) / B70 tier (`GLM53_B70=1`; arms s3b70 and s3b70r). Gains:
++51% C1, +71% C2, +74% C4, +52% at 32k C1 and +68% at 32k C2. Per token, NVMe reads fall from 25.7 to 6.2 and
+CPU-lane experts from 148 to 88, while the B70 takes 104 picks. The CPU worker waits 0.38 ms per token for B70
+results (mean job round trip 0.70 ms, 0 errors).
+
+**GLM-5.3-Flash · 120 GB cap (every expert in RAM), 8k rows**
+
+| prefill size | prefill speed | decode speed | concurrency | kv cache | gpu count |
+|---|---|---|---|---|---|
+| 8k | 665 / 664 | 22.09 / **28.51** | 1 | 131k fp16 | 1 / 2 |
+| 8k | - | 23.32 / **34.55** | 2 | 131k fp16 | 1 / 2 |
+| 8k | - | 24.64 / **39.99** | 4 | 131k fp16 | 1 / 2 |
+
+Gains: +29% C1, +48% C2, +62% C4.
+
+Quality:
+- Panel (arm s3b70): top-1 1.0, KL 0. Prefill is exact.
+- Startup verify: 128 VRAM + 128 RAM slots, 0 bad.
+- Paired decode-KL (arm s3kl, 6 prompts x 192 positions, reference = CPU and B70 lanes off):
+
+| variant | KL mean | KL p99 | KL max | top-1 |
+|---|---|---|---|---|
+| control_off (method check) | 0 | 0 | 0 | 1.000 |
+| cpu_default (shipped nvme mode) | 0.0070 | 0.121 | 1.02 | 0.980 |
+| **cpu_b70 (nvme mode + B70 tier)** | **0.0034** | 0.064 | 0.157 | **0.988** |
+| b70_only (CPU lane off) | 0.0071 | 0.120 | 0.99 | 0.982 |
+
+The B70 tier is in the CPU tier's quality class, and the combined config scores better than the shipped one because
+fewer picks go through the AVX2 lane. Run records: `registry/runs/glm53-n137-{b70,b70r,ctl}-55g.json` and
+`glm53-n137-{b70,ctl}-fr120.json`.
+
+Measured vs sim: C1 26.5 measured vs 31.5 in the sim. The calibration caveat above predicted 23-31.6. At C4 the sim's
+52 was optimistic: measured 33.5, because the CPU lane and B70 jobs at 4 tokens cost more than the cost model charges.
+
+## Status
+
+- Steps 1-3 done. Shipping follows: glm53-flash-offload behind `GLM53_B70=1` (default off), a B70 expert-server image,
+  and a candidate registry launch with a `companion` block. The plugin cannot run mixed-vendor setups yet
+  (local-omarchy-71, plugin 6.12.x).

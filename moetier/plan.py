@@ -4,11 +4,13 @@ Same code drives the simulator and a runtime adapter. Inputs per layer: the rout
 the NVMe channel and in-flight prefetches. Output: a LayerPlan (who computes what, what to fetch, critical time).
 
 Lanes run concurrently when policy.overlap is true (GPU on VRAM experts, CPU on RAM experts, PCIe and NVMe moving
-bytes), so the layer costs max(lanes); otherwise they serialize. Exactness: 'stall' waits for NVMe misses,
+bytes, and a second-tier GPU lane 'b70' on the experts it holds), so the layer costs max(lanes); otherwise they
+serialize. The b70 lane is one lane per card: per_layer_ms = handoff (hidden state host -> card, partials + landed flag
+back) + its kernel launch, then per_expert_ms per expert it computes; cards run in parallel, so b70 = max over cards. Exactness: 'stall' waits for NVMe misses,
 'mask' drops them (lossy, counted).
 """
 from dataclasses import dataclass, field
-from .ledger import VRAM, RAM, NVME
+from .ledger import VRAM, RAM, NVME, B70
 
 
 class NvmeChannel:
@@ -41,7 +43,9 @@ class LayerPlan:
     nvme_cpu: list = field(default_factory=list)   # NVMe misses: read -> RAM -> CPU
     nvme_gpu: list = field(default_factory=list)   # NVMe misses: read -> PCIe -> VRAM
     masked: list = field(default_factory=list)     # dropped picks (policy.exact == 'mask')
+    b70: list = field(default_factory=list)        # keys computed by a second-tier GPU from its own VRAM
     gpu_ms: float = 0.0
+    b70_ms: float = 0.0
     cpu_ms: float = 0.0
     ms: float = 0.0
 
@@ -53,10 +57,18 @@ def plan_layer(R, ledger, picks, t0, nvme, inflight):
     p = LayerPlan()
     if getattr(ledger, "policy", "lru") != "lru":
         ledger.observe(picks, getattr(ledger, "step", 0))
-    V, Rm, N = [], [], []
+    V, Rm, N, B = [], [], [], []
     for k, m in picks.items():
         t = ledger.tier(k)
-        (V if t == VRAM else Rm if t == RAM else N).append((k, m))
+        (V if t == VRAM else Rm if t == RAM else B if t == B70 else N).append((k, m))
+    # b70 lane(s): static expert sets, one lane per card, cards in parallel
+    b70 = lanes.get("b70")
+    if B:
+        per_card = {}
+        for k, m in B:
+            c = ledger.b70[k]
+            per_card[c] = per_card.get(c, b70.per_layer_ms) + b70.per_expert_ms + b70.per_extra_token_ms * (m - 1)
+        p.b70, p.b70_ms = [k for k, _ in B], max(per_card.values())
     push_ms = S / (R.h2d_gbps * 1e6)
     # GPU lane: per_extra_token_ms (default 0) prices extra rows on one expert, e.g. exllamav3's fused bsz<=8 decode
     # kernels, which run every (token, expert) slot and re-read a shared expert's weights (MTP verify, C2/C4)
@@ -90,7 +102,7 @@ def plan_layer(R, ledger, picks, t0, nvme, inflight):
                 else:
                     g = ge; p.nvme_gpu.append(k)
     p.gpu_ms, p.cpu_ms = g, c
-    p.ms = max(g, c) if pol.get("overlap", True) else g + c
+    p.ms = max(g, c, p.b70_ms) if pol.get("overlap", True) else g + c + p.b70_ms
     # residency updates (host-owned): touches, promotions of GPU-routed misses, NVMe landings in RAM
     protect = set(picks)
     for k in p.gpu:
