@@ -1,0 +1,51 @@
+{
+ "id": "glm53-n129-v44-ctl-55g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 55 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.4 as shipped",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-55g-nvx4",
+ "change": "image v4.4-nvme (c5a58a40), same-session control, GLM53_MODE=nvme registry env, --memory 55g, NVMe uncapped, no code mounts",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 17.32,
+   "prefill_tok_s": 660.5
+  },
+  {
+   "prefill": 8192,
+   "conc": 4,
+   "decode": 19.27,
+   "per_stream": 5.33
+  }
+ ],
+ "per_token": {
+  "vram_hits": 120.986,
+  "ram_hits": 170.572,
+  "nvme": 27.057,
+  "cpu_experts": 150.053,
+  "zc_admits": 42.778,
+  "nvme_gpu": 13.196,
+  "nvme_cpu": 14.395,
+  "reply_wait_ms": 0.352,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 31.311
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 55,
+  "peak_gib": 49.39,
+  "end_gib": 49.39,
+  "ram_tier_gib": 42.46,
+  "ram_slots": 4831
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/raidx/runs/v44_ctl_55g",
+ "note": "N129 qv46, same session 2026-10-09 12:05-13:41 CEST (v4.4 control first).",
+ "contended": [
+  "skills gym alternating on ~/nvx_bench.lock and B70 48 (never concurrent with an NVMe arm)"
+ ]
+}

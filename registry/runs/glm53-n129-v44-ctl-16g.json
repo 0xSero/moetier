@@ -1,0 +1,45 @@
+{
+ "id": "glm53-n129-v44-ctl-16g",
+ "title": "GLM-5.3-Flash \u00b7 1\u00d7 RTX 3090 \u00b7 16 GB RAM + NVMe RAID0 (4x 9100 PRO) \u00b7 image v4.4 as shipped",
+ "kv_cache": "131k (~1.5 GiB est.)",
+ "gpu_count": 1,
+ "recipe": "glm53-rtx3090-16g-nvx4",
+ "change": "image v4.4-nvme (c5a58a40), same-session control, GLM53_MODE=nvme registry env, --memory 16g, NVMe uncapped, no code mounts",
+ "measured": "2026-10-09",
+ "table": [
+  {
+   "prefill": 8192,
+   "conc": 1,
+   "decode": 12.89,
+   "prefill_tok_s": 651.1
+  }
+ ],
+ "per_token": {
+  "vram_hits": 143.174,
+  "ram_hits": 108.229,
+  "nvme": 84.597,
+  "cpu_experts": 167.91,
+  "zc_admits": 16.408,
+  "nvme_gpu": 10.275,
+  "nvme_cpu": 76.064,
+  "reply_wait_ms": 2.442,
+  "nvme_wait_ms": 0.0,
+  "cpu_busy_ms": 59.886
+ },
+ "quality": {},
+ "memory": {
+  "cgroup_max_gb": 16,
+  "peak_gib": 14.43,
+  "end_gib": 14.42,
+  "ram_tier_gib": 8.525,
+  "ram_slots": 970
+ },
+ "utilization": null,
+ "chokepoints": null,
+ "engine_critical_path_end": null,
+ "source": "omarchy:~/freetoken-exl3/runs/N116-glm53-nvme/s2/hom272/raidx/runs/v44_ctl_16g",
+ "note": "N129 qv46, same session 2026-10-09 12:05-13:41 CEST (v4.4 control first).",
+ "contended": [
+  "skills gym alternating on ~/nvx_bench.lock and B70 48 (never concurrent with an NVMe arm)"
+ ]
+}
