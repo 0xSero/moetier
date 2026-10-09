@@ -121,19 +121,58 @@ per-expert path is the CUDA path's own distance from fp64. The engine's C++ ring
 `b70_forward`, the code the CPU worker runs in decode) gives the same numbers as the Python client on all 24 cases,
 and every output is finite.
 
+## Step 3: same-session A/B on omarchy (2026-10-09, measured)
+
+Image `glm53-flash-offload@sha256:4732a063` (v4.2-nvme), with the repo copy (branch `n137-b70-tier`, b70 lane and window clamp)
+mounted over it. The B70 expert server ran on Arc Pro B70 48:00.0 with 3,000 experts. The 3090 arms ran back to back
+while N137 held `gpu3090.lock`; no other job ran at the same time. The B70 guard was clean the whole time.
+
+**GLM-5.3-Flash · 55 GB RAM + NVMe RAID0, decode tok/s (aggregate) and prefill tok/s**
+
+| prefill size | prefill speed | decode speed | concurrency | kv cache | gpu count |
+|---|---|---|---|---|---|
+| 8k | 657 / 648-658 | 17.48 / **26.40-26.61** | 1 | 131k fp16 | 1 / 2 |
+| 8k | - | 17.84 / **30.34-30.63** | 2 | 131k fp16 | 1 / 2 |
+| 8k | - | 19.11 / **33.00-33.54** | 4 | 131k fp16 | 1 / 2 |
+| 32k | 966 / 968-974 | 16.28 / **24.60-24.92** | 1 | 131k fp16 | 1 / 2 |
+| 32k | - | 17.35 / **29.09** | 2 | 131k fp16 | 1 / 2 |
+
+Each cell reads control (3090 only, `GLM53_B70=0`) / B70 tier (`GLM53_B70=1`; arms s3b70 and s3b70r). Gains:
++51% C1, +71% C2, +74% C4, +52% at 32k C1 and +68% at 32k C2. Per token, NVMe reads fall from 25.7 to 6.2 and
+CPU-lane experts from 148 to 88, while the B70 takes 104 picks. The CPU worker waits 0.38 ms per token for B70
+results (mean job round trip 0.70 ms, 0 errors).
+
+**GLM-5.3-Flash · 120 GB cap (every expert in RAM), 8k rows**
+
+| prefill size | prefill speed | decode speed | concurrency | kv cache | gpu count |
+|---|---|---|---|---|---|
+| 8k | 665 / 664 | 22.09 / **28.51** | 1 | 131k fp16 | 1 / 2 |
+| 8k | - | 23.32 / **34.55** | 2 | 131k fp16 | 1 / 2 |
+| 8k | - | 24.64 / **39.99** | 4 | 131k fp16 | 1 / 2 |
+
+Gains: +29% C1, +48% C2, +62% C4.
+
+Quality:
+- Panel (arm s3b70): top-1 1.0, KL 0. Prefill is exact.
+- Startup verify: 128 VRAM + 128 RAM slots, 0 bad.
+- Paired decode-KL (arm s3kl, 6 prompts x 192 positions, reference = CPU and B70 lanes off):
+
+| variant | KL mean | KL p99 | KL max | top-1 |
+|---|---|---|---|---|
+| control_off (method check) | 0 | 0 | 0 | 1.000 |
+| cpu_default (shipped nvme mode) | 0.0070 | 0.121 | 1.02 | 0.980 |
+| **cpu_b70 (nvme mode + B70 tier)** | **0.0034** | 0.064 | 0.157 | **0.988** |
+| b70_only (CPU lane off) | 0.0071 | 0.120 | 0.99 | 0.982 |
+
+The B70 tier is in the CPU tier's quality class, and the combined config scores better than the shipped one because
+fewer picks go through the AVX2 lane. Run records: `registry/runs/glm53-n137-{b70,b70r,ctl}-55g.json` and
+`glm53-n137-{b70,ctl}-fr120.json`.
+
+Measured vs sim: C1 26.5 measured vs 31.5 in the sim. The calibration caveat above predicted 23-31.6. At C4 the sim's
+52 was optimistic: measured 33.5, because the CPU lane and B70 jobs at 4 tokens cost more than the cost model charges.
+
 ## Status
 
-- Step 1 (this doc, the sim): done.
-- Step 2 (server, latency, capacity, numerics vs CUDA): done. Code is on glm53-flash-offload branch
-  `n137-b70-tier` (`b70tier/`, `kernels/nv2`, `glm53/nv2.py`, `bench/decode_kl_nv.py`).
-- Step 3 (integration + measurement): **blocked**. B70 48:00.0 dropped off the bus at 2026-10-09 00:16:23 CEST during
-  N130's Qwen run, not an N137 job: pciehp Link Down on 40:03.1, IOMMU Completion-Wait timeouts. `/home` on omarchy then
-  went read-only. The chain is ready (`b70tier/scripts/step3_chain.sh`):
-  1. B70 server up under the B70 lock and guard;
-  2. `s3b70`: panel, full sweep and verify with GLM53_B70=1;
-  3. `s3ctl`: same-session control;
-  4. `s3kl`: paired decode-KL with control_off, cpu_default, cpu_b70 and b70_only;
-  5. a full-RAM pair (120g).
-
-  It needs a working B70 on a card the user approves, and the box recovered (the user decides about a reboot).
-  Nothing ships: the panel and the paired decode-KL have not run.
+- Steps 1-3 done. Shipping follows: glm53-flash-offload behind `GLM53_B70=1` (default off), a B70 expert-server image,
+  and a candidate registry launch with a `companion` block. The plugin cannot run mixed-vendor setups yet
+  (local-omarchy-71, plugin 6.12.x).
