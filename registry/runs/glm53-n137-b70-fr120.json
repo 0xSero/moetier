@@ -53,5 +53,13 @@
  "source": "omarchy:/Users/sero/freetoken-exl3/runs/N137-b70tier/runs/s3frb70",
  "note": "N137 step 3 full-RAM pair, 2026-10-09 05:34-05:48 CEST; control glm53-n137-ctl-fr120 05:48-06:08 (B70 server stopped for it).",
  "contended": [],
- "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a"
+ "image": "ghcr.io/sybil-solutions/glm53-flash-offload@sha256:4732a063fa9e28d4d5dc7b2c3b57cb7ed84ecfff40caeb4b5bc59d71be1882b3 + mounted repo n137-b70-tier 1563f6a",
+ "registry_key": "rtx-3090-24gb/glm-5.3-flash.exllamav3-nvme-b70.128k (launch exllamav3-glm-5.3-flash-exl3-3.05bpw-nvme-55g-b70-128k-rtx-3090-24gb, candidate: companion, not in the plugin catalog)",
+ "registry_commit": "sybil-solutions/local-ai-registry fd6cb1c (PR #195)",
+ "lab": "reported",
+ "shipped_images": {
+  "engine": "ghcr.io/sybil-solutions/glm53-flash-offload:v4.5-b70@sha256:8e95f5f9f5e2373d5a80c556cdbc24ae5be8e63dd9f1520bdeb0bc0d02bc5fc5",
+  "companion": "ghcr.io/sybil-solutions/glm53-b70-expert-server:v1@sha256:6cc0980556ee859cef1175cb0df2a3e73d29f30d51d2c6c7bad80ea90047f9f3",
+  "code": "sybil-solutions/glm53-flash-offload afdf390 (PR #9)"
+ }
 }
