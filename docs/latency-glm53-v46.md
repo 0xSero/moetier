@@ -1,6 +1,6 @@
 # GLM-5.3-Flash on the RTX 3090, v4.6-nvme: where the time goes (cross-stack profile)
 
-Status: **55 GB done (per-layer dump + probe + what-if); 55 GB nsys, 16 GB and all-RAM fast mode pending** (this page is
+Status: **55 GB done (per-layer dump + probe + what-if + nsys kernel split); 16 GB and all-RAM fast mode pending** (this page is
 extended as each lands).
 
 What was profiled: image v4.6-nvme (`ghcr.io/sybil-solutions/glm53-flash-offload@sha256:aa74200f`, glm53-flash-offload
@@ -89,6 +89,31 @@ Nothing is saturated: the token is a chain of 42 dependent layer stages and each
 
 Data: `docs/latency-glm53-v46/analysis_55g.json`, `whatif_55g.json`, `waterfall_55g.txt`.
 
+### Kernel split from Nsight Systems (55 GB, 95 steady tokens, NVTX on)
+
+Capture: `GLM53_PROF=150:100` (n136_prof opens a cudaProfilerApi window at decode iteration 150), `nsys profile
+--cuda-graph-trace=node`, NVTX module ranges installed after K101 fusion (arm `P55_nsys`, 14:08-14:09). With NVTX the
+step is 58.0 ms (3 % slower than the dump arm). GPU idle (no kernel resident) is only **0.58 ms/token**: the device is
+never starved by the host now; every wait shows up as a spinning nv2 kernel.
+
+| class | ms/token | roofline ms | achieved | note |
+|---|---|---|---|---|
+| nv_copy (admission gather + spin on NVMe landings) | 24.5 | - | - | 17.3 copy + ~5.8 NVMe wait + spin (dump split) |
+| nv_combine (spin until the CPU partial is published) | 10.6 | - | - | = CPU-lane overrun + flag latency |
+| routed + shared MoE kernels (exl3_moe_coop a + b) | 10.3 | - | - | |
+| **KDA attention** (31 layers) | **5.83** | 3.31 | 531 GB/s (57 % of 936) | int8 GEMV projections 4.0 ms, gated-delta recurrence 0.37, conv/gates/norm 0.3 |
+| **DSA attention** (11 layers) | **2.40** | 1.21 | 471 GB/s (50 %) | int8 GEMV 1.24, MLA unfold/absorb/decode-split/combine 0.89 |
+| router (61 + 22 calls) | 0.91 | 0.11 | 112 GB/s | 7.3 us routing GEMV + 3.7 us top-k per layer: launch-latency bound |
+| hc / norm sites (K101 fused) | 0.73 | 0.15 | 193 GB/s | 4 us kernels, latency bound |
+| head (lm_head GEMM + norm) | 0.61 | 0.51 | 775 GB/s | at roofline |
+| dense MLP layers 0-2 | 0.37 | 0.24 | 612 GB/s | |
+| nv_step / nv_pub (host plan handshake on the device) | 1.24 / 0.33 | - | - | PUBFAST: nv_pub 8 us |
+| sampler → next kernel | p50 9.4 us | - | - | lookahead |
+
+Non-MoE GPU total ≈ 10.9 ms/token against a 5.5 ms roofline: the attention GEMVs run at 50-57 % of VRAM bandwidth
+(int8 activations, small N), and ~1.6 ms/token is launch-latency-bound tiny kernels (router, hc/norm sites).
+Data: `docs/latency-glm53-v46/nsys_55g.json` (N136's `nsys_an.py`).
+
 ### Top 5 fixes for 55 GB (expected ms/token saved)
 
 | # | sink | fix | expected saving |
@@ -99,4 +124,4 @@ Data: `docs/latency-glm53-v46/analysis_55g.json`, `whatif_55g.json`, `waterfall_
 | 4 | routed MoE kernel 10.1 ms (0.17 ms/layer, 0.47 ms on layers with a zero-copy NVMe pick) | route NVMe-only picks to the CPU lane after landing instead of zero-copy in the GPU kernel; MoE kernel at roofline | 2-4 |
 | 5 | NVMe waits 5.8 ms (p90 11.0) | deeper / earlier prefetch (N134 prerouter: 2-4 layers ahead) | ~3 |
 
-(55 GB nsys kernel split, 16 GB and all-RAM sections follow.)
+(16 GB and all-RAM sections follow.)

@@ -1,0 +1,617 @@
+{
+ "steps": 95,
+ "wall_ms_per_token": 58.0271,
+ "busy_ms_per_token": 57.8412,
+ "idle_ms_per_token": 0.5767,
+ "sampler_to_next_kernel_us": {
+  "p50": 9.4,
+  "mean": 18.8
+ },
+ "class_ms_per_token": {
+  "KDA/nv2": 27.1052,
+  "DSA/nv2": 9.5793,
+  "KDA/moe_kernels": 7.6897,
+  "KDA/attn": 5.3187,
+  "DSA/moe_kernels": 2.5902,
+  "DSA/attn": 2.4036,
+  "KDA/router": 0.6671,
+  "-/boundary_head": 0.6144,
+  "denseKDA/attn": 0.5086,
+  "KDA/hc_norm_site": 0.5038,
+  "denseKDA/dense_mlp": 0.3704,
+  "DSA/router": 0.2409,
+  "DSA/hc_norm_site": 0.1803,
+  "denseKDA/hc_norm_site": 0.0502,
+  "-/boundary_embed": 0.0098,
+  "-/glue": 0.0089
+ },
+ "gap_ms_per_token": {
+  "KDA/attn": 0.0954,
+  "KDA/hc_norm_site": 0.0911,
+  "KDA/nv2": 0.086,
+  "KDA/moe_kernels": 0.0852,
+  "DSA/attn": 0.0456,
+  "DSA/hc_norm_site": 0.0328,
+  "DSA/moe_kernels": 0.0317,
+  "DSA/nv2": 0.031,
+  "KDA/router": 0.0228,
+  "-/boundary_embed": 0.02,
+  "denseKDA/hc_norm_site": 0.0098,
+  "denseKDA/attn": 0.0082,
+  "DSA/router": 0.0079,
+  "denseKDA/dense_mlp": 0.0044,
+  "-/glue": 0.0028,
+  "-/boundary_head": 0.002
+ },
+ "gap_count_per_token": {
+  "-/boundary_embed": 3.0,
+  "denseKDA/hc_norm_site": 12.0,
+  "denseKDA/attn": 27.0,
+  "denseKDA/dense_mlp": 3.0,
+  "DSA/hc_norm_site": 44.0,
+  "DSA/attn": 165.3,
+  "DSA/router": 13.4,
+  "DSA/nv2": 44.0,
+  "DSA/moe_kernels": 44.0,
+  "KDA/hc_norm_site": 124.0,
+  "KDA/attn": 275.5,
+  "KDA/router": 37.3,
+  "KDA/nv2": 124.0,
+  "KDA/moe_kernels": 124.0,
+  "-/glue": 4.0,
+  "-/boundary_head": 3.0
+ },
+ "kernels": [
+  {
+   "ltype": "KDA",
+   "class": "nv2",
+   "kernel": "nv_copy_k",
+   "ms_per_token": 18.3956,
+   "calls_per_token": 31.0,
+   "us_per_call": 593.41
+  },
+  {
+   "ltype": "KDA",
+   "class": "nv2",
+   "kernel": "nv_combine_k",
+   "ms_per_token": 7.5518,
+   "calls_per_token": 31.0,
+   "us_per_call": 243.61
+  },
+  {
+   "ltype": "DSA",
+   "class": "nv2",
+   "kernel": "nv_copy_k",
+   "ms_per_token": 6.0678,
+   "calls_per_token": 11.0,
+   "us_per_call": 551.62
+  },
+  {
+   "ltype": "KDA",
+   "class": "moe_kernels",
+   "kernel": "void exl3_moe_coop_ns::exl3_moe_coop_a_kernel<",
+   "ms_per_token": 4.9673,
+   "calls_per_token": 62.0,
+   "us_per_call": 80.12
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "void exl3_gemv_int8_sq_kernel<",
+   "ms_per_token": 4.0131,
+   "calls_per_token": 62.0,
+   "us_per_call": 64.73
+  },
+  {
+   "ltype": "DSA",
+   "class": "nv2",
+   "kernel": "nv_combine_k",
+   "ms_per_token": 3.0924,
+   "calls_per_token": 11.0,
+   "us_per_call": 281.12
+  },
+  {
+   "ltype": "KDA",
+   "class": "moe_kernels",
+   "kernel": "void exl3_moe_coop_ns::exl3_moe_coop_b_kernel<",
+   "ms_per_token": 2.7224,
+   "calls_per_token": 62.0,
+   "us_per_call": 43.91
+  },
+  {
+   "ltype": "DSA",
+   "class": "moe_kernels",
+   "kernel": "void exl3_moe_coop_ns::exl3_moe_coop_a_kernel<",
+   "ms_per_token": 1.666,
+   "calls_per_token": 22.0,
+   "us_per_call": 75.73
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "void exl3_gemv_int8_sq_kernel<",
+   "ms_per_token": 1.2355,
+   "calls_per_token": 44.0,
+   "us_per_call": 28.08
+  },
+  {
+   "ltype": "DSA",
+   "class": "moe_kernels",
+   "kernel": "void exl3_moe_coop_ns::exl3_moe_coop_b_kernel<",
+   "ms_per_token": 0.9243,
+   "calls_per_token": 22.0,
+   "us_per_call": 42.01
+  },
+  {
+   "ltype": "KDA",
+   "class": "nv2",
+   "kernel": "nv_step_k",
+   "ms_per_token": 0.9103,
+   "calls_per_token": 31.0,
+   "us_per_call": 29.36
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_head",
+   "kernel": "void exl3_gemm_kernel<",
+   "ms_per_token": 0.6076,
+   "calls_per_token": 1.0,
+   "us_per_call": 607.57
+  },
+  {
+   "ltype": "KDA",
+   "class": "router",
+   "kernel": "routing_gemv_kernel",
+   "ms_per_token": 0.4433,
+   "calls_per_token": 61.0,
+   "us_per_call": 7.27
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "gdn_ba_gemv_kernel",
+   "ms_per_token": 0.4277,
+   "calls_per_token": 93.0,
+   "us_per_call": 4.6
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "void exl3_gemv_int8_sq_kernel<",
+   "ms_per_token": 0.3808,
+   "calls_per_token": 6.0,
+   "us_per_call": 63.47
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "void cuda_recurrent_gated_delta_rule_kernel_128<",
+   "ms_per_token": 0.3704,
+   "calls_per_token": 31.0,
+   "us_per_call": 11.95
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "dense_mlp",
+   "kernel": "void exl3_gemv_int8_sq_kernel<",
+   "ms_per_token": 0.366,
+   "calls_per_token": 9.0,
+   "us_per_call": 40.66
+  },
+  {
+   "ltype": "DSA",
+   "class": "nv2",
+   "kernel": "nv_step_k",
+   "ms_per_token": 0.3319,
+   "calls_per_token": 11.0,
+   "us_per_call": 30.18
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_unfold_kernel",
+   "ms_per_token": 0.3132,
+   "calls_per_token": 11.0,
+   "us_per_call": 28.47
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_absorb_kernel",
+   "ms_per_token": 0.2821,
+   "calls_per_token": 11.0,
+   "us_per_call": 25.65
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "gdn_lowrank_gemv_f_kernel",
+   "ms_per_token": 0.2677,
+   "calls_per_token": 62.0,
+   "us_per_call": 4.32
+  },
+  {
+   "ltype": "KDA",
+   "class": "hc_norm_site",
+   "kernel": "void k_finalize_norm<__nv_bfloat16, ",
+   "ms_per_token": 0.2675,
+   "calls_per_token": 62.0,
+   "us_per_call": 4.31
+  },
+  {
+   "ltype": "KDA",
+   "class": "nv2",
+   "kernel": "nv_pub_fast_k",
+   "ms_per_token": 0.2476,
+   "calls_per_token": 31.0,
+   "us_per_call": 7.99
+  },
+  {
+   "ltype": "KDA",
+   "class": "hc_norm_site",
+   "kernel": "void k_apply_partials<float, ",
+   "ms_per_token": 0.2363,
+   "calls_per_token": 62.0,
+   "us_per_call": 3.81
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_decode_split_kernel",
+   "ms_per_token": 0.2359,
+   "calls_per_token": 11.0,
+   "us_per_call": 21.45
+  },
+  {
+   "ltype": "KDA",
+   "class": "router",
+   "kernel": "void routing_ds3_nogroup_topk_kernel<",
+   "ms_per_token": 0.2238,
+   "calls_per_token": 61.0,
+   "us_per_call": 3.67
+  },
+  {
+   "ltype": "DSA",
+   "class": "router",
+   "kernel": "routing_gemv_kernel",
+   "ms_per_token": 0.1602,
+   "calls_per_token": 22.0,
+   "us_per_call": 7.28
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "void conv1d_update_kernel<",
+   "ms_per_token": 0.1278,
+   "calls_per_token": 31.0,
+   "us_per_call": 4.12
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_s16816gemm_f16_64x64_32x6_nn_align8>",
+   "ms_per_token": 0.111,
+   "calls_per_token": 22.0,
+   "us_per_call": 5.04
+  },
+  {
+   "ltype": "DSA",
+   "class": "hc_norm_site",
+   "kernel": "void k_finalize_norm<__nv_bfloat16, ",
+   "ms_per_token": 0.0959,
+   "calls_per_token": 22.0,
+   "us_per_call": 4.36
+  },
+  {
+   "ltype": "DSA",
+   "class": "nv2",
+   "kernel": "nv_pub_fast_k",
+   "ms_per_token": 0.0872,
+   "calls_per_token": 11.0,
+   "us_per_call": 7.93
+  },
+  {
+   "ltype": "DSA",
+   "class": "hc_norm_site",
+   "kernel": "void k_apply_partials<float, ",
+   "ms_per_token": 0.0844,
+   "calls_per_token": 22.0,
+   "us_per_call": 3.84
+  },
+  {
+   "ltype": "DSA",
+   "class": "router",
+   "kernel": "void routing_ds3_nogroup_topk_kernel<",
+   "ms_per_token": 0.0808,
+   "calls_per_token": 22.0,
+   "us_per_call": 3.67
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "void gated_rms_norm_kernel<",
+   "ms_per_token": 0.061,
+   "calls_per_token": 31.0,
+   "us_per_call": 1.97
+  },
+  {
+   "ltype": "KDA",
+   "class": "attn",
+   "kernel": "void kda_gate_op_kernel<float>",
+   "ms_per_token": 0.0508,
+   "calls_per_token": 31.0,
+   "us_per_call": 1.64
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_decode_combine_kernel",
+   "ms_per_token": 0.0443,
+   "calls_per_token": 11.0,
+   "us_per_call": 4.03
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "gdn_ba_gemv_kernel",
+   "ms_per_token": 0.0423,
+   "calls_per_token": 9.0,
+   "us_per_call": 4.69
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "void cuda_recurrent_gated_delta_rule_kernel_128<",
+   "ms_per_token": 0.0356,
+   "calls_per_token": 3.0,
+   "us_per_call": 11.87
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_dsa_pool_update_kernel",
+   "ms_per_token": 0.0321,
+   "calls_per_token": 11.0,
+   "us_per_call": 2.92
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_plane_update_kernel",
+   "ms_per_token": 0.0306,
+   "calls_per_token": 22.0,
+   "us_per_call": 1.39
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "void cublasLt::splitKreduce_kernel<",
+   "ms_per_token": 0.0305,
+   "calls_per_token": 22.0,
+   "us_per_call": 1.39
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "hc_norm_site",
+   "kernel": "void k_finalize_norm<__nv_bfloat16, ",
+   "ms_per_token": 0.0271,
+   "calls_per_token": 6.0,
+   "us_per_call": 4.51
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "gdn_lowrank_gemv_f_kernel",
+   "ms_per_token": 0.0266,
+   "calls_per_token": 6.0,
+   "us_per_call": 4.43
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "hc_norm_site",
+   "kernel": "void k_apply_partials<float, ",
+   "ms_per_token": 0.0231,
+   "calls_per_token": 6.0,
+   "us_per_call": 3.85
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_kv_update_kernel",
+   "ms_per_token": 0.021,
+   "calls_per_token": 11.0,
+   "us_per_call": 1.91
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "void rms_norm_kernel<",
+   "ms_per_token": 0.0193,
+   "calls_per_token": 11.0,
+   "us_per_call": 1.76
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_idx_norm_kernel",
+   "ms_per_token": 0.018,
+   "calls_per_token": 11.0,
+   "us_per_call": 1.63
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "_mla_stage_kernel",
+   "ms_per_token": 0.0167,
+   "calls_per_token": 11.0,
+   "us_per_call": 1.52
+  },
+  {
+   "ltype": "DSA",
+   "class": "attn",
+   "kernel": "void copy2d_kernel<__half>",
+   "ms_per_token": 0.0133,
+   "calls_per_token": 11.0,
+   "us_per_call": 1.21
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "void conv1d_update_kernel<",
+   "ms_per_token": 0.0125,
+   "calls_per_token": 3.0,
+   "us_per_call": 4.15
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "void gated_rms_norm_kernel<",
+   "ms_per_token": 0.0059,
+   "calls_per_token": 3.0,
+   "us_per_call": 1.97
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "attn",
+   "kernel": "void kda_gate_op_kernel<float>",
+   "ms_per_token": 0.0049,
+   "calls_per_token": 3.0,
+   "us_per_call": 1.64
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_embed",
+   "kernel": "void at::native::<unnamed>::indexSelectSmallIndex<c10::BFloat16, long, unsigned int, ",
+   "ms_per_token": 0.0048,
+   "calls_per_token": 0.99,
+   "us_per_call": 4.84
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_head",
+   "kernel": "void at::native::reduce_kernel<",
+   "ms_per_token": 0.0045,
+   "calls_per_token": 1.0,
+   "us_per_call": 4.5
+  },
+  {
+   "ltype": "denseKDA",
+   "class": "dense_mlp",
+   "kernel": "void act_mul_kernel_h<",
+   "ms_per_token": 0.0044,
+   "calls_per_token": 3.0,
+   "us_per_call": 1.47
+  },
+  {
+   "ltype": "-",
+   "class": "glue",
+   "kernel": "void <unnamed>::fs_partial_argmax_kernel<__half, ",
+   "ms_per_token": 0.0038,
+   "calls_per_token": 1.0,
+   "us_per_call": 3.81
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_embed",
+   "kernel": "void at::native::unrolled_elementwise_kernel<at::native::direct_copy_kernel_cuda",
+   "ms_per_token": 0.0031,
+   "calls_per_token": 0.99,
+   "us_per_call": 3.18
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_head",
+   "kernel": "void rms_norm_kernel<",
+   "ms_per_token": 0.0024,
+   "calls_per_token": 1.0,
+   "us_per_call": 2.35
+  },
+  {
+   "ltype": "-",
+   "class": "glue",
+   "kernel": "void hc_apply_kernel<",
+   "ms_per_token": 0.002,
+   "calls_per_token": 1.0,
+   "us_per_call": 1.97
+  },
+  {
+   "ltype": "-",
+   "class": "boundary_embed",
+   "kernel": "void at::native::elementwise_kernel<",
+   "ms_per_token": 0.0019,
+   "calls_per_token": 1.0,
+   "us_per_call": 1.9
+  },
+  {
+   "ltype": "-",
+   "class": "glue",
+   "kernel": "void at::native::vectorized_elementwise_kernel<",
+   "ms_per_token": 0.0016,
+   "calls_per_token": 1.0,
+   "us_per_call": 1.57
+  },
+  {
+   "ltype": "-",
+   "class": "glue",
+   "kernel": "<unnamed>::fs_finalize_kernel",
+   "ms_per_token": 0.0016,
+   "calls_per_token": 1.0,
+   "us_per_call": 1.57
+  }
+ ],
+ "weight_mb": {
+  "KDA/attn": 91.01,
+  "DSA/attn": 102.87,
+  "dense/mlp": 75.6,
+  "hc_fn_per_site": 1.57,
+  "router_gate": 2.42,
+  "shared_expert": 16.14,
+  "lm_head": 476.11
+ },
+ "roofline": {
+  "KDA attention": {
+   "ms_per_token": 5.8273,
+   "mb_per_token": 3094.5,
+   "gbps": 531.0,
+   "roofline_ms": 3.3061
+  },
+  "DSA attention": {
+   "ms_per_token": 2.4036,
+   "mb_per_token": 1131.6,
+   "gbps": 470.8,
+   "roofline_ms": 1.209
+  },
+  "dense MLP 0-2": {
+   "ms_per_token": 0.3704,
+   "mb_per_token": 226.8,
+   "gbps": 612.3,
+   "roofline_ms": 0.2423
+  },
+  "hc/norm sites": {
+   "ms_per_token": 0.7342,
+   "mb_per_token": 141.6,
+   "gbps": 192.8,
+   "roofline_ms": 0.1512
+  },
+  "router": {
+   "ms_per_token": 0.908,
+   "mb_per_token": 101.4,
+   "gbps": 111.7,
+   "roofline_ms": 0.1084
+  },
+  "head (hc_head+norm+lm_head)": {
+   "ms_per_token": 0.6144,
+   "mb_per_token": 476.1,
+   "gbps": 774.9,
+   "roofline_ms": 0.5087
+  }
+ },
+ "boundary_host_ranges_us_per_token": {
+  "gen.iterate": 16.2,
+  "model.forward_enqueue": 2.8,
+  "job.receive_sample": 1.9,
+  "model.language_model.embed_tokens": 0.8,
+  "hc_expand": 0.7,
+  "gen.deliver": 0.1
+ }
+}
