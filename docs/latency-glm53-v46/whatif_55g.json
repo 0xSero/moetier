@@ -1,0 +1,64 @@
+{
+ "whatif": {
+  "measured": {
+   "ms_per_token": 56.8,
+   "tok_s": 17.6,
+   "saves_ms": 0.0
+  },
+  "plan+book=0": {
+   "ms_per_token": 55.4,
+   "tok_s": 18.0,
+   "saves_ms": 1.4
+  },
+  "bubbles=0": {
+   "ms_per_token": 56.8,
+   "tok_s": 17.6,
+   "saves_ms": 0.0
+  },
+  "cpu starts with the GPU lane": {
+   "ms_per_token": 55.9,
+   "tok_s": 17.9,
+   "saves_ms": 0.9
+  },
+  "nvme waits=0": {
+   "ms_per_token": 53.1,
+   "tok_s": 18.8,
+   "saves_ms": 3.7
+  },
+  "copy at 25 GB/s": {
+   "ms_per_token": 53.3,
+   "tok_s": 18.8,
+   "saves_ms": 3.6
+  },
+  "cpu experts at 98 GB/s": {
+   "ms_per_token": 47.9,
+   "tok_s": 20.9,
+   "saves_ms": 8.9
+  },
+  "gpu MoE at roofline": {
+   "ms_per_token": 52.4,
+   "tok_s": 19.1,
+   "saves_ms": 4.4
+  },
+  "non-MoE GPU at roofline": {
+   "ms_per_token": 51.8,
+   "tok_s": 19.3,
+   "saves_ms": 5.0
+  },
+  "all scheduling": {
+   "ms_per_token": 50.5,
+   "tok_s": 19.8,
+   "saves_ms": 6.3
+  },
+  "all floors": {
+   "ms_per_token": 24.1,
+   "tok_s": 41.4,
+   "saves_ms": 32.7
+  }
+ },
+ "lane_ending_share": {
+  "cpu": 0.457,
+  "gpu": 0.432,
+  "nvme": 0.112
+ }
+}
