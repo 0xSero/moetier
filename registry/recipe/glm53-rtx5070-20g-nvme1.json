@@ -1,0 +1,40 @@
+{
+  "id": "glm53-rtx5070-20g-nvme1",
+  "status": "what-if",
+  "model": "glm-5.3-flash-exl3-3.05bpw",
+  "hardware": "omarchy-rtx5070-ddr5-nvme1",
+  "engines": [
+    "exllamav3-cuda",
+    "avx2-exl3-cpu"
+  ],
+  "budget": {
+    "ram_gb": 20,
+    "runtime_gb": 4.0,
+    "other_gb": 2.8,
+    "vram_expert_slots": 100
+  },
+  "policy": {
+    "vram": "clock, admit GPU-routed misses",
+    "ram": "exclusive",
+    "seed": "frequency",
+    "exact": "stall",
+    "overlap": true,
+    "prefetch": {
+      "depth": 1,
+      "recall": 0.0
+    }
+  },
+  "calibration": {
+    "fixed_ms": {
+      "1": 14.0,
+      "2": 20.0,
+      "4": 30.0
+    },
+    "prefill": {
+      "chunk": 8192,
+      "compute_ms_per_layer": 176.35,
+      "first_request_ms": 4130
+    },
+    "source": "G067 all-RAM 28.15 / 31.57 / 33.98 decode, 710 / 951 prefill"
+  }
+}

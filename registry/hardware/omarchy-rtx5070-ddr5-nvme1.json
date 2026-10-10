@@ -1,0 +1,37 @@
+{
+  "id": "omarchy-rtx5070-ddr5-nvme1",
+  "gpu": {
+    "name": "RTX 5070",
+    "vram_gb": 12,
+    "link": "PCIe 5.0 x16 card",
+    "h2d_gbps": 23.0,
+    "vram_bw_gbps": 672
+  },
+  "cpu": {
+    "name": "Intel Core Ultra 9 285",
+    "cores": 24,
+    "isa": "avx2",
+    "ddr": "DDR5 2-channel"
+  },
+  "nvme": {
+    "name": "1x Samsung PM9F1 2 TB (dm-crypt, btrfs)",
+    "bw_gbps": 7.1,
+    "bw_qd1_gbps": 3.7,
+    "latency_ms": 0.12,
+    "note": "measured 2026-10-08: O_DIRECT pread, 9,437,184 B records, 3.70 GB/s 1 thread, 7.08 GB/s 8 threads (local-ai-recipe-kit nvme_rand.py)"
+  },
+  "ceilings": {
+    "vram_bw_gbps": 672,
+    "pcie_h2d_gbps": 23.0,
+    "nvme_read_gbps": 7.1,
+    "nvme_measured_gbps": 7.1,
+    "ddr_practical_gbps": 85,
+    "cores": 24,
+    "threads": 24,
+    "smt_sibling_offset": 0,
+    "gpu_power_w": 250,
+    "ddr_note": "ddr_practical_gbps derived from a 46.4 GB/s host memcpy (~93 GB/s of DDR traffic); DDR theoretical not measured",
+    "pcie_note": "pcie_h2d_gbps = 23.0 GB/s pinned (hw_bw.py); D2H not measured",
+    "gpu_power_note": "gpu_power_w = board power cap reported by nvidia-smi"
+  }
+}
